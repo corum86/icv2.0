@@ -1,0 +1,9 @@
+{
+  "name": "Sergkei Kournosenkov — Web & Software Developer",
+  "short_name": "Kournosenkov",
+  "icons": [{ "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }],
+  "theme_color": "#0f0e13",
+  "background_color": "#0f0e13",
+  "display": "standalone",
+  "start_url": "/"
+}

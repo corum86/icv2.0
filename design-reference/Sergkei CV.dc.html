@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<script src="./world.js"></script>
+<style>
+@keyframes blink{50%{opacity:0}}
+@keyframes glitchBar{0%{transform:translateX(-6%)}50%{transform:translateX(8%)}100%{transform:translateX(-3%)}}
+@keyframes flash{0%{opacity:0}10%{opacity:1}30%{opacity:.4}45%{opacity:1}100%{opacity:1}}
+@keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(-4px,2px)}50%{transform:translate(3px,-3px)}75%{transform:translate(-2px,-1px)}100%{transform:translate(0,0)}}
+@keyframes toastIn{0%{transform:translate(-50%,-20px);opacity:0}12%{transform:translate(-50%,0);opacity:1}85%{opacity:1}100%{opacity:0}}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg,#0f0e13);color:var(--fg,#ecebf1);transition:background .3s,color .3s;-webkit-font-smoothing:antialiased}
+a{color:var(--acc,#b48bff)}
+a:hover{color:var(--fg,#ecebf1)}
+::selection{background:#9b5cff;color:#0f0e13}
+</style>
+</helmet>
+<div id="top" style="min-height:100vh;font-family:'IBM Plex Sans',system-ui,sans-serif;color:var(--fg,#ecebf1)">
+
+<header style="position:sticky;top:0;z-index:20;background:color-mix(in srgb, var(--bg,#0f0e13) 86%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line,#26242e)">
+  <div style="max-width:1120px;margin:0 auto;padding:12px clamp(20px,4vw,40px);display:flex;align-items:center;gap:12px 22px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:13px">
+    <a href="#top" style="color:var(--fg,#ecebf1);text-decoration:none;display:flex;gap:2px;font-weight:600"><span style="color:var(--acc,#b48bff)">~/</span><span>sergkei</span></a>
+    <nav style="display:flex;gap:18px;flex-wrap:wrap;margin-right:auto">
+      <a href="#experience" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.nav.0 }}</a>
+      <a href="#skills" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.nav.1 }}</a>
+      <a href="#education" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.nav.2 }}</a>
+      <a href="#contact" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.nav.3 }}</a>
+    </nav>
+    <div style="display:flex;border:1px solid var(--line,#26242e);border-radius:6px;overflow:hidden">
+      <button onClick="{{ setEn }}" style="all:unset;cursor:pointer;padding:5px 9px;background:{{ enBg }};color:{{ enFg }}">EN</button>
+      <button onClick="{{ setDe }}" style="all:unset;cursor:pointer;padding:5px 9px;background:{{ deBg }};color:{{ deFg }}">DE</button>
+    </div>
+    <button onClick="{{ toggleTheme }}" style="all:unset;cursor:pointer;padding:5px 10px;border:1px solid var(--line,#26242e);border-radius:6px;color:var(--mut,#9c9aa8)" style-hover="color:var(--fg,#ecebf1)">◐ {{ themeLabel }}</button>
+    <button onClick="{{ enterGame }}" style="all:unset;cursor:pointer;padding:5px 12px;border-radius:6px;background:#9b5cff;color:#0f0e13;font-weight:600" style-hover="background:#b48bff">▶ {{ t.play }}</button>
+  </div>
+</header>
+
+<main style="max-width:1120px;margin:0 auto;padding:0 clamp(20px,4vw,40px)">
+
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px;padding:clamp(40px,7vw,88px) 0 56px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:26px;min-width:0">
+      <div style="display:flex;gap:10px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--mut,#9c9aa8)">
+        <span style="width:8px;height:8px;border-radius:50%;background:#9b5cff"></span>
+        <span>{{ t.loc }}</span><span>/</span><span>{{ t.spec }}</span>
+      </div>
+      <h1 style="margin:0;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(40px,6.4vw,78px);line-height:.98;letter-spacing:-.035em">Sergkei<br>Kournosenkov</h1>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:clamp(17px,2vw,21px);color:var(--acc,#b48bff);display:flex;align-items:center;gap:4px"><span>&gt; {{ t.role }}</span>{{ cursor }}</div>
+      <p style="margin:0;font-size:18px;line-height:1.6;color:var(--fg,#ecebf1);max-width:58ch;text-wrap:pretty;opacity:.88">{{ t.profile }}</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a href="mailto:ser.corum@gmail.com" style="display:flex;gap:10px;align-items:center;padding:13px 20px;border-radius:8px;background:#9b5cff;color:#0f0e13;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px" style-hover="background:#b48bff;color:#0f0e13">✉ {{ t.email }}</a>
+        <a href="https://github.com/corum86" target="_blank" style="display:flex;gap:10px;align-items:center;padding:13px 20px;border-radius:8px;border:1px solid var(--line,#26242e);color:var(--fg,#ecebf1);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:14px" style-hover="border-color:#9b5cff">GitHub ↗</a>
+        <a href="{{ linkedin }}" target="_blank" style="display:flex;gap:10px;align-items:center;padding:13px 20px;border-radius:8px;border:1px solid var(--line,#26242e);color:var(--fg,#ecebf1);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:14px" style-hover="border-color:#9b5cff">LinkedIn ↗</a>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:12px">
+        <span style="color:var(--mut,#9c9aa8)">{{ t.stackLabel }}:</span>
+        <sc-for list="{{ stack }}" as="s" hint-placeholder-count="6"><span style="padding:4px 9px;border:1px solid var(--line,#26242e);border-radius:99px;color:var(--fg,#ecebf1)">{{ s }}</span></sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+            <div onClick="{{ focusTerm }}" style="background:var(--card,#16151c);border:1px solid var(--line,#26242e);border-radius:12px;overflow:hidden;font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:text">
+        <div style="display:flex;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--line,#26242e);color:var(--mut,#9c9aa8);font-size:12px"><span>sergkei@wuppertal: ~</span><span>{{ t.termHint }}</span></div>
+        <div ref="{{ termRef }}" style="height:150px;overflow:auto;padding:12px 14px;display:flex;flex-direction:column;gap:3px;line-height:1.45">
+          <sc-for list="{{ termLines }}" as="l" hint-placeholder-count="3"><div style="color:{{ l.c }};white-space:pre-wrap;word-break:break-word">{{ l.s }}</div></sc-for>
+          <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--acc,#b48bff)">❯</span><input ref="{{ tinRef }}" value="{{ tin }}" onChange="{{ onTin }}" onKeyDown="{{ onTinKey }}" spellcheck="false" style="all:unset;flex:1;color:var(--fg,#ecebf1);caret-color:#9b5cff"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border-top:1px solid var(--line,#26242e);border-bottom:1px solid var(--line,#26242e)">
+    <sc-for list="{{ facts }}" as="f" hint-placeholder-count="4">
+      <div style="padding:26px 22px 26px 0;display:flex;flex-direction:column;gap:6px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:34px;font-weight:600;letter-spacing:-.02em">{{ f.n }}</span>
+        <span style="font-size:14px;color:var(--mut,#9c9aa8)">{{ f.l }}</span>
+      </div>
+    </sc-for>
+  </section>
+
+  <section id="experience" style="padding:88px 0 0;scroll-margin-top:60px">
+    <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 01</span> {{ t.sExp }}</h2>
+    <div style="border-bottom:1px solid var(--line,#26242e)">
+      <sc-for list="{{ jobs }}" as="job" hint-placeholder-count="4">
+        <div style="border-top:1px solid var(--line,#26242e)">
+          <button onClick="{{ job.toggle }}" style="all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;flex-wrap:wrap;gap:6px 24px;padding:24px 0;align-items:baseline" style-hover="color:var(--acc,#b48bff)">
+            <span style="flex:0 0 160px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--mut,#9c9aa8)">{{ job.period }}</span>
+            <span style="flex:1 1 340px;display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-size:21px;font-weight:500;line-height:1.3">{{ job.role }}</span><span style="font-size:15px;color:var(--mut,#9c9aa8)">{{ job.company }}</span></span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--acc,#b48bff);width:20px;text-align:right">{{ job.sign }}</span>
+          </button>
+          <sc-if value="{{ job.open }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:24px;padding:0 0 30px">
+              <span style="flex:0 0 160px"></span>
+              <div style="flex:1 1 340px;display:flex;flex-direction:column;gap:18px;min-width:0">
+                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
+                  <sc-for list="{{ job.bullets }}" as="b"><li style="display:flex;gap:12px;font-size:16px;line-height:1.55;text-wrap:pretty"><span style="color:var(--acc,#b48bff);font-family:'IBM Plex Mono',monospace">–</span><span style="opacity:.88">{{ b }}</span></li></sc-for>
+                </ul>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <sc-for list="{{ job.tags }}" as="tg"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;padding:4px 9px;border-radius:99px;background:var(--card,#16151c);border:1px solid var(--line,#26242e)">{{ tg }}</span></sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="skills" style="padding:88px 0 0;scroll-margin-top:60px">
+    <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 02</span> {{ t.sSkills }}</h2>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <label style="display:flex;gap:10px;align-items:center;padding:14px 16px;border:1px solid var(--line,#26242e);border-radius:10px;background:var(--card,#16151c);font-family:'IBM Plex Mono',monospace;font-size:15px">
+        <span style="color:var(--acc,#b48bff)">$ grep -i</span>
+        <input value="{{ q }}" onChange="{{ onQ }}" placeholder="{{ t.grep }}" spellcheck="false" style="all:unset;flex:1;min-width:0;color:var(--fg,#ecebf1)">
+        <span style="color:var(--mut,#9c9aa8);font-size:12px">{{ skillCount }} {{ t.matches }}</span>
+      </label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <sc-for list="{{ cats }}" as="c" hint-placeholder-count="8">
+          <button onClick="{{ c.pick }}" style="all:unset;cursor:pointer;padding:6px 12px;border-radius:99px;border:1px solid var(--line,#26242e);background:{{ c.bg }};color:{{ c.fg }};font-family:'IBM Plex Mono',monospace;font-size:12px" style-hover="border-color:#9b5cff">{{ c.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px">
+        <sc-for list="{{ skills }}" as="k" hint-placeholder-count="12">
+          <div style="padding:14px 16px;border:1px solid var(--line,#26242e);border-radius:10px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s, transform .15s" style-hover="border-color:#9b5cff;transform:translateY(-2px)">
+            <span style="font-size:16px;font-weight:500">{{ k.n }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut,#9c9aa8)">{{ k.c }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ noSkills }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-family:'IBM Plex Mono',monospace;color:var(--mut,#9c9aa8)">{{ t.none }}</p></sc-if>
+    </div>
+  </section>
+
+  <section id="education" style="padding:88px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:48px;scroll-margin-top:60px">
+    <div>
+      <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 03</span> {{ t.sEdu }}</h2>
+      <sc-for list="{{ edu }}" as="e" hint-placeholder-count="4">
+        <div style="padding:16px 0;border-top:1px solid var(--line,#26242e);display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:17px;font-weight:500">{{ e.t }}</span>
+          <span style="font-size:14px;color:var(--mut,#9c9aa8)">{{ e.s }}</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--acc,#b48bff)">{{ e.y }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div>
+      <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 04</span> {{ t.sLang }}</h2>
+      <sc-for list="{{ langs }}" as="lg" hint-placeholder-count="4">
+        <div style="padding:16px 0;border-top:1px solid var(--line,#26242e);display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;gap:12px"><span style="font-size:17px;font-weight:500">{{ lg.n }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--mut,#9c9aa8)">{{ lg.l }}</span></div>
+          <div style="height:4px;border-radius:4px;background:var(--line,#26242e);overflow:hidden"><div style="height:100%;width:{{ lg.w }};background:#9b5cff"></div></div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="contact" style="padding:120px 0 120px;scroll-margin-top:60px;display:flex;flex-direction:column;gap:26px">
+    <h2 style="margin:0;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 05</span> {{ t.sContact }}</h2>
+    <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(34px,5.5vw,64px);letter-spacing:-.03em;line-height:1.02">{{ t.cTitle }}</p>
+    <a href="mailto:ser.corum@gmail.com" style="font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,2.4vw,26px);color:var(--acc,#b48bff);text-decoration:underline;text-underline-offset:6px;width:fit-content">ser.corum@gmail.com</a>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="mailto:ser.corum@gmail.com" style="padding:13px 20px;border-radius:8px;background:#9b5cff;color:#0f0e13;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px" style-hover="background:#b48bff;color:#0f0e13">✉ {{ t.email }}</a>
+      <a href="https://github.com/corum86" target="_blank" style="padding:13px 20px;border-radius:8px;border:1px solid var(--line,#26242e);color:var(--fg,#ecebf1);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:14px" style-hover="border-color:#9b5cff">GitHub ↗</a>
+      <a href="{{ linkedin }}" target="_blank" style="padding:13px 20px;border-radius:8px;border:1px solid var(--line,#26242e);color:var(--fg,#ecebf1);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:14px" style-hover="border-color:#9b5cff">LinkedIn ↗</a>
+    </div>
+  </section>
+</main>
+
+<section ref="{{ zoneRef }}" style="height:{{ zoneH }};border-top:1px solid var(--line,#26242e);position:relative">
+  <div style="position:sticky;top:0;height:100vh;display:grid;place-items:center;padding:0 24px;box-sizing:border-box">
+    <div style="width:min(560px,100%);display:flex;flex-direction:column;gap:20px;font-family:'IBM Plex Mono',monospace;transform:translateX({{ jitter }})">
+      <span style="font-size:13px;color:var(--mut,#9c9aa8)">$ ./start --mode=game</span>
+      <p style="margin:0;font-size:clamp(24px,3.4vw,36px);font-weight:600;letter-spacing:-.02em;line-height:1.15">{{ zoneTitle }}</p>
+      <p style="margin:0;font-size:15px;color:var(--mut,#9c9aa8)">{{ t.zSub }}</p>
+      <div style="display:flex;gap:14px;align-items:center">
+        <div style="flex:1;height:14px;border:1px solid var(--fg,#ecebf1);padding:2px;box-sizing:border-box"><div style="height:100%;width:{{ pctW }};background:#9b5cff"></div></div>
+        <span style="font-size:14px;width:48px;text-align:right">{{ pctTxt }}</span>
+      </div>
+      <button onClick="{{ enterGame }}" style="all:unset;cursor:pointer;width:fit-content;padding:10px 16px;border:1px solid #9b5cff;border-radius:6px;color:var(--acc,#b48bff);font-size:13px" style-hover="background:#9b5cff;color:#0f0e13">▶ {{ zoneBtn }}</button>
+    </div>
+  </div>
+</section>
+
+<sc-if value="{{ isGame }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:50;background:#0b0a14;color:#f2f0ff;display:flex;flex-direction:column;font-family:'VT323',monospace;user-select:none">
+  <div style="display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 16px;border-bottom:4px solid #f2f0ff;background:#14122a">
+    <div style="display:flex;gap:12px;align-items:center;margin-right:auto;flex-wrap:wrap">
+      <span style="width:34px;height:34px;background:#9b5cff;border:3px solid #f2f0ff;display:grid;place-items:center;font-family:'Press Start 2P';font-size:10px;color:#0b0a14">SK</span>
+      <span style="font-family:'Press Start 2P';font-size:11px">SERGKEI</span>
+      <span style="font-family:'Press Start 2P';font-size:11px;color:#ffb84d">{{ g.lv }} {{ lvl }}</span>
+      <div style="display:flex;gap:8px;align-items:center;font-size:18px;color:#a9a6c4"><span>XP</span><div style="width:110px;height:10px;border:2px solid #f2f0ff;background:#0b0a14"><div style="height:100%;width:{{ xpW }};background:#9b5cff"></div></div></div>
+      <span style="font-size:18px;color:#a9a6c4">{{ exploredTxt }}</span>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;font-family:'Press Start 2P';font-size:9px">
+      <button onClick="{{ openStatus }}" style="all:unset;cursor:pointer;padding:8px 10px;border:2px solid #f2f0ff" style-hover="background:#9b5cff;color:#0b0a14">[C] {{ g.status }}</button>
+      <button onClick="{{ openItems }}" style="all:unset;cursor:pointer;padding:8px 10px;border:2px solid #f2f0ff" style-hover="background:#9b5cff;color:#0b0a14">[I] {{ g.items }}</button>
+      <button onClick="{{ openQuests }}" style="all:unset;cursor:pointer;padding:8px 10px;border:2px solid #f2f0ff" style-hover="background:#9b5cff;color:#0b0a14">[Q] {{ g.quests }}</button>
+      <button onClick="{{ toggleSound }}" style="all:unset;cursor:pointer;padding:8px 10px;border:2px solid #f2f0ff" style-hover="background:#9b5cff;color:#0b0a14">[M] {{ soundTxt }}</button>
+      <button onClick="{{ setLangToggle }}" style="all:unset;cursor:pointer;padding:8px 10px;border:2px solid #f2f0ff" style-hover="background:#9b5cff;color:#0b0a14">{{ langTxt }}</button>
+      <button onClick="{{ exitGame }}" style="all:unset;cursor:pointer;padding:8px 10px;border:2px solid #ffb84d;color:#ffb84d" style-hover="background:#ffb84d;color:#0b0a14">[X] {{ g.exit }}</button>
+    </div>
+  </div>
+
+  <div style="flex:1;min-height:0;display:grid;place-items:center;padding:14px">
+    <div onClick="{{ mapClick }}" style="position:relative;width:min(100%, calc((100vh - 300px) * 1.5238));aspect-ratio:32/21;cursor:pointer;border:4px solid #f2f0ff;box-shadow:0 0 0 4px #0b0a14, 8px 8px 0 4px #000;overflow:hidden;background:#2e5b39">
+      <canvas ref="{{ mapRef }}" width="512" height="336" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;display:block"></canvas>
+      <sc-for list="{{ buildings }}" as="bd" hint-placeholder-count="5">
+        <div onClick="{{ bd.click }}" style="position:absolute;left:{{ bd.l }};top:{{ bd.t }};width:{{ bd.w }};height:{{ bd.h }};cursor:pointer;display:flex;justify-content:center;align-items:flex-start;z-index:2" style-hover="background:rgba(255,255,255,.06)">
+          <span style="margin-top:-6px;font-family:'Press Start 2P';font-size:clamp(6px,0.7vw,10px);color:#f2f0ff;background:#14122a;border:2px solid #f2f0ff;padding:4px 6px;white-space:nowrap;box-shadow:2px 2px 0 #0b0a14">{{ bd.star }}{{ bd.name }}</span>
+        </div>
+      </sc-for>
+      <div style="position:absolute;left:{{ pl }};top:{{ pt }};width:5.469%;height:10.119%;transition:left .1s linear, top .1s linear;pointer-events:none;z-index:3;background-image:url(./assets/hero.png);background-size:300% 300%;background-repeat:no-repeat;background-position:{{ heroPos }};image-rendering:pixelated"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:14px;padding:0 16px 16px;align-items:stretch">
+    <div onClick="{{ skipDialog }}" style="flex:1;min-width:0;min-height:132px;background:#14122a;border:4px solid #f2f0ff;box-shadow:0 0 0 4px #0b0a14;padding:12px 16px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;cursor:pointer">
+      <span style="font-family:'Press Start 2P';font-size:9px;color:#ffb84d">GUIDE</span>
+      <span style="font-size:23px;line-height:1.15;text-wrap:pretty">{{ dlgText }}{{ dlgMore }}</span>
+      <span style="font-size:17px;color:#a9a6c4;margin-top:auto">{{ g.controls }}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,32px);gap:3px;align-self:center;font-family:'Press Start 2P';font-size:10px">
+      <span></span><button onClick="{{ mUp }}" style="all:unset;cursor:pointer;display:grid;place-items:center;border:2px solid #f2f0ff;background:#14122a" style-active="background:#9b5cff">▲</button><span></span>
+      <button onClick="{{ mLeft }}" style="all:unset;cursor:pointer;display:grid;place-items:center;border:2px solid #f2f0ff;background:#14122a" style-active="background:#9b5cff">◀</button><span></span><button onClick="{{ mRight }}" style="all:unset;cursor:pointer;display:grid;place-items:center;border:2px solid #f2f0ff;background:#14122a" style-active="background:#9b5cff">▶</button>
+      <span></span><button onClick="{{ mDown }}" style="all:unset;cursor:pointer;display:grid;place-items:center;border:2px solid #f2f0ff;background:#14122a" style-active="background:#9b5cff">▼</button><span></span>
+    </div>
+  </div>
+
+  <sc-if value="{{ anyPanel }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closePanel }}" style="position:fixed;inset:0;z-index:60;background:rgba(5,4,12,.72);display:grid;place-items:center;padding:16px">
+    <div onClick="{{ stop }}" style="width:min(920px,100%);max-height:calc(100vh - 48px);overflow:auto;background:#14122a;border:4px solid #f2f0ff;box-shadow:0 0 0 4px #0b0a14, 10px 10px 0 4px #000;padding:22px;box-sizing:border-box;display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font-family:'Press Start 2P';font-size:14px"><span style="color:#9b5cff">◆</span> {{ panelTitle }}</span>
+        <button onClick="{{ closePanel }}" style="all:unset;cursor:pointer;font-family:'Press Start 2P';font-size:9px;padding:8px 10px;border:2px solid #f2f0ff" style-hover="background:#f2f0ff;color:#0b0a14">{{ g.close }}</button>
+      </div>
+
+      <sc-if value="{{ pQuests }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <sc-for list="{{ quests }}" as="qq">
+              <button onClick="{{ qq.pick }}" style="all:unset;cursor:pointer;display:flex;gap:10px;padding:10px 12px;border:2px solid {{ qq.bd }};background:{{ qq.bg }};font-size:22px;line-height:1.1">
+                <span style="color:#ffb84d;width:14px">{{ qq.cur }}</span>
+                <span style="flex:1;display:flex;flex-direction:column"><span>{{ qq.company }}</span><span style="color:{{ qq.sc }};font-size:18px">{{ qq.status }}</span></span>
+              </button>
+            </sc-for>
+            <span style="font-size:17px;color:#a9a6c4">{{ g.questHint }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;border-left:2px dashed #3a3760;padding-left:20px">
+            <span style="font-family:'Press Start 2P';font-size:11px;line-height:1.6;color:#ffb84d">{{ qd.role }}</span>
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:20px">
+              <span style="color:#a9a6c4">{{ g.giver }}</span><span>{{ qd.company }}</span>
+              <span style="color:#a9a6c4">{{ g.when }}</span><span>{{ qd.period }}</span>
+              <span style="color:#a9a6c4">{{ g.reward }}</span><span>{{ qd.reward }}</span>
+            </div>
+            <span style="font-family:'Press Start 2P';font-size:9px;color:#a9a6c4">{{ g.obj }}</span>
+            <sc-for list="{{ qd.bullets }}" as="ob"><div style="display:flex;gap:10px;font-size:20px;line-height:1.15"><span style="color:{{ qd.mc }}">{{ qd.mark }}</span><span>{{ ob }}</span></div></sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pItems }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{ gcats }}" as="gc"><button onClick="{{ gc.pick }}" style="all:unset;cursor:pointer;padding:6px 10px;border:2px solid {{ gc.bd }};background:{{ gc.bg }};color:{{ gc.fg }};font-size:19px">{{ gc.label }}</button></sc-for>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:6px;align-content:start">
+              <sc-for list="{{ gitems }}" as="it">
+                <button onClick="{{ it.pick }}" style="all:unset;cursor:pointer;aspect-ratio:1;display:grid;place-items:center;position:relative;background:{{ it.bg }};border:3px solid {{ it.rc }};box-shadow:{{ it.sh }}">
+                  <span style="font-size:28px;color:{{ it.rc }}">{{ it.ab }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="border:3px solid {{ gs.rc }};padding:16px;display:flex;flex-direction:column;gap:10px;align-self:start">
+              <span style="font-family:'Press Start 2P';font-size:9px;color:{{ gs.rc }}">{{ gs.rar }}</span>
+              <span style="font-size:32px;line-height:1">{{ gs.n }}</span>
+              <span style="font-size:19px;color:#a9a6c4">{{ g.type }}: {{ gs.c }}</span>
+              <span style="font-size:19px;line-height:1.15">{{ gs.src }}</span>
+            </div>
+          </div>
+          <span style="font-size:17px;color:#a9a6c4">{{ g.itemHint }}</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pAcademy }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+          <sc-for list="{{ edu }}" as="ed">
+            <div style="border:3px solid #f2f0ff;background:#1d1a3a;padding:14px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Press Start 2P';font-size:9px;color:#5fb4ff">SCROLL · {{ ed.y }}</span>
+              <span style="font-size:23px;line-height:1.05">{{ ed.t }}</span>
+              <span style="font-size:18px;color:#a9a6c4;line-height:1.1">{{ ed.s }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pTavern }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <span style="font-size:21px">{{ g.tavernIntro }}</span>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px">
+            <sc-for list="{{ langs }}" as="np">
+              <div style="display:flex;flex-direction:column;gap:10px;padding:14px;border:3px solid #f2f0ff;background:#1d1a3a">
+                <div style="align-self:flex-start;padding:6px 10px;background:#f2f0ff;color:#0b0a14;font-size:22px">{{ np.hi }}</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="width:28px;height:28px;background:{{ np.col }};border:3px solid #0b0a14"></span><span style="font-size:22px">{{ np.n }}</span></div>
+                <span style="font-size:18px;color:#a9a6c4">{{ np.l }}</span>
+                <div style="height:10px;border:2px solid #f2f0ff"><div style="height:100%;width:{{ np.w }};background:{{ np.col }}"></div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pContact }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <span style="font-size:22px">{{ g.postIntro }}</span>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;font-family:'Press Start 2P';font-size:10px">
+            <a href="mailto:ser.corum@gmail.com" style="padding:14px 16px;background:#9b5cff;color:#0b0a14;text-decoration:none;border:3px solid #f2f0ff" style-hover="background:#ffb84d;color:#0b0a14">✉ {{ g.raven }}</a>
+            <a href="https://github.com/corum86" target="_blank" style="padding:14px 16px;color:#f2f0ff;text-decoration:none;border:3px solid #f2f0ff" style-hover="background:#f2f0ff;color:#0b0a14">GITHUB</a>
+            <a href="{{ linkedin }}" target="_blank" style="padding:14px 16px;color:#f2f0ff;text-decoration:none;border:3px solid #f2f0ff" style-hover="background:#f2f0ff;color:#0b0a14">LINKEDIN</a>
+          </div>
+          <span style="font-size:20px;color:#a9a6c4">ser.corum@gmail.com · github.com/corum86 · Wuppertal</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ pStatus }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px">
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:22px;align-content:start">
+            <sc-for list="{{ statRows }}" as="sr"><span style="color:#a9a6c4">{{ sr.k }}</span><span>{{ sr.v }}</span></sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-family:'Press Start 2P';font-size:9px;color:#a9a6c4">{{ g.attrs }}</span>
+            <sc-for list="{{ attrs }}" as="at">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px dashed #3a3760;padding-bottom:6px"><span style="font-size:21px">{{ at.k }}</span><span style="font-family:'Press Start 2P';font-size:13px;color:#ffb84d">{{ at.v }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ scan }}"><div style="position:fixed;inset:0;z-index:80;pointer-events:none;background:repeating-linear-gradient(0deg, rgba(0,0,0,.2) 0 1px, transparent 1px 3px)"></div></sc-if>
+  {{ toastEl }}
+</div>
+</sc-if>
+{{ glitchEl }}
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;linkedinUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Links&quot;},&quot;gameTrigger&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;scroll&quot;,&quot;button&quot;],&quot;default&quot;:&quot;scroll&quot;,&quot;tsType&quot;:&quot;'scroll'|'button'&quot;,&quot;section&quot;:&quot;Game&quot;},&quot;scanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Game&quot;}}">
+const h=React.createElement,PWg=()=>window.PWorld,W=64;
+const CATS=['frontend','backend','databases','apis','quality','ai','devops','platforms'];
+const SKILLS=[
+['Angular','frontend',3],['JavaScript','frontend',3],['HTML5','frontend',3],['CSS / SCSS','frontend',3],['React','frontend',2],['Tailwind','frontend',2],['Bootstrap','frontend',2],['SASS / LESS','frontend',2],['Flutter / Dart','frontend',2],['jQuery','frontend',1],['Ajax','frontend',1],['ExtJS3','frontend',0],
+['Java Spring Boot','backend',2],['PHP (OOP)','backend',2],['Smarty 2/3/4','backend',1],['C#','backend',1],['C++','backend',1],['Objective C','backend',0],['Matlab','backend',0],
+['MySQL','databases',2],['PostgreSQL','databases',2],['SQL Server (T-SQL)','databases',1],
+['RESTful APIs','apis',3],['SOAP APIs','apis',1],['Facebook & Instagram APIs','apis',1],['Google Platforms & APIs','apis',1],
+['SonarQube','quality',2],['ESLint','quality',2],['Prettier','quality',1],['Karma / Jasmine','quality',2],['Vitest','quality',2],
+['Claude Code','ai',2],['GitHub Copilot','ai',2],['Gemini / Anti-gravity','ai',1],
+['GitHub','devops',2],['GitLab','devops',2],['Gitea','devops',1],['Subversion','devops',0],
+['Mendix (Low-code)','platforms',2],['JTL Shop','platforms',1],['JTL Wawi','platforms',1],['SAP','platforms',1],['Salesforce','platforms',1],['MS Office','platforms',0],['Adobe Photoshop','platforms',0]
+].map(([n,c,r])=>({n,c,r}));
+const JOBS=[
+{company:'ECS GmbH',from:[2019,4],to:null,tags:['Angular','React','Flutter','Tailwind','Spring Boot','PostgreSQL','Mendix','Vitest','Claude Code'],
+role:{en:'Software Engineer – Full-Stack (Frontend Focus)',de:'Software Engineer – Full-Stack (Schwerpunkt Frontend)'},
+b:{en:['New development and maintenance of complex single-page applications (SPA) using Angular (React, Flutter).','Implementation of responsive designs with HTML5, SASS/LESS and Bootstrap/Tailwind to ensure optimal UX on all devices.','Connection of RESTful APIs to the frontend and close cooperation with the backend team (e.g. Java Spring Boot).','Optimize application performance and ensure cross-browser compatibility.','Analysis and performance optimization of complex SQL queries (MySQL/PostgreSQL) to reduce loading times in data-intensive applications','Develop low-code solutions using the Mendix platform to quickly deploy business apps.','Ensuring high code quality and maintainability through the establishment of clean code guidelines and static code analysis (SonarQube, ESLint, Prettier).','AI-powered software development with Agentic Coding (Claude Code, Github Copilot, Gemini/Anti-gravity)','Design and implementation of automated unit tests (Karma/Jasmine, Vitest) to increase test coverage and avoid regressions.','Conducting regular code reviews for quality assurance and knowledge exchange within the team.','Expert advice to project management and stakeholders on the selection of technologies and architectural decisions.','Actively promote a collaborative developer culture and guide junior developers on complex problems.'],
+de:['Neuentwicklung und Wartung komplexer Single-Page-Applications (SPA) mit Angular (React, Flutter).','Umsetzung responsiver Designs mit HTML5, SASS/LESS und Bootstrap/Tailwind für eine optimale UX auf allen Geräten.','Anbindung von RESTful APIs an das Frontend und enge Zusammenarbeit mit dem Backend-Team (z. B. Java Spring Boot).','Optimierung der Anwendungsperformance und Sicherstellung der Cross-Browser-Kompatibilität.','Analyse und Performance-Optimierung komplexer SQL-Abfragen (MySQL/PostgreSQL) zur Reduzierung von Ladezeiten in datenintensiven Anwendungen.','Entwicklung von Low-Code-Lösungen mit der Mendix-Plattform zur schnellen Bereitstellung von Business-Apps.','Sicherstellung hoher Codequalität und Wartbarkeit durch Clean-Code-Richtlinien und statische Codeanalyse (SonarQube, ESLint, Prettier).','KI-gestützte Softwareentwicklung mit Agentic Coding (Claude Code, GitHub Copilot, Gemini/Anti-gravity).','Konzeption und Umsetzung automatisierter Unit-Tests (Karma/Jasmine, Vitest) zur Erhöhung der Testabdeckung und Vermeidung von Regressionen.','Regelmäßige Code-Reviews zur Qualitätssicherung und zum Wissensaustausch im Team.','Fachliche Beratung von Projektleitung und Stakeholdern bei Technologieauswahl und Architekturentscheidungen.','Aktive Förderung einer kollaborativen Entwicklerkultur und Unterstützung von Junior-Entwicklern bei komplexen Problemen.']}},
+{company:'Nonomella GmbH',from:[2017,4],to:[2019,3],tags:['PHP','MySQL','JTL Shop','JTL Wawi','IT Strategy'],
+role:{en:'Web Software Developer and Head of IT',de:'Web-Softwareentwickler und Leiter IT'},
+b:{en:['Technical management of the IT department as well as coordination of internal and external development resources.','Support and further development of the e-commerce landscape (e.g. JTL Shop & JTL Wawi) as well as interface management.','Planning and implementation of the IT infrastructure strategy to support the operational business.','Full-stack development of features for the webshop using PHP and MySQL.'],
+de:['Technische Leitung der IT-Abteilung sowie Koordination interner und externer Entwicklungsressourcen.','Betreuung und Weiterentwicklung der E-Commerce-Landschaft (z. B. JTL Shop & JTL Wawi) sowie Schnittstellenmanagement.','Planung und Umsetzung der IT-Infrastrukturstrategie zur Unterstützung des operativen Geschäfts.','Full-Stack-Entwicklung von Features für den Webshop mit PHP und MySQL.']}},
+{company:'Koszewa & Koszewa GbR',from:[2014,11],to:[2017,3],tags:['jQuery','Bootstrap','PHP','MySQL','C#'],
+role:{en:'Web and Software Developer',de:'Web- und Softwareentwickler'},
+b:{en:['Conception and implementation of dynamic websites and applications with jQuery, Bootstrap, HTML, PHP, MySQL and C#.','Development and maintenance of internal management systems for the automation of business processes.','Design and implementation of relational database structures and complex SQL queries.','Second-level support and error analysis for existing software solutions.'],
+de:['Konzeption und Umsetzung dynamischer Websites und Anwendungen mit jQuery, Bootstrap, HTML, PHP, MySQL und C#.','Entwicklung und Wartung interner Verwaltungssysteme zur Automatisierung von Geschäftsprozessen.','Entwurf und Umsetzung relationaler Datenbankstrukturen und komplexer SQL-Abfragen.','Second-Level-Support und Fehleranalyse für bestehende Softwarelösungen.']}},
+{company:'Refuel / InSpot',place:{en:'Ioannina, Greece',de:'Ioannina, Griechenland'},from:[2006,1],to:[2011,1],yearsOnly:true,side:true,tags:['Support','Troubleshooting'],
+role:{en:'Technical Support Staff',de:'Technischer Support'},
+b:{en:['Provided technical support and troubleshooting for internet cafe systems.'],de:['Technischer Support und Fehlerbehebung für Internetcafé-Systeme.']}}
+];
+const EDU=[
+{t:{en:'B.Sc. in Computer Engineering (Software Engineering)',de:'B.Sc. Technische Informatik (Softwaretechnik)'},s:{en:'Technological Educational Institute of Epirus',de:'Technological Educational Institute of Epirus'},y:'2008 – 2015'},
+{t:{en:'Vocational Training (Telecommunications & Networks)',de:'Berufsausbildung (Telekommunikation & Netzwerke)'},s:{en:'Vocational Training Institute, Ioannina, Greece',de:'Vocational Training Institute, Ioannina, Griechenland'},y:'2006 – 2007'},
+{t:{en:'High School Diploma',de:'Schulabschluss'},s:{en:'Greek Lyceum Nuremberg',de:'Griechisches Lyzeum Nürnberg'},y:'2004'},
+{t:{en:'European Computer Driving Licence (ECDL)',de:'Europäischer Computerführerschein (ECDL)'},s:{en:'Athens',de:'Athen'},y:'2006'}
+];
+const LANGS=[
+{n:{en:'Greek',de:'Griechisch'},l:{en:'Native',de:'Muttersprache'},p:100,hi:'Γεια σου!',hue:250},
+{n:{en:'English',de:'Englisch'},l:{en:'C1 · Fluent',de:'C1 · Fließend'},p:85,hi:'Hello there!',hue:25},
+{n:{en:'German',de:'Deutsch'},l:{en:'B2 · Very good',de:'B2 · Sehr gut'},p:70,hi:'Hallo!',hue:85},
+{n:{en:'Russian',de:'Russisch'},l:{en:'Very good',de:'Sehr gut'},p:70,hi:'Привет!',hue:150}
+];
+const BLD_=()=>PWg()?PWg().BLD:[];
+const RC=['#b8b6c4','#5fb4ff','#b48bff','#ffb84d'];
+const T={
+en:{nav:['Experience','Skills','Education','Contact'],play:'Play',dark:'Dark',light:'Light',loc:'Wuppertal, Germany',role:'Web & Software Developer',spec:'Full-Stack · Frontend focus',
+profile:'Experienced Full-Stack Software Engineer with a strong focus on frontend development and modern web applications. Proven track record of leading technical teams, building dynamic single-page applications (SPAs), and integrating AI-powered development tools. Passionate about clean code, performance optimization, and scalable architectures.',
+email:'Email me',stackLabel:'core stack',termHint:"type 'help'",fYears:'years building for the web',fEcs:'at ECS GmbH',fLang:'languages spoken',fEdu:'Computer Engineering',
+sExp:'experience',sSkills:'skills',sEdu:'education',sLang:'languages',sContact:'contact',present:'present',grep:'filter skills…',matches:'matches',all:'All',none:'No matches.',
+cTitle:"Let's build something.",zTitle:'Keep scrolling to enter game mode',zReady:'Entering game mode…',zSub:'The rest of this CV is playable.',zSkip:'Skip, enter now',zBtn:'Enter game mode',
+cats:{frontend:'Frontend & UI',backend:'Backend & Languages',databases:'Databases',apis:'APIs & Architecture',quality:'Quality & Testing',ai:'AI Tooling',devops:'DevOps & VCS',platforms:'Platforms & Tools'},
+g:{status:'STATUS',items:'ITEMS',quests:'QUESTS',exit:'EXIT TO CV',on:'SOUND ON',off:'SOUND OFF',lv:'LV',cls:'Full-Stack Engineer',specV:'Frontend',
+controls:'ARROWS / WASD move · click to walk · C status · I items · Q quests · ESC close',
+intro:"Welcome, traveler. This village holds the story of Sergkei Kournosenkov. Walk with the arrow keys or WASD, or click any building. Every door opens a chapter.",
+allDone:"All five areas explored. You've seen the whole CV. The Post Office sends ravens straight to Sergkei.",
+enter:'You enter the',found:'NEW AREA',ach:'ACHIEVEMENT UNLOCKED: EXPLORER',explored:'explored',close:'ESC · CLOSE',
+b:{guild:'GUILD HALL',armory:'ARMORY',post:'POST OFFICE',academy:'ACADEMY',tavern:'TAVERN'},
+p:{quests:'QUEST LOG',items:'INVENTORY',contact:'POST OFFICE',academy:'ACADEMY · SCROLLS',tavern:'TAVERN',status:'CHARACTER'},
+giver:'Quest giver',when:'Period',reward:'Reward',active:'ACTIVE',done:'COMPLETE',side:'SIDE QUEST · COMPLETE',obj:'OBJECTIVES',yrs:'y',mos:'m',xp:'experience',
+rar:['COMMON','RARE','EPIC','LEGENDARY'],type:'Type',found_in:'Used at',fromCv:'Listed in technical skills',
+itemHint:'← → select item · ↑ ↓ switch category',questHint:'↑ ↓ select quest',
+tavernIntro:'Four regulars share a table. Each one speaks a language Sergkei knows.',postIntro:'Send a raven. Messages reach Sergkei directly.',raven:'SEND RAVEN',
+st:{name:'Name',cls:'Class',spec:'Specialization',home:'Home',guild:'Guild',lv:'Level'},attrs:'ATTRIBUTES',
+aYears:'Years in the field',aQuests:'Quests completed',aItems:'Items in inventory',aLangs:'Languages',aScrolls:'Scrolls earned'}},
+de:{nav:['Erfahrung','Skills','Ausbildung','Kontakt'],play:'Spielen',dark:'Dunkel',light:'Hell',loc:'Wuppertal, Deutschland',role:'Web- & Softwareentwickler',spec:'Full-Stack · Schwerpunkt Frontend',
+profile:'Erfahrener Full-Stack Software Engineer mit starkem Fokus auf Frontend-Entwicklung und moderne Webanwendungen. Nachweisliche Erfahrung in der Leitung technischer Teams, der Entwicklung dynamischer Single-Page-Applications (SPAs) und der Integration KI-gestützter Entwicklungswerkzeuge. Leidenschaft für Clean Code, Performance-Optimierung und skalierbare Architekturen.',
+email:'E-Mail schreiben',stackLabel:'Kern-Stack',termHint:"tippe 'help'",fYears:'Jahre Webentwicklung',fEcs:'bei ECS GmbH',fLang:'Sprachen',fEdu:'Technische Informatik',
+sExp:'erfahrung',sSkills:'skills',sEdu:'ausbildung',sLang:'sprachen',sContact:'kontakt',present:'heute',grep:'Skills filtern…',matches:'Treffer',all:'Alle',none:'Keine Treffer.',
+cTitle:'Lass uns etwas bauen.',zTitle:'Weiterscrollen, um den Spielmodus zu starten',zReady:'Spielmodus startet…',zSub:'Der Rest dieses Lebenslaufs ist spielbar.',zSkip:'Überspringen, jetzt starten',zBtn:'Spielmodus starten',
+cats:{frontend:'Frontend & UI',backend:'Backend & Sprachen',databases:'Datenbanken',apis:'APIs & Architektur',quality:'Qualität & Tests',ai:'KI-Tools',devops:'DevOps & VCS',platforms:'Plattformen & Tools'},
+g:{status:'STATUS',items:'INVENTAR',quests:'QUESTS',exit:'ZUM CV',on:'TON AN',off:'TON AUS',lv:'LV',cls:'Full-Stack Engineer',specV:'Frontend',
+controls:'PFEILE / WASD laufen · klicken zum Hinlaufen · C Status · I Inventar · Q Quests · ESC schließen',
+intro:'Willkommen, Reisender. Dieses Dorf erzählt die Geschichte von Sergkei Kournosenkov. Lauf mit Pfeiltasten oder WASD, oder klick auf ein Gebäude. Jede Tür öffnet ein Kapitel.',
+allDone:'Alle fünf Orte erkundet. Du kennst jetzt den ganzen Lebenslauf. Das Postamt schickt Raben direkt zu Sergkei.',
+enter:'Du betrittst:',found:'NEUER ORT',ach:'ERFOLG FREIGESCHALTET: ENTDECKER',explored:'erkundet',close:'ESC · SCHLIESSEN',
+b:{guild:'GILDENHALLE',armory:'WAFFENKAMMER',post:'POSTAMT',academy:'AKADEMIE',tavern:'TAVERNE'},
+p:{quests:'QUESTLOG',items:'INVENTAR',contact:'POSTAMT',academy:'AKADEMIE · SCHRIFTROLLEN',tavern:'TAVERNE',status:'CHARAKTER'},
+giver:'Auftraggeber',when:'Zeitraum',reward:'Belohnung',active:'AKTIV',done:'ABGESCHLOSSEN',side:'NEBENQUEST · ABGESCHLOSSEN',obj:'ZIELE',yrs:'J',mos:'M',xp:'Erfahrung',
+rar:['GEWÖHNLICH','SELTEN','EPISCH','LEGENDÄR'],type:'Typ',found_in:'Eingesetzt bei',fromCv:'In den technischen Skills gelistet',
+itemHint:'← → Item wählen · ↑ ↓ Kategorie wechseln',questHint:'↑ ↓ Quest wählen',
+tavernIntro:'Vier Stammgäste teilen sich einen Tisch. Jeder spricht eine Sprache, die Sergkei beherrscht.',postIntro:'Schick einen Raben. Nachrichten erreichen Sergkei direkt.',raven:'RABEN SENDEN',
+st:{name:'Name',cls:'Klasse',spec:'Spezialisierung',home:'Heimat',guild:'Gilde',lv:'Level'},attrs:'ATTRIBUTE',
+aYears:'Jahre im Beruf',aQuests:'Abgeschlossene Quests',aItems:'Items im Inventar',aLangs:'Sprachen',aScrolls:'Schriftrollen'}}
+};
+const THEMES={dark:{bg:'#0f0e13',fg:'#ecebf1',mut:'#9c9aa8',line:'#26242e',card:'#16151c',acc:'#b48bff'},light:{bg:'#f7f6f9',fg:'#17161c',mut:'#5b5967',line:'#e3e1e9',card:'#ffffff',acc:'#6d35d6'}};
+const START=new Date(2014,10,1);
+
+class Component extends DCLogic {
+  state={theme:'dark',lang:'en',mode:'cv',openJob:0,cat:'all',q:'',term:null,tin:'',pct:0,px:15,py:10,dir:'down',panel:null,visited:{},dlg:'',dlgN:0,sound:true,qSel:0,iSel:0,gCat:0,toast:null,achDone:false,achTold:false};
+  mapRef=React.createRef(); zoneRef=React.createRef(); termRef=React.createRef(); tinRef=React.createRef();
+  free(x,y){const P=PWg();return !!P&&!P.blocked(x,y);}
+  years(){return (Date.now()-START)/(365.25*864e5);}
+  componentDidMount(){this.applyTheme();window.addEventListener('scroll',this.onScroll,{passive:true});window.addEventListener('keydown',this.onKey);this.onScroll();}
+  componentWillUnmount(){clearInterval(this.mapT);window.removeEventListener('scroll',this.onScroll);window.removeEventListener('keydown',this.onKey);clearInterval(this.typeT);clearInterval(this.walkT);document.body.style.overflow='';}
+  componentDidUpdate(pp,ps){if(this.state.mode==='game'&&this.mapRef.current&&this._cv!==this.mapRef.current)this.startMap();if(this.state.mode!=='game'&&this._cv){clearInterval(this.mapT);this._cv=null;}if(ps.theme!==this.state.theme)this.applyTheme();if(ps.term!==this.state.term&&this.termRef.current)this.termRef.current.scrollTop=1e6;}
+  loadImgs(){if(this._imgP)return this._imgP;this._imgP=Promise.all(['house','terrain','outside','water'].map(k=>new Promise(res=>{const i=new Image();i.onload=()=>res([k,i]);i.onerror=()=>res([k,null]);i.src='./assets/'+k+'.png';}))).then(a=>Object.fromEntries(a));return this._imgP;}
+  startMap(){const cv=this.mapRef.current;this._cv=cv;clearInterval(this.mapT);this.loadImgs().then(im=>{if(this._cv!==cv)return;const g=cv.getContext('2d');let f=0;const draw=()=>{const P=PWg();if(P&&im.house)P.draw(g,im,f++);};draw();this.mapT=setInterval(draw,380);});}
+  mapClick=e=>{if(e.target!==this.mapRef.current)return;const r=e.currentTarget.getBoundingClientRect(),P=PWg();if(!P)return;this.walkTo(Math.floor((e.clientX-r.left)/r.width*P.W),Math.floor((e.clientY-r.top)/r.height*P.H));};
+  applyTheme(){const th=THEMES[this.state.theme],r=document.documentElement.style;Object.entries(th).forEach(([k,v])=>r.setProperty('--'+k,v));}
+  onScroll=()=>{if(this.state.mode!=='cv'||!this.zoneRef.current)return;const r=this.zoneRef.current.getBoundingClientRect();const span=r.height-innerHeight;if(span<=0)return;const p=Math.max(0,Math.min(1,-r.top/span));if(Math.abs(p-this.state.pct)>.004||p===1)this.setState({pct:p});if(p>=.995&&(this.props.gameTrigger??'scroll')==='scroll')this.enterGame();};
+  ac(){if(!this.state.sound)return null;try{this._ac=this._ac||new (window.AudioContext||window.webkitAudioContext)();return this._ac;}catch(e){return null;}}
+  beep(f,d=.06,type='square',v=.04,delay=0){const a=this.ac();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(a.destination);const t0=a.currentTime+delay;o.start(t0);g.gain.exponentialRampToValueAtTime(.0001,t0+d);o.stop(t0+d+.02);}
+  enterGame=()=>{if(this.state.mode!=='cv')return;this.setState({mode:'glitch'});document.body.style.animation='shake .08s infinite';for(let i=0;i<12;i++)this.beep(80+Math.random()*900,.06,'sawtooth',.03,i*.06);
+    setTimeout(()=>{document.body.style.animation='';document.body.style.overflow='hidden';this.setState({mode:'game'});[523,659,784,1047].forEach((f,i)=>this.beep(f,.12,'square',.04,i*.1));setTimeout(()=>this.say(this.t().g.intro),350);},900);};
+  exitGame=()=>{clearInterval(this.walkT);document.body.style.overflow='';this.setState({mode:'cv',panel:null,pct:0},()=>window.scrollTo({top:0,behavior:'instant'}));};
+  t(){return T[this.state.lang];}
+  say(text){clearInterval(this.typeT);this.setState({dlg:text,dlgN:0});this.typeT=setInterval(()=>{const n=this.state.dlgN+2;if(n>=this.state.dlg.length){clearInterval(this.typeT);this.setState({dlgN:this.state.dlg.length});}else{this.setState({dlgN:n});if(n%6===0)this.beep(700,.02,'square',.015);}},22);}
+  skipDialog=()=>{clearInterval(this.typeT);this.setState({dlgN:this.state.dlg.length});};
+  toast(text){const id=Date.now();this.setState({toast:{id,text}});setTimeout(()=>{if(this.state.toast&&this.state.toast.id===id)this.setState({toast:null});},2800);}
+  step(dx,dy){if(this.state.panel)return;const dir=dx>0?'right':dx<0?'left':dy<0?'up':'down';const nx=this.state.px+dx,ny=this.state.py+dy;if(!this.free(nx,ny)){this.setState({dir});this.beep(110,.04,'square',.02);clearInterval(this.walkT);return;}
+    this.setState({px:nx,py:ny,dir,anim:(this.state.anim||0)+1,walking:true});clearTimeout(this.idleT);this.idleT=setTimeout(()=>this.setState({walking:false}),170);this.beep(260,.02,'triangle',.02);const b=BLD_().find(b=>b.dx===nx&&b.dy===ny);if(b){clearInterval(this.walkT);setTimeout(()=>this.enter(b),150);}}
+  walkTo(tx,ty){if(this.state.panel||!this.free(tx,ty))return;const {px,py}=this.state,K=(x,y)=>y*W+x,prev=new Map([[K(px,py),null]]),q=[[px,py]];
+    while(q.length){const [x,y]=q.shift();if(x===tx&&y===ty)break;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=K(nx,ny);if(!prev.has(k)&&this.free(nx,ny)&&!(BLD_().some(b=>b.dx===nx&&b.dy===ny)&&!(nx===tx&&ny===ty))){prev.set(k,[x,y]);q.push([nx,ny]);}}}
+    if(!prev.has(K(tx,ty)))return;const path=[];let c=[tx,ty];while(c&&!(c[0]===px&&c[1]===py)){path.unshift(c);c=prev.get(K(c[0],c[1]));}
+    clearInterval(this.walkT);this.walkT=setInterval(()=>{const s=path.shift();if(!s){clearInterval(this.walkT);return;}this.step(s[0]-this.state.px,s[1]-this.state.py);},105);}
+  enter(b){const g=this.t().g,v={...this.state.visited};const isNew=!v[b.id];v[b.id]=true;const all=BLD_().every(x=>v[x.id]);
+    this.setState({visited:v,panel:b.panel,achDone:this.state.achDone||all});[392,523,659].forEach((f,i)=>this.beep(f,.08,'square',.035,i*.06));
+    if(isNew)this.toast(g.found+': '+g.b[b.id]);if(all&&!this.state.achDone)setTimeout(()=>{this.toast(g.ach);[523,659,784,1047,1319].forEach((f,i)=>this.beep(f,.1,'square',.04,i*.08));},1200);}
+  openPanel(p){clearInterval(this.walkT);this.setState({panel:p});this.beep(523,.06);}
+  closePanel=()=>{const s=this.state;if(!s.panel)return;const b=BLD_().find(b=>b.dx===s.px&&b.dy===s.py);this.setState({panel:null,...(b&&this.free(s.px,s.py+1)?{py:s.py+1,dir:'down'}:{})});this.beep(330,.05);
+    if(s.achDone&&!s.achTold){this.setState({achTold:true});setTimeout(()=>this.say(this.t().g.allDone),200);}};
+  itemsIn(ci){return SKILLS.filter(k=>k.c===CATS[ci]);}
+  onKey=e=>{const s=this.state;if(s.mode!=='game')return;const k=e.key,lk=k.length===1?k.toLowerCase():k;
+    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(k))e.preventDefault();
+    if(s.panel){if(k==='Escape'||k==='Backspace'){this.closePanel();return;}
+      if(s.panel==='quests'){const d=(lk==='ArrowDown'||lk==='s')?1:(lk==='ArrowUp'||lk==='w')?-1:0;if(d){this.setState({qSel:(s.qSel+d+JOBS.length)%JOBS.length});this.beep(600,.03);}}
+      if(s.panel==='items'){const n=this.itemsIn(s.gCat).length;if(lk==='ArrowRight'||lk==='d'){this.setState({iSel:(s.iSel+1)%n});this.beep(600,.03);}if(lk==='ArrowLeft'||lk==='a'){this.setState({iSel:(s.iSel-1+n)%n});this.beep(600,.03);}
+        const d=(lk==='ArrowDown'||lk==='s')?1:(lk==='ArrowUp'||lk==='w')?-1:0;if(d){this.setState({gCat:(s.gCat+d+CATS.length)%CATS.length,iSel:0});this.beep(450,.04);}}
+      if(lk==='c')this.openPanel('status');if(lk==='i')this.openPanel('items');if(lk==='q')this.openPanel('quests');return;}
+    if(k==='Enter'||k===' '){this.skipDialog();return;}
+    const m={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]}[lk];
+    if(m){clearInterval(this.walkT);this.step(m[0],m[1]);return;}
+    if(lk==='c')this.openPanel('status');if(lk==='i')this.openPanel('items');if(lk==='q')this.openPanel('quests');if(lk==='m')this.setState({sound:!s.sound});if(lk==='x'||k==='Escape')this.exitGame();};
+  period(j,L){const f=a=>j.yearsOnly?''+a[0]:String(a[1]).padStart(2,'0')+'/'+a[0];return f(j.from)+' – '+(j.to?f(j.to):T[L].present);}
+  dur(j,g){const now=new Date(),to=j.to||[now.getFullYear(),now.getMonth()+1];const m=(to[0]-j.from[0])*12+(to[1]-j.from[1])+(j.to?1:0);return Math.floor(m/12)+g.yrs+' '+(m%12)+g.mos+' '+g.xp;}
+  runCmd(raw){const c=raw.trim().toLowerCase(),t=this.t(),out=[];const P=(s,k='out')=>out.push({k,s});
+    if(!c){}else if(c==='help')P('whoami · stack · contact · experience · play · lang · theme · clear');
+    else if(c==='whoami')P('Sergkei Kournosenkov — '+t.role+' ('+t.loc+')');
+    else if(c==='stack'||c==='skills')P('Angular · React · Tailwind · Java Spring Boot · PostgreSQL · MySQL · Mendix · Claude Code');
+    else if(c==='contact')P('ser.corum@gmail.com · github.com/corum86','acc');
+    else if(c==='experience'){P('→ #experience');setTimeout(()=>{const el=document.getElementById('experience');if(el)window.scrollTo({top:el.getBoundingClientRect().top+scrollY-60});},50);}
+    else if(c==='play'||c==='start'){P('loading game mode…','acc');setTimeout(this.enterGame,400);}
+    else if(c.startsWith('lang')){const l=this.state.lang==='en'?'de':'en';this.setState({lang:l});P('lang = '+l);}
+    else if(c==='theme'){this.toggleTheme();P('theme toggled');}
+    else if(c==='clear'){this.setState({term:[],tin:''});return;}
+    else if(c.startsWith('sudo'))P('nice try.','err');
+    else P('command not found: '+c,'err');
+    this.setState({term:[...this.termLines(),{k:'in',s:raw},...out],tin:''});}
+  termLines(){return this.state.term||[{k:'in',s:'whoami'},{k:'out',s:'Sergkei Kournosenkov — '+this.t().role},{k:'dim',s:"commands: help · stack · contact · play"}];}
+  toggleTheme=()=>this.setState({theme:this.state.theme==='dark'?'light':'dark'});
+  renderVals(){
+    const s=this.state,L=s.lang,t=T[L],g=t.g,yrs=this.years(),lvl=Math.floor(yrs);
+    const on='var(--fg,#ecebf1)',onFg='var(--bg,#0f0e13)',off='transparent',offFg='var(--mut,#9c9aa8)';
+    const q=s.q.trim().toLowerCase();
+    const skills=SKILLS.filter(k=>(s.cat==='all'||k.c===s.cat)&&(!q||k.n.toLowerCase().includes(q))).map(k=>({n:k.n,c:t.cats[k.c]}));
+    const cats=[['all',t.all],...CATS.map(c=>[c,t.cats[c]])].map(([id,label])=>({label,bg:s.cat===id?on:off,fg:s.cat===id?onFg:offFg,pick:()=>this.setState({cat:id})}));
+    const tc={in:'var(--fg,#ecebf1)',out:'var(--mut,#9c9aa8)',dim:'var(--mut,#9c9aa8)',acc:'var(--acc,#b48bff)',err:'#ff6b8a'};
+    const termLines=this.termLines().map(l=>({s:(l.k==='in'?'❯ ':'')+l.s,c:tc[l.k]}));
+    const jobs=JOBS.map((j,i)=>({period:this.period(j,L),role:j.role[L],company:j.company+(j.place?' · '+j.place[L]:''),bullets:j.b[L],tags:j.tags,open:s.openJob===i,sign:s.openJob===i?'−':'+',toggle:()=>this.setState({openJob:s.openJob===i?-1:i})}));
+    const edu=EDU.map(e=>({t:e.t[L],s:e.s[L],y:e.y}));
+    const langs=LANGS.map(l=>({n:l.n[L],l:l.l[L],w:l.p+'%',hi:l.hi,col:`oklch(0.72 0.15 ${l.hue})`}));
+    const pct=s.pct,trig=(this.props.gameTrigger??'scroll')==='scroll';
+    // game
+    const nVis=Object.keys(s.visited).length;
+    const PW=PWg(),GW=PW?PW.W:32,GH=PW?PW.H:21;const buildings=BLD_().map(b=>({l:(b.x/GW*100)+'%',t:(b.y/GH*100)+'%',w:(b.w/GW*100)+'%',h:(b.h/GH*100)+'%',name:g.b[b.id],star:s.visited[b.id]?'★ ':'',click:()=>this.walkTo(b.dx,b.dy)}));
+    const eyes={down:['22%','60%'],left:['8%','42%'],right:['40%','74%']}[s.dir];
+    const qs=Math.min(s.qSel,JOBS.length-1),qj=JOBS[qs];
+    const qStatus=j=>j.side?g.side:j.to?g.done:g.active;
+    const quests=JOBS.map((j,i)=>({company:j.company,status:qStatus(j),sc:j.to?'#a9a6c4':'#7ee08a',cur:i===qs?'▶':'',bd:i===qs?'#ffb84d':'#3a3760',bg:i===qs?'#1d1a3a':'transparent',pick:()=>{this.setState({qSel:i});this.beep(600,.03);}}));
+    const qd={role:qj.role[L],company:qj.company+(qj.place?' · '+qj.place[L]:''),period:this.period(qj,L),reward:this.dur(qj,g),bullets:qj.b[L],mark:qj.to?'✔':'◆',mc:qj.to?'#7ee08a':'#ffb84d'};
+    const gci=s.gCat,list=this.itemsIn(gci),isel=Math.min(s.iSel,list.length-1),si=list[isel];
+    const ab=n=>{const w=n.replace(/[()\/&]/g,' ').split(/\s+/).filter(Boolean);return (w.length>1&&n.length>6?w[0][0]+w[1][0]:w[0].slice(0,3)).toUpperCase();};
+    const gcats=CATS.map((c,i)=>({label:t.cats[c],bd:i===gci?'#ffb84d':'#3a3760',bg:i===gci?'#ffb84d':'transparent',fg:i===gci?'#0b0a14':'#f2f0ff',pick:()=>{this.setState({gCat:i,iSel:0});this.beep(450,.04);}}));
+    const gitems=list.map((k,i)=>({ab:ab(k.n),rc:RC[k.r],bg:i===isel?'#2a2650':'#1d1a3a',sh:i===isel?'0 0 0 3px #f2f0ff':'none',pick:()=>{this.setState({iSel:i});this.beep(600,.03);}}));
+    const usedAt=JOBS.filter(j=>j.tags.some(tg=>si.n.toLowerCase().includes(tg.toLowerCase())||tg.toLowerCase().includes(si.n.split(' ')[0].toLowerCase()))||j.b.en.some(b=>b.toLowerCase().includes(si.n.split(' ')[0].toLowerCase()))).map(j=>j.company);
+    const gs={n:si.n,c:t.cats[si.c],rar:g.rar[si.r],rc:RC[si.r],src:usedAt.length?g.found_in+': '+usedAt.join(', '):g.fromCv};
+    const ptitle=s.panel?g.p[s.panel]:'';
+    const statRows=[[g.st.name,'Sergkei Kournosenkov'],[g.st.cls,g.cls],[g.st.spec,g.specV],[g.st.home,'Wuppertal'],[g.st.guild,'ECS GmbH'],[g.st.lv,lvl]].map(([k,v])=>({k,v}));
+    const attrs=[[g.aYears,lvl+'+'],[g.aQuests,JOBS.filter(j=>j.to).length],[g.aItems,SKILLS.length],[g.aLangs,LANGS.length],[g.aScrolls,EDU.length]].map(([k,v])=>({k,v}));
+    const cursor=h('span',{style:{display:'inline-block',width:'.6em',height:'1.1em',background:'#9b5cff',animation:'blink 1s steps(1) infinite'}});
+    const toastEl=s.toast?h('div',{key:s.toast.id,style:{position:'fixed',top:80,left:'50%',transform:'translateX(-50%)',zIndex:90,background:'#ffb84d',color:'#0b0a14',border:'4px solid #0b0a14',boxShadow:'0 0 0 3px #f2f0ff',padding:'12px 18px',fontFamily:"'Press Start 2P'",fontSize:11,whiteSpace:'nowrap',animation:'toastIn 2.8s forwards'}},'★ '+s.toast.text):null;
+    let glitchEl=null;
+    if(s.mode==='glitch'){const cols=['#9b5cff','#00f0ff','#ff2d6f','#f2f0ff'];const bars=[];for(let i=0;i<16;i++)bars.push(h('div',{key:i,style:{position:'absolute',left:0,right:0,top:(i*6.2+Math.random()*4)+'%',height:(1+Math.random()*7)+'%',background:cols[i%4],mixBlendMode:'difference',animation:`glitchBar ${.06+Math.random()*.1}s steps(2) infinite`}}));
+      glitchEl=h('div',{style:{position:'fixed',inset:0,zIndex:9999,pointerEvents:'none',backdropFilter:'hue-rotate(120deg) contrast(1.8) saturate(2)',background:'rgba(11,10,20,.35)',animation:'flash .9s steps(6) forwards',overflow:'hidden'}},...bars,
+        h('div',{style:{position:'absolute',inset:0,display:'grid',placeItems:'center',fontFamily:"'Press Start 2P'",fontSize:'clamp(16px,4vw,44px)',color:'#f2f0ff',textShadow:'4px 0 #ff2d6f,-4px 0 #00f0ff',animation:'shake .07s infinite'}},'GAME MODE'));}
+    return {
+      t,g,cursor,linkedin:this.props.linkedinUrl||'https://www.linkedin.com/in/sergkei-kournosenkov-10659592/',
+      setEn:()=>this.setState({lang:'en'}),setDe:()=>this.setState({lang:'de'}),enBg:L==='en'?on:off,enFg:L==='en'?onFg:offFg,deBg:L==='de'?on:off,deFg:L==='de'?onFg:offFg,
+      toggleTheme:this.toggleTheme,themeLabel:s.theme==='dark'?t.light:t.dark,enterGame:this.enterGame,
+      stack:['Angular','React','Tailwind','Spring Boot','PostgreSQL','Claude Code'],
+      facts:[{n:lvl+'+',l:t.fYears},{n:'2019→',l:t.fEcs},{n:'4',l:t.fLang},{n:'B.Sc.',l:t.fEdu}],
+      termRef:this.termRef,tinRef:this.tinRef,termLines,tin:s.tin,onTin:e=>this.setState({tin:e.target.value}),onTinKey:e=>{if(e.key==='Enter')this.runCmd(s.tin);},focusTerm:()=>this.tinRef.current&&this.tinRef.current.focus({preventScroll:true}),
+      jobs,q:s.q,onQ:e=>this.setState({q:e.target.value}),skills,skillCount:skills.length,noSkills:!skills.length,cats,edu,langs,
+      zoneRef:this.zoneRef,zoneH:trig?'180vh':'100vh',pctW:(trig?pct*100:0).toFixed(1)+'%',pctTxt:trig?Math.round(pct*100)+'%':'',zoneTitle:trig?(pct>.9?t.zReady:t.zTitle):t.zBtn,zoneBtn:trig?t.zSkip:t.zBtn,jitter:(trig&&pct>.6?((Math.random()-.5)*pct*10).toFixed(1):0)+'px',
+      isGame:s.mode==='game',glitchEl,toastEl,scan:this.props.scanlines??true,
+      lvl,xpW:((yrs-lvl)*100).toFixed(0)+'%',exploredTxt:nVis+'/5 '+g.explored,soundTxt:s.sound?g.on:g.off,toggleSound:()=>this.setState({sound:!s.sound}),langTxt:L==='en'?'DE':'EN',setLangToggle:()=>this.setState({lang:L==='en'?'de':'en'}),exitGame:this.exitGame,
+      openStatus:()=>this.openPanel('status'),openItems:()=>this.openPanel('items'),openQuests:()=>this.openPanel('quests'),
+      mapRef:this.mapRef,mapClick:this.mapClick,buildings,pl:((s.px*16-6)/(GW*16)*100)+'%',pt:(((s.py+1)*16-32)/(GH*16)*100)+'%',heroPos:(s.walking?[0,1,2,1][(s.anim||0)%4]:1)*50+'% '+({down:0,up:0,left:1,right:2}[s.dir]*50)+'%',eyes:!!eyes,e1:eyes?eyes[0]:0,e2:eyes?eyes[1]:0,
+      mUp:()=>this.step(0,-1),mDown:()=>this.step(0,1),mLeft:()=>this.step(-1,0),mRight:()=>this.step(1,0),
+      dlgText:s.dlg.slice(0,s.dlgN),dlgMore:s.dlg&&s.dlgN>=s.dlg.length?'  ▼':'',skipDialog:this.skipDialog,
+      anyPanel:!!s.panel,closePanel:this.closePanel,stop:e=>e.stopPropagation(),panelTitle:ptitle,
+      pQuests:s.panel==='quests',pItems:s.panel==='items',pAcademy:s.panel==='academy',pTavern:s.panel==='tavern',pContact:s.panel==='contact',pStatus:s.panel==='status',
+      quests,qd,gcats,gitems,gs,statRows,attrs
+    };
+  }
+}
+</script>
+</body>
+</html>
