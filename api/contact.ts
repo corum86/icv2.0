@@ -40,7 +40,10 @@ export async function POST(request: Request) {
     }),
   });
 
-  if (!res.ok) return json(502, { ok: false, error: 'send_failed' });
+  if (!res.ok) {
+    console.error('Resend error', res.status, await res.text().catch(() => ''));
+    return json(502, { ok: false, error: 'send_failed' });
+  }
   return json(200, { ok: true });
 }
 
