@@ -1,7 +1,9 @@
+import '@fontsource/vt323/400.css';
+import '../styles/game.css';
 import { JOBS, SKILLS, CATS, EDU, LANGS } from '../data';
 import { RARITY_COLORS } from '../i18n';
 import { store, t } from '../store';
-import { esc, careerYears, period, duration } from '../util';
+import { esc, setHTML, careerYears, period, duration } from '../util';
 import { LINKS, SCANLINES } from '../config';
 import { contactFormHTML, bindContactForm } from '../contact';
 import { track } from '../analytics';
@@ -39,7 +41,7 @@ export class Game {
     this.timers = {};
     removeEventListener('keydown', this.onKey);
     this.offLang?.();
-    this.root.hidden = true; this.root.innerHTML = '';
+    this.root.hidden = true; this.root.replaceChildren();
     document.body.classList.remove('in-game');
     this.s.panel = null;
     this.onExit();
@@ -48,7 +50,7 @@ export class Game {
   // ---------- DOM ----------
   private shell() {
     const g = t().g, lvl = Math.floor(careerYears()), xp = ((careerYears() - lvl) * 100).toFixed(0);
-    this.root.innerHTML = `
+    setHTML(this.root, `
     <div class="game" role="application" aria-label="Game mode">
       <div class="hud">
         <div class="hud__who">
@@ -87,7 +89,7 @@ export class Game {
       <div class="panel-wrap" data-panel hidden></div>
       ${SCANLINES ? '<div class="scan" aria-hidden="true"></div>' : ''}
       <div class="toast-slot" data-toast></div>
-    </div>`;
+    </div>`);
     const q = <T extends Element>(s: string) => this.root.querySelector(s) as T;
     this.el = { hero: q('[data-hero]'), dlg: q('[data-dlg]'), panel: q('[data-panel]'), toast: q('[data-toast]'), canvas: q('[data-canvas]') };
     this.bindUI();
@@ -227,13 +229,13 @@ export class Game {
 
   private renderPanel() {
     const wrap = this.el.panel, p = this.s.panel;
-    if (!p) { wrap.hidden = true; wrap.innerHTML = ''; return; }
+    if (!p) { wrap.hidden = true; wrap.replaceChildren(); return; }
     const g = t().g;
     wrap.hidden = false;
-    wrap.innerHTML = `<div class="pwin" role="dialog" aria-modal="true" aria-label="${esc((g.p as any)[p])}">
+    setHTML(wrap, `<div class="pwin" role="dialog" aria-modal="true" aria-label="${esc((g.p as any)[p])}">
       <div class="pwin__head"><span class="px pwin__title"><span>◆</span> ${esc((g.p as any)[p])}</span><button class="rbtn" data-close>${esc(g.close)}</button></div>
       ${this.panelBody(p)}
-    </div>`;
+    </div>`);
     wrap.onclick = (e) => { if (e.target === wrap) this.closePanel(); };
     if (p === 'contact') bindContactForm(wrap);
   }

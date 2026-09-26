@@ -1,6 +1,7 @@
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/600.css';
-import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/ibm-plex-mono/latin-600.css';
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import './styles/fonts.css';
 import './styles/legal.css';
 import { applyDocument, store } from './store';
 import { initAnalytics } from './analytics';

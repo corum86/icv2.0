@@ -1,6 +1,6 @@
 import { JOBS, SKILLS, CATS, EDU, LANGS } from './data';
 import { store, t } from './store';
-import { esc, careerYears, period } from './util';
+import { esc, setHTML, careerYears, period } from './util';
 import { Terminal } from './terminal';
 import { contactFormHTML, bindContactForm } from './contact';
 import { LINKS, GAME_TRIGGER } from './config';
@@ -8,13 +8,15 @@ import { LINKS, GAME_TRIGGER } from './config';
 const ui = { openJob: 0, cat: 'all', q: '' };
 const STACK = ['Angular', 'React', 'Tailwind', 'Spring Boot', 'PostgreSQL', 'Claude Code'];
 
-export function mountCV(root: HTMLElement, enterGame: () => void) {
+export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: () => void = () => {}) {
   const terminal = new Terminal(enterGame);
   let armed = true; // becomes false once the scroll trigger fired, re-armed on return
+  let z: { zone: HTMLElement; fill: HTMLElement | null; pct: Element | null; title: Element | null; box: HTMLElement | null } | null = null;
+  let lastTitle = '';
 
   const render = () => {
     const tt = t(), lvl = Math.floor(careerYears());
-    root.innerHTML = `
+    setHTML(root, `
     <a class="skip" href="#main">${esc(tt.skip)}</a>
     <header class="top">
       <div class="wrap top__in">
@@ -102,7 +104,10 @@ export function mountCV(root: HTMLElement, enterGame: () => void) {
           <button class="zone__btn" data-action="play">▶ ${esc(GAME_TRIGGER === 'scroll' ? tt.zSkip : tt.zBtn)}</button>
         </div>
       </div>
-    </section>`;
+    </section>`);
+    const zone = root.querySelector<HTMLElement>('[data-zone]');
+    z = zone && { zone, fill: root.querySelector('[data-zone-fill]'), pct: root.querySelector('[data-zone-pct]'), title: root.querySelector('[data-zone-title]'), box: root.querySelector('[data-zone-box]') };
+    lastTitle = '';
     renderSkills();
     terminal.bind(root);
     bindContactForm(root);
@@ -129,11 +134,11 @@ export function mountCV(root: HTMLElement, enterGame: () => void) {
   const renderSkills = () => {
     const tt = t(), q = ui.q.trim().toLowerCase();
     const list = SKILLS.filter((k) => (ui.cat === 'all' || k.c === ui.cat) && (!q || k.n.toLowerCase().includes(q)));
-    root.querySelector('[data-cats]')!.innerHTML = [['all', tt.all], ...CATS.map((c) => [c, (tt.cats as any)[c]])]
-      .map(([id, label]) => `<button class="chip" data-cat="${id}" aria-pressed="${ui.cat === id}">${esc(label)}</button>`).join('');
-    root.querySelector('[data-skills]')!.innerHTML = list.length
+    setHTML(root.querySelector('[data-cats]')!, [['all', tt.all], ...CATS.map((c) => [c, (tt.cats as any)[c]])]
+      .map(([id, label]) => `<button class="chip" data-cat="${id}" aria-pressed="${ui.cat === id}">${esc(label)}</button>`).join(''));
+    setHTML(root.querySelector('[data-skills]')!, list.length
       ? list.map((k) => `<div class="skill"><span class="skill__n">${esc(k.n)}</span><span class="skill__c">${esc((tt.cats as any)[k.c])}</span></div>`).join('')
-      : `<p class="skills__none">${esc(tt.none)}</p>`;
+      : `<p class="skills__none">${esc(tt.none)}</p>`);
     root.querySelector('[data-count]')!.textContent = `${list.length} ${tt.matches}`;
   };
 
@@ -143,7 +148,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void) {
     if (el.dataset.action === 'play') enterGame();
     else if (el.dataset.action === 'theme') store.set({ theme: store.state.theme === 'dark' ? 'light' : 'dark' });
     else if (el.dataset.lang) store.set({ lang: el.dataset.lang as any });
-    else if (el.dataset.job) { const i = +el.dataset.job; ui.openJob = ui.openJob === i ? -1 : i; root.querySelector('[data-jobs]')!.innerHTML = jobsHTML(); }
+    else if (el.dataset.job) { const i = +el.dataset.job; ui.openJob = ui.openJob === i ? -1 : i; setHTML(root.querySelector('[data-jobs]')!, jobsHTML()); }
     else if (el.dataset.cat) { ui.cat = el.dataset.cat; renderSkills(); }
   });
   root.addEventListener('input', (e) => {
@@ -151,21 +156,28 @@ export function mountCV(root: HTMLElement, enterGame: () => void) {
     if (el.matches('[data-q]')) { ui.q = el.value; renderSkills(); }
   });
 
-  // Scroll-driven "loading" zone → glitch into game mode at 100%.
-  const onScroll = () => {
-    if (GAME_TRIGGER !== 'scroll' || document.body.classList.contains('in-game')) return;
-    const zone = root.querySelector<HTMLElement>('[data-zone]'); if (!zone) return;
-    const r = zone.getBoundingClientRect(), span = r.height - innerHeight; if (span <= 0) return;
+  // Prefetch game mode when the user looks like they're about to play.
+  const onIntent = (e: Event) => { if ((e.target as HTMLElement).closest('[data-action="play"]')) onGameIntent(); };
+  root.addEventListener('pointerover', onIntent);
+  root.addEventListener('focusin', onIntent);
+
+  // Scroll-driven "loading" zone → glitch into game mode at 100%. rAF-batched: one layout read + write per frame.
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    if (GAME_TRIGGER !== 'scroll' || !z || document.body.classList.contains('in-game')) return;
+    const r = z.zone.getBoundingClientRect(), span = r.height - innerHeight; if (span <= 0) return;
     const p = Math.max(0, Math.min(1, -r.top / span));
-    const fill = root.querySelector<HTMLElement>('[data-zone-fill]'), pct = root.querySelector('[data-zone-pct]');
-    if (fill) fill.style.width = (p * 100).toFixed(1) + '%';
-    if (pct) pct.textContent = Math.round(p * 100) + '%';
-    const title = root.querySelector('[data-zone-title]'); if (title) title.textContent = p > 0.9 ? t().zReady : t().zTitle;
-    const box = root.querySelector<HTMLElement>('[data-zone-box]');
-    if (box) box.style.transform = p > 0.6 ? `translateX(${((Math.random() - 0.5) * p * 10).toFixed(1)}px)` : '';
+    if (z.fill) z.fill.style.width = (p * 100).toFixed(1) + '%';
+    if (z.pct) z.pct.textContent = Math.round(p * 100) + '%';
+    const title = p > 0.9 ? t().zReady : t().zTitle;
+    if (z.title && title !== lastTitle) z.title.textContent = lastTitle = title;
+    if (z.box) z.box.style.transform = p > 0.6 ? `translateX(${((Math.random() - 0.5) * p * 10).toFixed(1)}px)` : '';
+    if (p > 0.3) onGameIntent();
     if (p < 0.5) armed = true;
     if (p >= 0.995 && armed) { armed = false; enterGame(); }
   };
+  const onScroll = () => { frame ||= requestAnimationFrame(update); };
   addEventListener('scroll', onScroll, { passive: true });
 
   store.on((c) => {
@@ -173,6 +185,6 @@ export function mountCV(root: HTMLElement, enterGame: () => void) {
     if (c.theme) { const b = root.querySelector('[data-action="theme"]'); if (b) b.textContent = '◐ ' + (store.state.theme === 'dark' ? t().light : t().dark); }
   });
   render();
-  onScroll();
+  onScroll(); // first measurement on the next frame, not synchronously after render (avoids a forced reflow)
   return { onReturn() { armed = false; scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }); } };
 }

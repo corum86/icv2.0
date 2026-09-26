@@ -1,8 +1,8 @@
 :root, [data-theme="dark"] {
   --bg: #0f0e13; --fg: #ecebf1; --mut: #9c9aa8; --line: #26242e; --card: #16151c; --acc: #b48bff;
   --accent: #9b5cff; --accent-hi: #b48bff; --on-accent: #0f0e13;
-  --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
-  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', 'IBM Plex Mono Fallback', ui-monospace, Menlo, Consolas, monospace;
+  --sans: 'IBM Plex Sans', 'IBM Plex Sans Fallback', system-ui, sans-serif;
 }
 [data-theme="light"] { --bg: #f7f6f9; --fg: #17161c; --mut: #5b5967; --line: #e3e1e9; --card: #ffffff; --acc: #6d35d6; }
 

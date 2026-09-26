@@ -1,5 +1,5 @@
 import { t } from './store';
-import { esc } from './util';
+import { esc, setHTML } from './util';
 import { LINKS } from './config';
 import { track } from './analytics';
 
@@ -40,7 +40,7 @@ export function bindContactForm(root: ParentNode) {
         status.textContent = f.ok; status.dataset.state = 'ok';
         track('Contact Submitted', { source: (form.elements.namedItem('source') as HTMLInputElement).value });
       } catch {
-        status.innerHTML = `${esc(f.err)} <a href="mailto:${LINKS.email}">${LINKS.email}</a>`; status.dataset.state = 'err';
+        setHTML(status, `${esc(f.err)} <a href="mailto:${LINKS.email}">${LINKS.email}</a>`); status.dataset.state = 'err';
       } finally {
         btn.disabled = false; btn.textContent = f.send;
       }

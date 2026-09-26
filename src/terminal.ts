@@ -1,5 +1,5 @@
 import { store, t } from './store';
-import { esc } from './util';
+import { esc, setHTML } from './util';
 import { LINKS } from './config';
 
 type Kind = 'in' | 'out' | 'dim' | 'acc' | 'err';
@@ -41,7 +41,7 @@ export class Terminal {
     input.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter') return;
       this.run(input.value); input.value = '';
-      term.querySelector('[data-term-lines]')!.innerHTML = this.linesHTML();
+      setHTML(term.querySelector('[data-term-lines]')!, this.linesHTML());
       body.scrollTop = body.scrollHeight;
     });
   }

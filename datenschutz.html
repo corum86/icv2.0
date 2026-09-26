@@ -7,15 +7,7 @@
   <meta name="robots" content="noindex, follow">
   <link rel="canonical" href="https://www.kournosenkov.com/datenschutz.html">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <script>
-    // Pick the language before first paint to avoid a DE→EN flash (same rules as src/store.ts).
-    (function () {
-      var q = new URLSearchParams(location.search).get('lang'), s = null;
-      try { s = localStorage.getItem('lang'); } catch (e) {}
-      var l = q === 'de' || q === 'en' ? q : s === 'de' || s === 'en' ? s : navigator.language.toLowerCase().indexOf('de') === 0 ? 'de' : 'en';
-      document.documentElement.lang = l;
-    })();
-  </script>
+  <script src="/lang-init.js"></script>
 </head>
 <body>
   <main class="legal">
