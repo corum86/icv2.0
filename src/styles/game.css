@@ -29,7 +29,7 @@
 .bld { position: absolute; display: flex; justify-content: center; align-items: flex-start; z-index: 2; }
 .bld:hover, .bld:focus-visible { background: rgba(255, 255, 255, .06); outline: none; }
 .bld__name { margin-top: -6px; font: clamp(6px, .7vw, 10px) 'Press Start 2P', monospace; background: var(--panel); border: 2px solid var(--ink); padding: 4px 6px; white-space: nowrap; box-shadow: 2px 2px 0 var(--bg0); }
-.game .player { position: absolute; width: 5.469%; height: 10.119%; z-index: 3; pointer-events: none; transition: left .1s linear, top .1s linear;
+.game .player { position: absolute; width: 5.469%; height: 10.119%; z-index: 3; pointer-events: none; transition: left .14s linear, top .14s linear;
   background: url(/sprites/hero.png) no-repeat; background-size: 300% 300%; image-rendering: pixelated; }
 
 .bottom { display: flex; gap: 14px; padding: 0 16px 16px; align-items: stretch; }

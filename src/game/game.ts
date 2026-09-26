@@ -14,10 +14,14 @@ type Dir = 'down' | 'up' | 'left' | 'right';
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const HERO_ROW: Record<Dir, number> = { down: 0, up: 0, left: 1, right: 2 }; // hero.png has no back-facing row
 const isTouch = () => matchMedia('(hover: none), (pointer: coarse)').matches;
+const STEP_MS = 140; // hold-to-walk cadence (keys + D-pad); .game .player transition in game.css matches it
+const KEY_DIR: Record<string, Dir> = { ArrowUp: 'up', w: 'up', ArrowDown: 'down', s: 'down', ArrowLeft: 'left', a: 'left', ArrowRight: 'right', d: 'right' };
+const keyDir = (e: KeyboardEvent): Dir | undefined => KEY_DIR[e.key.length === 1 ? e.key.toLowerCase() : e.key];
 
 export class Game {
   private s = { px: 15, py: 10, dir: 'down' as Dir, walking: false, anim: 0, panel: null as PanelId | null, visited: {} as Record<string, boolean>, achDone: false, achTold: false, qSel: 0, iSel: 0, gCat: 0, dlg: '', dlgN: 0 };
   private timers: { type?: number; walk?: number; idle?: number; map?: number; hold?: number } = {};
+  private held: Dir[] = []; // movement keys currently down, most recent last
   private sheets?: Promise<Sheets>;
   private offLang?: () => void;
   private el!: { hero: HTMLElement; dlg: HTMLElement; panel: HTMLElement; toast: HTMLElement; canvas: HTMLCanvasElement };
@@ -30,6 +34,8 @@ export class Game {
     this.shell();
     this.startMap();
     addEventListener('keydown', this.onKey);
+    addEventListener('keyup', this.onKeyUp);
+    addEventListener('blur', this.stopHold);
     this.offLang = store.on((c) => { if (c.lang) { this.shell(); this.startMap(); this.renderPanel(); } });
     sfx.start();
     setTimeout(() => this.say(t().g.intro), 350);
@@ -39,7 +45,10 @@ export class Game {
   close() {
     Object.values(this.timers).forEach((id) => { clearInterval(id); clearTimeout(id); });
     this.timers = {};
+    this.held = [];
     removeEventListener('keydown', this.onKey);
+    removeEventListener('keyup', this.onKeyUp);
+    removeEventListener('blur', this.stopHold);
     this.offLang?.();
     this.root.hidden = true; this.root.replaceChildren();
     document.body.classList.remove('in-game');
@@ -119,7 +128,7 @@ export class Game {
     this.root.querySelectorAll<HTMLButtonElement>('[data-dir]').forEach((b) => {
       const dir = b.dataset.dir as Dir;
       const stop = () => { clearInterval(this.timers.hold); b.classList.remove('is-down'); };
-      b.addEventListener('pointerdown', (e) => { e.preventDefault(); b.setPointerCapture(e.pointerId); b.classList.add('is-down'); this.cancelWalk(); this.step(dir); clearInterval(this.timers.hold); this.timers.hold = window.setInterval(() => this.step(dir), 150); });
+      b.addEventListener('pointerdown', (e) => { e.preventDefault(); b.setPointerCapture(e.pointerId); b.classList.add('is-down'); this.holdWalk(() => dir); });
       ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => b.addEventListener(ev, stop));
       b.addEventListener('contextmenu', (e) => e.preventDefault());
     });
@@ -175,11 +184,34 @@ export class Game {
     this.timers.idle = window.setTimeout(() => { this.s.walking = false; this.updateHero(); }, 170);
     this.updateHero(); sfx.step();
     const b = BLD.find((b) => b.dx === nx && b.dy === ny);
-    if (b) { this.cancelWalk(); clearInterval(this.timers.hold); setTimeout(() => this.enter(b), 150); }
+    if (b) { this.cancelWalk(); this.stopHold(); setTimeout(() => this.enter(b), 150); }
     return true;
   }
 
   private cancelWalk() { clearInterval(this.timers.walk); }
+
+  /** Press-and-hold walking at a fixed cadence (ignores OS key-repeat, which stutters: step, pause, then too fast). */
+  private holdWalk(next: () => Dir | undefined) {
+    this.cancelWalk(); clearInterval(this.timers.hold);
+    const d = next(); if (!d) return;
+    this.step(d);
+    this.timers.hold = window.setInterval(() => { const d = next(); if (d) this.step(d); else clearInterval(this.timers.hold); }, STEP_MS);
+  }
+
+  private stopHold = () => { this.held = []; clearInterval(this.timers.hold); };
+
+  private pressDir(dir: Dir) {
+    const walking = this.held.length > 0;
+    this.held = [...this.held.filter((d) => d !== dir), dir];
+    // Already walking: just turn now; the running cadence takes the new direction on its next tick.
+    if (walking) { this.s.dir = dir; this.updateHero(); } else this.holdWalk(() => this.held[this.held.length - 1]);
+  }
+
+  private onKeyUp = (e: KeyboardEvent) => {
+    const dir = keyDir(e); if (!dir || !this.held.includes(dir)) return;
+    this.held = this.held.filter((d) => d !== dir);
+    if (!this.held.length) clearInterval(this.timers.hold);
+  };
 
   private walkTo(tx: number, ty: number) {
     if (this.s.panel) return;
@@ -213,7 +245,7 @@ export class Game {
   }
 
   private openPanel(p: PanelId, sound = true) {
-    this.cancelWalk(); clearInterval(this.timers.hold);
+    this.cancelWalk(); this.stopHold();
     this.s.panel = p; if (sound) sfx.select();
     this.renderPanel();
     this.el.panel.querySelector<HTMLElement>('[data-close]')?.focus({ preventScroll: true });
@@ -329,8 +361,8 @@ export class Game {
       return;
     }
     if (k === 'Enter' || k === ' ') return this.skipDialog();
-    const m: Record<string, Dir> = { ArrowUp: 'up', w: 'up', ArrowDown: 'down', s: 'down', ArrowLeft: 'left', a: 'left', ArrowRight: 'right', d: 'right' };
-    if (m[lk]) { this.cancelWalk(); this.step(m[lk]); return; }
+    const dir = keyDir(e);
+    if (dir) { if (!e.repeat) this.pressDir(dir); return; }
     if (lk === 'c') this.openPanel('status'); if (lk === 'i') this.openPanel('items'); if (lk === 'q') this.openPanel('quests');
     if (lk === 'm') { sfx.on = !sfx.on; const b = this.root.querySelector('[data-sound]'); if (b) b.textContent = `[M] ${sfx.on ? t().g.on : t().g.off}`; }
     if (lk === 'x' || k === 'Escape') this.close();
