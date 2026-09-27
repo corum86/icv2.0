@@ -39,14 +39,14 @@ export const WORK: Work[] = [
       el: "Frontend developer · migration lead"
     },
     title: {
-      en: "Energy sector: questionnaire & versioning platform",
-      de: "Energiesektor: Fragebogen- & Versionierungsplattform",
-      el: "Ενεργειακός τομέας: πλατφόρμα ερωτηματολογίων & versioning"
+      en: "Energy sector: streamlined bid management system",
+      de: "Energiesektor: effizientes System für das Angebotsmanagement",
+      el: "Ενεργειακός τομέας: βελτιστοποιημένο σύστημα διαχείρισης προσφορών"
     },
     outcome: {
-      en: "Built core features (dynamic questionnaire templates, merge and diff with versioning, multi-level compare) and led the migration from Angular 15 to 22 while development continued.",
-      de: "Kernfunktionen entwickelt (dynamische Fragebogen-Templates, Merge und Diff mit Versionierung, mehrstufiger Vergleich) und die Migration von Angular 15 auf 22 im laufenden Betrieb geleitet.",
-      el: "Ανέπτυξα βασικές λειτουργίες (δυναμικά templates ερωτηματολογίων, merge και diff με versioning, σύγκριση πολλαπλών επιπέδων) και ηγήθηκα του migration από Angular 15 σε 22, ενώ η ανάπτυξη συνεχιζόταν."
+      en: "Built core features (complex, adjustable questionnaire templates, versioning, sync between multiple external systems) that automate and accelerate the bid process, and led the migration from Angular 15 to 22 while development continued.",
+      de: "Kernfunktionen entwickelt (komplexe, anpassbare Fragebogen-Templates, Versionierung, Synchronisierung zwischen mehreren externen Systemen), die den Angebotsprozess automatisieren und beschleunigen, und die Migration von Angular 15 auf 22 im laufenden Betrieb geleitet.",
+      el: "Ανέπτυξα βασικές λειτουργίες (σύνθετα, προσαρμόσιμα templates ερωτηματολογίων, versioning, συγχρονισμό μεταξύ πολλαπλών εξωτερικών συστημάτων) που αυτοματοποιούν και επιταχύνουν τη διαδικασία των προσφορών, και ηγήθηκα του migration από Angular 15 σε 22, ενώ η ανάπτυξη συνεχιζόταν."
     },
     tags: [
       "Angular 15 → 22",
@@ -60,9 +60,9 @@ export const WORK: Work[] = [
       el: "Μπήκα στο έργο έναν χρόνο μετά το MVP. Η πλατφόρμα χρειαζόταν σύνθετες νέες λειτουργίες, και το stack της (Angular 15, Bootstrap 3) είχε μείνει πολύ πίσω, ενώ το έργο βρισκόταν ακόμη σε εντατική ανάπτυξη."
     },
     approach: {
-      en: "Implemented dynamic, complex templates for questionnaires, a merging and diff system with versioning, and a compare feature for complex multi-level structures. Planned and documented the upgrade from Angular 15 to 22 and Bootstrap 3 to 5 in detail, and guided and mentored team members who were new to modern Angular (new control flow, signals).",
-      de: "Umsetzung dynamischer, komplexer Templates für Fragebögen, eines Merge- und Diff-Systems mit Versionierung und einer Vergleichsfunktion für komplexe mehrstufige Strukturen. Detaillierte Planung und Dokumentation des Upgrades von Angular 15 auf 22 und Bootstrap 3 auf 5 sowie Anleitung und Mentoring von Teammitgliedern, die neu mit modernem Angular waren (neuer Control Flow, Signals).",
-      el: "Υλοποίησα δυναμικά, σύνθετα templates για ερωτηματολόγια, ένα σύστημα merge και diff με versioning και μια λειτουργία σύγκρισης για σύνθετες δομές πολλαπλών επιπέδων. Σχεδίασα και τεκμηρίωσα αναλυτικά την αναβάθμιση από Angular 15 σε 22 και από Bootstrap 3 σε 5, και καθοδήγησα μέλη της ομάδας που ήταν νέα στο σύγχρονο Angular (νέο control flow, signals)."
+      en: "Implemented complex, adjustable templates for questionnaires, a merging and diff system with versioning, a compare feature for complex multi-level structures, and sync between multiple external systems to automate the bid process. Planned and documented the upgrade from Angular 15 to 22 and Bootstrap 3 to 5 in detail, and guided and mentored team members who were new to modern Angular (new control flow, signals).",
+      de: "Umsetzung komplexer, anpassbarer Templates für Fragebögen, eines Merge- und Diff-Systems mit Versionierung, einer Vergleichsfunktion für komplexe mehrstufige Strukturen und der Synchronisierung zwischen mehreren externen Systemen zur Automatisierung des Angebotsprozesses. Detaillierte Planung und Dokumentation des Upgrades von Angular 15 auf 22 und Bootstrap 3 auf 5 sowie Anleitung und Mentoring von Teammitgliedern, die neu mit modernem Angular waren (neuer Control Flow, Signals).",
+      el: "Υλοποίησα σύνθετα, προσαρμόσιμα templates για ερωτηματολόγια, ένα σύστημα merge και diff με versioning, μια λειτουργία σύγκρισης για σύνθετες δομές πολλαπλών επιπέδων και τον συγχρονισμό μεταξύ πολλαπλών εξωτερικών συστημάτων για την αυτοματοποίηση της διαδικασίας των προσφορών. Σχεδίασα και τεκμηρίωσα αναλυτικά την αναβάθμιση από Angular 15 σε 22 και από Bootstrap 3 σε 5, και καθοδήγησα μέλη της ομάδας που ήταν νέα στο σύγχρονο Angular (νέο control flow, signals)."
     },
     result: {
       en: "Migrated the whole system (150K lines of code) across seven Angular major versions and from Bootstrap 3 to 5 with no feature freeze, and brought the team up to speed on modern Angular.",
