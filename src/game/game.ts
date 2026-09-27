@@ -17,14 +17,18 @@ const isTouch = () => matchMedia('(hover: none), (pointer: coarse)').matches;
 const STEP_MS = 140; // hold-to-walk cadence (keys + D-pad); .game .player transition in game.css matches it
 const KEY_DIR: Record<string, Dir> = { ArrowUp: 'up', w: 'up', ArrowDown: 'down', s: 'down', ArrowLeft: 'left', a: 'left', ArrowRight: 'right', d: 'right' };
 const keyDir = (e: KeyboardEvent): Dir | undefined => KEY_DIR[e.key.length === 1 ? e.key.toLowerCase() : e.key];
+// Camera zoom, relative to the map frame (1 = whole village in view). Buttons step by ZOOM_STEP; pinch and wheel are continuous.
+const ZOOM_MIN = 1, ZOOM_MAX = 3, ZOOM_STEP = 1.25;
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
 export class Game {
-  private s = { px: 15, py: 10, dir: 'down' as Dir, walking: false, anim: 0, panel: null as PanelId | null, visited: {} as Record<string, boolean>, achDone: false, achTold: false, qSel: 0, iSel: 0, gCat: 0, dlg: '', dlgN: 0 };
+  private s = { px: 15, py: 10, dir: 'down' as Dir, walking: false, anim: 0, zoom: ZOOM_MIN, panel: null as PanelId | null, visited: {} as Record<string, boolean>, achDone: false, achTold: false, qSel: 0, iSel: 0, gCat: 0, dlg: '', dlgN: 0 };
   private timers: { type?: number; walk?: number; idle?: number; map?: number; hold?: number } = {};
   private held: Dir[] = []; // movement keys currently down, most recent last
   private sheets?: Promise<Sheets>;
   private offLang?: () => void;
-  private el!: { hero: HTMLElement; dlg: HTMLElement; panel: HTMLElement; toast: HTMLElement; canvas: HTMLCanvasElement };
+  private el!: { hero: HTMLElement; dlg: HTMLElement; panel: HTMLElement; toast: HTMLElement; canvas: HTMLCanvasElement; map: HTMLElement; world: HTMLElement };
+  private resizeObs?: ResizeObserver;
 
   constructor(private root: HTMLElement, private onExit: () => void) {}
 
@@ -50,6 +54,7 @@ export class Game {
     removeEventListener('keyup', this.onKeyUp);
     removeEventListener('blur', this.stopHold);
     this.offLang?.();
+    this.resizeObs?.disconnect();
     this.root.hidden = true; this.root.replaceChildren();
     document.body.classList.remove('in-game');
     this.s.panel = null;
@@ -77,10 +82,15 @@ export class Game {
         </div>
       </div>
       <div class="stage">
-        <div class="map" data-map>
-          <canvas width="${W * 16}" height="${H * 16}" data-canvas aria-hidden="true"></canvas>
-          ${BLD.map((b) => `<button class="bld" data-b="${b.id}" style="left:${(b.x / W) * 100}%;top:${(b.y / H) * 100}%;width:${(b.w / W) * 100}%;height:${(b.h / H) * 100}%"><span class="bld__name">${this.s.visited[b.id] ? '★ ' : ''}${esc((g.b as any)[b.id])}</span></button>`).join('')}
-          <div class="player" data-hero aria-hidden="true"></div>
+        <div class="map" data-map style="--z:${this.s.zoom}">
+          <div class="world" data-world>
+            <canvas width="${W * 16}" height="${H * 16}" data-canvas aria-hidden="true"></canvas>
+            ${BLD.map((b) => `<button class="bld" data-b="${b.id}" style="left:${(b.x / W) * 100}%;top:${(b.y / H) * 100}%;width:${(b.w / W) * 100}%;height:${(b.h / H) * 100}%"><span class="bld__name">${this.s.visited[b.id] ? '★ ' : ''}${esc((g.b as any)[b.id])}</span></button>`).join('')}
+            <div class="player" data-hero aria-hidden="true"></div>
+          </div>
+          <div class="zoom">
+            <button data-zoom="-1" aria-label="${esc(g.zoomOut)}"${this.s.zoom <= ZOOM_MIN ? ' disabled' : ''}>−</button><button data-zoom="1" aria-label="${esc(g.zoomIn)}"${this.s.zoom >= ZOOM_MAX ? ' disabled' : ''}>+</button>
+          </div>
         </div>
       </div>
       <div class="bottom">
@@ -100,7 +110,10 @@ export class Game {
       <div class="toast-slot" data-toast></div>
     </div>`);
     const q = <T extends Element>(s: string) => this.root.querySelector(s) as T;
-    this.el = { hero: q('[data-hero]'), dlg: q('[data-dlg]'), panel: q('[data-panel]'), toast: q('[data-toast]'), canvas: q('[data-canvas]') };
+    this.el = { hero: q('[data-hero]'), dlg: q('[data-dlg]'), panel: q('[data-panel]'), toast: q('[data-toast]'), canvas: q('[data-canvas]'), map: q('[data-map]'), world: q('[data-world]') };
+    this.resizeObs?.disconnect();
+    this.resizeObs = new ResizeObserver(() => this.follow(true));
+    this.resizeObs.observe(this.el.map);
     this.bindUI();
     this.updateHero();
     this.updateExplored();
@@ -133,19 +146,53 @@ export class Game {
       b.addEventListener('contextmenu', (e) => e.preventDefault());
     });
 
-    // Map: tap = walk to tile / building, swipe = walk in that direction until something is in the way.
-    const map = this.root.querySelector<HTMLElement>('[data-map]')!;
-    let start: { x: number; y: number } | null = null;
-    map.addEventListener('pointerdown', (e) => { start = { x: e.clientX, y: e.clientY }; });
+    // Map: tap = walk to tile / building, swipe = walk in that direction until something is in the way,
+    // two-finger pinch = zoom (a gesture that ever had two pointers never walks). Wheel / trackpad pinch = zoom too.
+    const { map, world } = this.el;
+    const pts = new Map<number, { x: number; y: number }>();
+    let start: { x: number; y: number } | null = null, pinch: { d: number; z: number } | null = null;
+    const dist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y) || 1; };
+    const onZoomUI = (e: Event) => !!(e.target as HTMLElement).closest('.zoom');
+    map.addEventListener('pointerdown', (e) => {
+      if (onZoomUI(e)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 1 && !pinch) start = { x: e.clientX, y: e.clientY };
+      else if (pts.size === 2) { start = null; pinch = { d: dist(), z: this.s.zoom }; }
+    });
+    map.addEventListener('pointermove', (e) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pinch && pts.size === 2) this.setZoom(pinch.z * (dist() / pinch.d));
+    });
+    const release = (e: PointerEvent) => { pts.delete(e.pointerId); if (!pts.size) pinch = null; };
+    map.addEventListener('pointercancel', (e) => { release(e); start = null; });
     map.addEventListener('pointerup', (e) => {
-      if (!start || this.s.panel) return;
+      release(e);
+      if (!start || this.s.panel || onZoomUI(e)) return;
       const dx = e.clientX - start.x, dy = e.clientY - start.y; start = null;
       if (Math.hypot(dx, dy) > 28) { this.walkDir(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up')); return; }
       const b = (e.target as HTMLElement).closest<HTMLElement>('[data-b]');
       if (b) { const bd = BLD.find((x) => x.id === b.dataset.b)!; this.walkTo(bd.dx, bd.dy); return; }
-      const r = map.getBoundingClientRect();
+      const r = world.getBoundingClientRect();
       this.walkTo(Math.floor(((e.clientX - r.left) / r.width) * W), Math.floor(((e.clientY - r.top) / r.height) * H));
     });
+    map.addEventListener('wheel', (e) => { e.preventDefault(); this.setZoom(this.s.zoom * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002))); }, { passive: false });
+    map.querySelector('.zoom')!.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>('[data-zoom]');
+      if (b) { this.setZoom(this.s.zoom * (+b.dataset.zoom! > 0 ? ZOOM_STEP : 1 / ZOOM_STEP)); sfx.tab(); }
+    });
+  }
+
+  private setZoom(z: number) {
+    z = clamp(z, ZOOM_MIN, ZOOM_MAX);
+    if (Math.abs(z - ZOOM_MAX) < 0.02) z = ZOOM_MAX; // snap so the + button disables at the limit
+    if (Math.abs(z - ZOOM_MIN) < 0.02) z = ZOOM_MIN;
+    if (z === this.s.zoom) return;
+    this.s.zoom = z;
+    this.el.map.style.setProperty('--z', String(z));
+    this.el.map.querySelector<HTMLButtonElement>('[data-zoom="-1"]')!.disabled = z <= ZOOM_MIN;
+    this.el.map.querySelector<HTMLButtonElement>('[data-zoom="1"]')!.disabled = z >= ZOOM_MAX;
+    this.follow(true);
   }
 
   private startMap() {
@@ -166,6 +213,19 @@ export class Game {
     st.left = ((s.px * 16 - 6) / (W * 16)) * 100 + '%';
     st.top = (((s.py + 1) * 16 - 32) / (H * 16)) * 100 + '%';
     st.backgroundPosition = `${frame * 50}% ${HERO_ROW[s.dir] * 50}%`;
+    this.follow();
+  }
+
+  // Camera: the map frame is a fixed window onto the (zoomed) world. Centre the hero, clamped so the frame never shows past
+  // the village edge. Walking eases in step with the hero (CSS transition); zoom and resize jump instantly.
+  private follow(instant = false) {
+    const { map, world } = this.el, s = this.s;
+    const fw = map.clientWidth, fh = map.clientHeight, ww = world.offsetWidth, wh = world.offsetHeight;
+    if (!fw || !ww) return;
+    const tx = clamp(fw / 2 - ((s.px + 0.5) / W) * ww, Math.min(0, fw - ww), 0);
+    const ty = clamp(fh / 2 - ((s.py + 0.5) / H) * wh, Math.min(0, fh - wh), 0);
+    world.classList.toggle('is-instant', instant);
+    world.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)`;
   }
 
   private updateExplored() {

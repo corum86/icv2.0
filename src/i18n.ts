@@ -70,21 +70,21 @@ en:{form:{title:'Send a message',name:'Name',email:'Email',message:'Message',sen
  wProblem:'Problem',wApproach:'Approach',wResult:'Result',wRole:'Role',wStack:'Stack',wYear:'Year',versions:'versions',
  mobile:'Mobile',desktop:'desktop',offline:'Offline',offlineNote:'This site is no longer online.',archive:'View on Web Archive',beforeAfter:'Before / after',
  wFilter:'Filter projects',wPrev:'Previous project',wNext:'Next project',wClose:'Close case study',
- g:{touch:'Swipe or hold the pad to walk · tap a building',letter:'WRITE A LETTER',back:'BACK'}},
+ g:{touch:'Tap to walk or swipe the map · tap a building',letter:'WRITE A LETTER',back:'BACK',zoomIn:'Zoom in',zoomOut:'Zoom out'}},
 de:{form:{title:'Nachricht senden',name:'Name',email:'E-Mail',message:'Nachricht',send:'Nachricht senden',sending:'Wird gesendet…',ok:'Danke! Deine Nachricht ist unterwegs.',err:'Etwas ist schiefgelaufen. Bitte schreib mir direkt per E-Mail.',privacy:'Deine Daten werden nur zur Beantwortung deiner Nachricht verwendet. Siehe',privacyLink:'Datenschutzerklärung'},
  footer:{privacy:'Datenschutz'},skip:'Zum Inhalt springen',
  navWork:'Projekte',sWork:'ausgewählte projekte',caseStudy:'Case Study',live:'Live-Seite',code:'Code',projects:'Projekte',
  wProblem:'Problem',wApproach:'Vorgehen',wResult:'Ergebnis',wRole:'Rolle',wStack:'Stack',wYear:'Jahr',versions:'Versionen',
  mobile:'Mobil',desktop:'Desktop',offline:'Offline',offlineNote:'Diese Website ist nicht mehr online.',archive:'Im Web Archive ansehen',beforeAfter:'Vorher / Nachher',
  wFilter:'Projekte filtern',wPrev:'Vorheriges Projekt',wNext:'Nächstes Projekt',wClose:'Case Study schließen',
- g:{touch:'Wischen oder Steuerkreuz halten zum Laufen · Gebäude antippen',letter:'BRIEF SCHREIBEN',back:'ZURÜCK'}},
+ g:{touch:'Zum Laufen tippen oder über die Karte wischen · Gebäude antippen',letter:'BRIEF SCHREIBEN',back:'ZURÜCK',zoomIn:'Vergrößern',zoomOut:'Verkleinern'}},
 el:{form:{title:'Στείλε μήνυμα',name:'Όνομα',email:'Email',message:'Μήνυμα',send:'Αποστολή μηνύματος',sending:'Αποστολή…',ok:'Ευχαριστώ! Το μήνυμά σου στάλθηκε.',err:'Κάτι πήγε στραβά. Στείλε μου απευθείας email.',privacy:'Τα στοιχεία σου χρησιμοποιούνται μόνο για να απαντήσω στο μήνυμά σου. Δες την',privacyLink:'πολιτική απορρήτου'},
  footer:{privacy:'Απόρρητο'},skip:'Μετάβαση στο περιεχόμενο',
  navWork:'Έργα',sWork:'επιλεγμένα έργα',caseStudy:'Case study',live:'Δες τη σελίδα',code:'Code',projects:'έργα',
  wProblem:'Πρόβλημα',wApproach:'Προσέγγιση',wResult:'Αποτέλεσμα',wRole:'Ρόλος',wStack:'Stack',wYear:'Έτος',versions:'εκδόσεις',
  mobile:'Κινητό',desktop:'desktop',offline:'Offline',offlineNote:'Αυτή η σελίδα δεν είναι πλέον online.',archive:'Δες το στο Web Archive',beforeAfter:'Πριν / μετά',
  wFilter:'Φίλτρο έργων',wPrev:'Προηγούμενο έργο',wNext:'Επόμενο έργο',wClose:'Κλείσιμο case study',
- g:{touch:'Σύρε ή κράτα πατημένο το χειριστήριο για να περπατήσεις · πάτα ένα κτίριο',letter:'ΓΡΑΨΕ ΓΡΑΜΜΑ',back:'ΠΙΣΩ'}}
+ g:{touch:'Πάτα για να περπατήσεις ή σύρε τον χάρτη · πάτα ένα κτίριο',letter:'ΓΡΑΨΕ ΓΡΑΜΜΑ',back:'ΠΙΣΩ',zoomIn:'Μεγέθυνση',zoomOut:'Σμίκρυνση'}}
 };
 // Compile-time check: every language defines every key of the English dictionaries.
 BASE.de satisfies typeof BASE.en; BASE.el satisfies typeof BASE.en;
