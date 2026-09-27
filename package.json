@@ -16,7 +16,8 @@
     "@fontsource/nova-mono": "^5.3.0",
     "@fontsource/press-start-2p": "^5.0.0",
     "@fontsource/vt323": "^5.0.0",
-    "@plausible-analytics/tracker": "^0.4.6"
+    "@plausible-analytics/tracker": "^0.4.6",
+    "@vercel/analytics": "^2.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",

@@ -1,23 +1,23 @@
-import { init } from '@plausible-analytics/tracker';
 import { scriptURL } from './util';
 
-declare global { interface Window { plausible?: (e: string, o?: { props?: Record<string, string | number> }) => void } }
+declare global { interface Window { va?: (type: 'event' | 'pageview', payload?: unknown) => void; vaq?: unknown[][] } }
 
-/** Plausible: cookieless, no personal data, no consent banner required. Disabled when VITE_PLAUSIBLE_DOMAIN is empty. */
+// Vercel Web Analytics: cookieless, first-party (served from our own domain under /_vercel/insights), no consent banner
+// needed. Loads only when VITE_VERCEL_ANALYTICS is "true" or "1" (read at build time) and Web Analytics is enabled for
+// the project in the Vercel dashboard (otherwise the script 404s). Not @vercel/analytics: its inject() assigns a plain
+// string to script.src, which our Trusted Types CSP blocks; scriptURL() goes through the site's policy instead.
+const enabled = () => /^(true|1)$/i.test((import.meta.env.VITE_VERCEL_ANALYTICS as string | undefined) ?? '') && location.hostname !== 'localhost';
+
 export function initAnalytics() {
-  const domain = import.meta.env.VITE_PLAUSIBLE_DOMAIN as string | undefined;
-  if (!domain || location.hostname === 'localhost') return;
-  init({
-    domain,
-  });
-  // const s = document.createElement('script');
-  // s.defer = true;
-  // s.dataset.domain = domain;
-  // s.src = scriptURL((import.meta.env.VITE_PLAUSIBLE_SRC as string) || 'https://plausible.io/js/script.js');
-  // document.head.appendChild(s);
-  // window.plausible = window.plausible || function (...args: any[]) { ((window.plausible as any).q = (window.plausible as any).q || []).push(args); };
+  if (!enabled() || window.va) return;
+  window.va = (...args) => { (window.vaq = window.vaq || []).push(args); }; // queue until the script takes over
+  const s = document.createElement('script');
+  s.defer = true;
+  s.src = scriptURL('/_vercel/insights/script.js');
+  document.head.appendChild(s);
 }
 
+/** Custom event. Page views are automatic; custom events are only recorded on Vercel's Pro plan (dropped on Hobby). */
 export function track(event: string, props?: Record<string, string | number>) {
-  window.plausible?.(event, props ? { props } : undefined);
+  window.va?.('event', { name: event, data: props });
 }

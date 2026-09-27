@@ -39,7 +39,7 @@ src/
   terminal.ts           Fake shell in the hero (help, whoami, stack, contact, play, lang, theme, clear)
   contact.ts            Contact form UI (CV + game Post Office), posts JSON to /api/contact
   glitch.ts             Hard-cut glitch overlay
-  analytics.ts          Plausible loader + track()
+  analytics.ts          Vercel Web Analytics loader + track()
   print.ts              Printable CV page: same data as the site, toolbar (print, language), A4 print rules
   game/
     world.ts            Map layout, collisions, canvas drawing, BFS pathfinding
@@ -76,20 +76,20 @@ Setup:
 
 To use a different mail service, only `api/contact.ts` changes. Update `datenschutz.html` §3 accordingly.
 
-## Analytics (Plausible)
+## Analytics (Vercel Web Analytics)
 
-Cookieless, no personal data, no consent banner needed. Set `VITE_PLAUSIBLE_DOMAIN=kournosenkov.com` (Vercel → Environment Variables; it's read at build time, so redeploy after changing). Leave empty to disable. Custom events: `Game Entered`, `Area Visited` (prop `area`), `All Areas Explored`, `Contact Submitted` (prop `source`). Requires a Plausible account (paid, or self-host the Community Edition and set `VITE_PLAUSIBLE_SRC`).
+Cookieless and first-party (script served from `/_vercel/insights/` on our own domain), so no consent banner and no extra CSP entries. To turn it on: enable **Web Analytics** for the project in the Vercel dashboard, then set `VITE_VERCEL_ANALYTICS=true` (Vercel → Environment Variables; read at build time, so redeploy after changing). Unset or empty = no analytics script at all. Never loads on localhost. Page views work on the free Hobby plan. The custom events sent via `track()` (`Game Entered`, `Area Visited`, `All Areas Explored`, `Contact Submitted`, `Work Opened`, `Printable CV Opened`, `CV Printed`, …) are only recorded on Vercel's Pro plan; on Hobby they are dropped.
 
 ## Deploy (Vercel)
 
 1. Push this folder to a Git repo, then in Vercel "Add New → Project" and import it. Framework preset: Vite (settings are also in `vercel.json`: build `npm run build`, output `dist`).
-2. Set the environment variables (Resend + Plausible, see above).
+2. Set the environment variables (Resend + `VITE_VERCEL_ANALYTICS`, see above) and enable Web Analytics in the project.
 3. Domains: add `www.kournosenkov.com` and `kournosenkov.com`, choose "Redirect kournosenkov.com → www.kournosenkov.com" (a matching rule is also in `vercel.json`). Set the DNS records Vercel shows at your registrar.
 4. Sign Vercel's and Resend's DPA (GDPR) in their dashboards.
 
 ## Legal
 
-`datenschutz.html` is a template written for this setup (Vercel hosting, Resend for the contact form, Plausible, self-hosted fonts, localStorage for lang/theme). **Have it checked** before going live. Update it if you change the hosting, form or analytics provider.
+`datenschutz.html` is a template written for this setup (Vercel hosting, Resend for the contact form, Vercel Web Analytics, self-hosted fonts, localStorage for lang/theme). **Have it checked** before going live. Update it if you change the hosting, form or analytics provider.
 
 ## Accessibility & performance notes
 

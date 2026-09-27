@@ -9,7 +9,7 @@ export const esc = (s: unknown) =>
 interface TTPolicy { createHTML(s: string): unknown; createScriptURL(s: string): unknown }
 declare global { interface Window { trustedTypes?: { createPolicy(name: string, rules: { createHTML(s: string): string; createScriptURL(s: string): string }): TTPolicy } } }
 
-const SCRIPT_ORIGINS = [location.origin, 'https://plausible.io'];
+const SCRIPT_ORIGINS = [location.origin];
 const allowScript = (u: string) => {
   if (SCRIPT_ORIGINS.includes(new URL(u, location.href).origin)) return u;
   throw new TypeError('Blocked script URL: ' + u);
