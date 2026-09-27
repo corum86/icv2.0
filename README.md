@@ -19,7 +19,8 @@ npm run preview
 
 ```
 index.html              SEO meta, OG/Twitter tags, JSON-LD Person
-datenschutz.html        German privacy policy (GDPR)
+datenschutz.html        Privacy policy (GDPR), DE/EN/EL
+cv.html                 Printable CV (A4, HR-oriented), rendered by src/print.ts
 vercel.json             Build settings, apex→www redirect, security + cache headers
 api/
   contact.ts            Vercel Function: POST /api/contact → sends mail via Resend
@@ -32,18 +33,19 @@ src/
   main.ts               Bootstrap: fonts, CV, game, glitch transition
   config.ts             Links (email, GitHub, LinkedIn), GAME_TRIGGER, SCANLINES
   data.ts               ← CV content (jobs, skills, education, languages). Edit here.
-  i18n.ts               UI strings EN/DE
+  i18n.ts               UI strings EN/DE/EL
   store.ts              lang/theme state (URL ?lang=, localStorage, system prefs)
   cv.ts                 CV page render + interactions + scroll-to-game zone
   terminal.ts           Fake shell in the hero (help, whoami, stack, contact, play, lang, theme, clear)
   contact.ts            Contact form UI (CV + game Post Office), posts JSON to /api/contact
   glitch.ts             Hard-cut glitch overlay
   analytics.ts          Plausible loader + track()
+  print.ts              Printable CV page: same data as the site, toolbar (print, language), A4 print rules
   game/
     world.ts            Map layout, collisions, canvas drawing, BFS pathfinding
     game.ts             Game controller: HUD, hero movement/animation, panels, dialog, keyboard/touch
     audio.ts            WebAudio chiptune SFX
-  styles/cv.css, game.css, legal.css
+  styles/cv.css, game.css, legal.css, print.css
 ```
 
 ## Editing content

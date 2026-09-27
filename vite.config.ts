@@ -19,6 +19,7 @@ export default defineConfig({
       input: {
         main: page('./index.html'),
         datenschutz: page('./datenschutz.html'),
+        cv: page('./cv.html'),
       },
     },
   },

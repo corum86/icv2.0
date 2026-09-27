@@ -5,6 +5,7 @@ import { Terminal } from './terminal';
 import { contactFormHTML, bindContactForm } from './contact';
 import { LINKS, GAME_TRIGGER } from './config';
 import { mountWork } from './work-section';
+import { track } from './analytics';
 
 const ui = { openJob: 0, cat: 'all', q: '' };
 const STACK = ['Angular', 'React', 'Tailwind', 'Spring Boot', 'PostgreSQL', 'Claude Code'];
@@ -45,6 +46,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
             <a class="btn-primary" href="mailto:${LINKS.email}">✉ ${esc(tt.email)}</a>
             <a class="btn-outline" href="${LINKS.github}" target="_blank" rel="noopener">GitHub ↗</a>
             <a class="btn-outline" href="${LINKS.linkedin}" target="_blank" rel="noopener">LinkedIn ↗</a>
+            <a class="btn-outline" href="/cv.html?lang=${store.state.lang}" target="_blank" rel="noopener" data-print-cv>${esc(tt.cvp.btn)} ↗</a>
           </div>
           <p class="stack"><span>${esc(tt.stackLabel)}:</span>${STACK.map((s) => `<span class="pill">${esc(s)}</span>`).join('')}</p>
         </div>
@@ -88,6 +90,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
           <a class="btn-primary" href="mailto:${LINKS.email}">✉ ${esc(tt.email)}</a>
           <a class="btn-outline" href="${LINKS.github}" target="_blank" rel="noopener">GitHub ↗</a>
           <a class="btn-outline" href="${LINKS.linkedin}" target="_blank" rel="noopener">LinkedIn ↗</a>
+            <a class="btn-outline" href="/cv.html?lang=${store.state.lang}" target="_blank" rel="noopener" data-print-cv>${esc(tt.cvp.btn)} ↗</a>
         </div>
         <div class="contact__form"><h3>${esc(tt.form.title)}</h3>${contactFormHTML('cv')}</div>
       </section>
@@ -148,6 +151,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
   };
 
   root.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('[data-print-cv]')) track('Printable CV Opened', { lang: store.state.lang });
     const el = (e.target as HTMLElement).closest<HTMLElement>('[data-action],[data-lang],[data-job],[data-cat]');
     if (!el) return;
     if (el.dataset.action === 'play') enterGame();

@@ -39,8 +39,8 @@ b:{en:['Provided technical support and troubleshooting for internet cafe systems
 export const EDU:{t:L10n;s:L10n;y:string}[]=[
 {t:{en:'B.Sc. in Computer Engineering (Software Engineering)',de:'B.Sc. Technische Informatik (Softwaretechnik)',el:'Πτυχίο Μηχανικών Πληροφορικής Τ.Ε. (Τεχνολογία Λογισμικού)'},s:{en:'Technological Educational Institute of Epirus',de:'Technological Educational Institute of Epirus',el:'ΤΕΙ Ηπείρου'},y:'2008 – 2015'},
 {t:{en:'Vocational Training (Telecommunications & Networks)',de:'Berufsausbildung (Telekommunikation & Netzwerke)',el:'Επαγγελματική κατάρτιση (Τηλεπικοινωνίες & Δίκτυα)'},s:{en:'Vocational Training Institute, Ioannina, Greece',de:'Vocational Training Institute, Ioannina, Griechenland',el:'ΙΕΚ Ιωαννίνων'},y:'2006 – 2007'},
+{t:{en:'European Computer Driving Licence (ECDL)',de:'Europäischer Computerführerschein (ECDL)',el:'Ευρωπαϊκό Δίπλωμα Χειρισμού Υπολογιστή (ECDL)'},s:{en:'Athens',de:'Athen',el:'Αθήνα'},y:'2006'},
 {t:{en:'High School Diploma',de:'Schulabschluss',el:'Απολυτήριο Λυκείου'},s:{en:'Greek Lyceum Nuremberg',de:'Griechisches Lyzeum Nürnberg',el:'Ελληνικό Λύκειο Νυρεμβέργης'},y:'2004'},
-{t:{en:'European Computer Driving Licence (ECDL)',de:'Europäischer Computerführerschein (ECDL)',el:'Ευρωπαϊκό Δίπλωμα Χειρισμού Υπολογιστή (ECDL)'},s:{en:'Athens',de:'Athen',el:'Αθήνα'},y:'2006'}
 ];
 export const LANGS:{n:L10n;l:L10n;p:number;hi:string;hue:number}[]=[
 {n:{en:'Greek',de:'Griechisch',el:'Ελληνικά'},l:{en:'Native',de:'Muttersprache',el:'Μητρική'},p:100,hi:'Γεια σου!',hue:250},
