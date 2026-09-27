@@ -111,12 +111,18 @@ export function mountWork(page: HTMLElement) {
   };
   applyFilter();
 
-  if (!reducedMotion()) WORK.forEach((w, i) => {
-    const m = w.media;
-    if (!m?.video) return;
-    const src = `${m.base}.${EXT}`;
-    exists(src).then((ok) => { if (ok) cards[i].querySelector('.wk-media')!.append(video(src, `${m.base}-poster.${m.ext}`)); });
-  });
+  // Card videos attach only when the card nears the viewport: a <video poster> ignores loading="lazy", so attaching at mount
+  // downloaded every poster + video header during page load (competing with fonts, hurting FCP/LCP).
+  if (!reducedMotion()) {
+    const near = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      near.unobserve(e.target);
+      const i = cards.indexOf(e.target as HTMLElement), m = WORK[i].media!;
+      const src = `${m.base}.${EXT}`;
+      exists(src).then((ok) => { if (ok) cards[i].querySelector('.wk-media')!.append(video(src, `${m.base}-poster.${m.ext}`)); });
+    }), { rootMargin: '400px 0px' });
+    WORK.forEach((w, i) => { if (w.media?.video) near.observe(cards[i]); });
+  }
 
   el.addEventListener('click', (e) => {
     const x = (e.target as HTMLElement).closest<HTMLElement>('[data-tag],[data-slug]');

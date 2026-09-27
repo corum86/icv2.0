@@ -81,6 +81,9 @@ body.is-shaking { animation: shake .08s infinite; }
 
 /* sections */
 .sec { padding-top: 88px; scroll-margin-top: 60px; }
+/* Below-the-fold sections skip style/layout/paint until they near the viewport (main-thread cost at load, TBT).
+   "auto" remembers the real size once rendered, so the scrollbar and anchors stay stable after first view. */
+.sec, .wk { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 .sec__h { margin: 0 0 28px; font-family: var(--mono); font-weight: 500; font-size: 15px; color: var(--mut); }
 .sec__h span { color: var(--acc); }
 .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 48px; }
