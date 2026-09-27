@@ -23,24 +23,27 @@ a{color:var(--acc,#b48bff)}
 a:hover{color:var(--fg,#ecebf1)}
 ::selection{background:#9b5cff;color:#0f0e13}
 </style>
+<script src="./image-slot.js"></script>
 </helmet>
 <div id="top" style="min-height:100vh;font-family:'IBM Plex Sans',system-ui,sans-serif;color:var(--fg,#ecebf1)">
 
 <header style="position:sticky;top:0;z-index:20;background:color-mix(in srgb, var(--bg,#0f0e13) 86%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line,#26242e)">
   <div style="max-width:1120px;margin:0 auto;padding:12px clamp(20px,4vw,40px);display:flex;align-items:center;gap:12px 22px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:13px">
     <a href="#top" style="color:var(--fg,#ecebf1);text-decoration:none;display:flex;gap:2px;font-weight:600"><span style="color:var(--acc,#b48bff)">~/</span><span>sergkei</span></a>
-    <nav style="display:flex;gap:18px;flex-wrap:wrap;margin-right:auto">
+    <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:18px;flex-wrap:nowrap;white-space:nowrap">
       <a href="#experience" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.nav.0 }}</a>
+      <a href="#work" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.navWork }}</a>
       <a href="#skills" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.nav.1 }}</a>
       <a href="#education" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.nav.2 }}</a>
       <a href="#contact" style="color:var(--mut,#9c9aa8);text-decoration:none" style-hover="color:var(--fg,#ecebf1)">{{ t.nav.3 }}</a>
-    </nav>
+    </nav></sc-if>
+    <span style="margin-right:auto"></span>
     <div style="display:flex;border:1px solid var(--line,#26242e);border-radius:6px;overflow:hidden">
       <button onClick="{{ setEn }}" style="all:unset;cursor:pointer;padding:5px 9px;background:{{ enBg }};color:{{ enFg }}">EN</button>
       <button onClick="{{ setDe }}" style="all:unset;cursor:pointer;padding:5px 9px;background:{{ deBg }};color:{{ deFg }}">DE</button>
     </div>
-    <button onClick="{{ toggleTheme }}" style="all:unset;cursor:pointer;padding:5px 10px;border:1px solid var(--line,#26242e);border-radius:6px;color:var(--mut,#9c9aa8)" style-hover="color:var(--fg,#ecebf1)">◐ {{ themeLabel }}</button>
-    <button onClick="{{ enterGame }}" style="all:unset;cursor:pointer;padding:5px 12px;border-radius:6px;background:#9b5cff;color:#0f0e13;font-weight:600" style-hover="background:#b48bff">▶ {{ t.play }}</button>
+    <button onClick="{{ toggleTheme }}" style="all:unset;cursor:pointer;white-space:nowrap;padding:5px 10px;border:1px solid var(--line,#26242e);border-radius:6px;color:var(--mut,#9c9aa8)" style-hover="color:var(--fg,#ecebf1)">◐ {{ themeLabel }}</button>
+    <button onClick="{{ enterGame }}" style="all:unset;cursor:pointer;white-space:nowrap;padding:5px 12px;border-radius:6px;background:#9b5cff;color:#0f0e13;font-weight:600" style-hover="background:#b48bff">▶ {{ t.play }}</button>
   </div>
 </header>
 
@@ -113,8 +116,58 @@ a:hover{color:var(--fg,#ecebf1)}
     </div>
   </section>
 
+  <section id="work" style="padding:88px 0 0;scroll-margin-top:60px;display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <h2 style="margin:0;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 02</span> {{ t.sWork }}</h2>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mut,#9c9aa8)">{{ workCount }}</span>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:12px">
+      <span style="color:var(--acc,#b48bff);margin-right:4px">$ ls ./work --tag=</span>
+      <sc-for list="{{ wtags }}" as="wt" hint-placeholder-count="5">
+        <button onClick="{{ wt.pick }}" style="all:unset;cursor:pointer;padding:6px 12px;border-radius:99px;border:1px solid var(--line,#26242e);background:{{ wt.bg }};color:{{ wt.fg }}" style-hover="border-color:#9b5cff">{{ wt.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:16px">
+      <sc-for list="{{ work }}" as="w" hint-placeholder-count="3">
+        <article onClick="{{ w.open }}" style="cursor:pointer;display:flex;flex-direction:column;border:1px solid var(--line,#26242e);border-radius:12px;overflow:hidden;background:var(--card,#16151c);transition:border-color .15s, transform .15s" style-hover="border-color:#9b5cff;transform:translateY(-3px)">
+          <div style="aspect-ratio:16/10;position:relative;border-bottom:1px solid var(--line,#26242e)">
+            <image-slot id="{{ w.slot }}" src="{{ w.still }}" placeholder="{{ w.ph }}" style="width:100%;height:100%"></image-slot>
+            <sc-if value="{{ w.diagram }}"><div style="position:absolute;inset:0;z-index:1;container-type:inline-size;background:var(--card,#16151c);background-image:radial-gradient(color-mix(in srgb, var(--mut,#9c9aa8) 22%, transparent) 1px, transparent 1px);background-size:4cqw 4cqw;display:flex;flex-direction:column;justify-content:space-between;padding:6cqw 6cqw 5cqw;box-sizing:border-box;pointer-events:none">
+              <div style="display:flex;justify-content:flex-end;font-family:'IBM Plex Mono',monospace;font-size:max(11px, 2.4cqw);color:var(--mut,#9c9aa8)"><span>$ ng update @angular/core</span></div>
+              <div style="position:relative;display:flex;justify-content:space-between;align-items:flex-start">
+                <div style="position:absolute;left:1.3cqw;right:1.7cqw;top:1.7cqw;height:2px;background:linear-gradient(90deg, var(--mut,#9c9aa8), #9b5cff)"></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:2.6cqw;height:2.6cqw;background:var(--card,#16151c);border:2px solid var(--mut,#9c9aa8)"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(11px, 2.6cqw);font-weight:400;color:var(--fg,#ecebf1)">15</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">16</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">17</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">18</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">19</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">20</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">21</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:3.4cqw;height:3.4cqw;background:#9b5cff;box-shadow:0 0 0 1.2cqw color-mix(in srgb, #9b5cff 22%, transparent)"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(11px, 2.6cqw);font-weight:600;color:var(--acc,#b48bff)">22</span></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:5cqw;align-items:end">
+                <div style="display:flex;flex-direction:column;gap:1.3cqw"><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#ff6b8a">−</span><span style="height:1.2cqw;width:62%;border-radius:1cqw;background:#ff6b8a;opacity:.55"></span></div><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#ff6b8a">−</span><span style="height:1.2cqw;width:40%;border-radius:1cqw;background:#ff6b8a;opacity:.55"></span></div><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#3fbf6f">+</span><span style="height:1.2cqw;width:74%;border-radius:1cqw;background:#3fbf6f;opacity:.55"></span></div><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#3fbf6f">+</span><span style="height:1.2cqw;width:52%;border-radius:1cqw;background:#3fbf6f;opacity:.55"></span></div><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#3fbf6f">+</span><span style="height:1.2cqw;width:66%;border-radius:1cqw;background:#3fbf6f;opacity:.55"></span></div></div>
+                <div style="display:flex;flex-direction:column;gap:1.2cqw;align-items:flex-end;font-family:'IBM Plex Mono',monospace">
+                  <span style="font-size:max(11px, 2.3cqw);color:var(--mut,#9c9aa8)">bootstrap <span style="color:var(--fg,#ecebf1)">3 → 5</span></span>
+                  <span style="font-size:max(20px, 4.6cqw);font-weight:600;letter-spacing:-.02em;color:var(--fg,#ecebf1);line-height:1">150K <span style="font-size:max(11px, 2.3cqw);font-weight:400;color:var(--mut,#9c9aa8)">LOC</span></span>
+                </div>
+              </div>
+            </div></sc-if>
+            {{ w.videoEl }}
+            <sc-if value="{{ w.offline }}"><span style="position:absolute;z-index:2;top:10px;right:10px;padding:4px 8px;border-radius:6px;background:var(--bg,#0f0e13);border:1px solid var(--line,#26242e);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut,#9c9aa8);pointer-events:none;display:flex;gap:6px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:#9c9aa8"></span>{{ t.offline }}</span></sc-if>
+            <sc-if value="{{ w.nda }}"><span style="position:absolute;z-index:2;top:10px;left:10px;padding:4px 8px;border-radius:6px;background:var(--bg,#0f0e13);border:1px solid var(--line,#26242e);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut,#9c9aa8);pointer-events:none">NDA</span></sc-if>
+          </div>
+          <div style="padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;flex:1">
+            <div style="display:flex;justify-content:space-between;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mut,#9c9aa8)"><span>{{ w.client }}</span><span>{{ w.year }}</span></div>
+            <h3 style="margin:0;font-size:20px;font-weight:500;line-height:1.25">{{ w.title }}</h3>
+            <p style="margin:0;font-size:15px;line-height:1.5;color:var(--fg,#ecebf1);opacity:.8;text-wrap:pretty">{{ w.outcome }}</p>
+            <sc-if value="{{ w.hasStats }}"><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:10px 0 2px;border-top:1px solid var(--line,#26242e)"><sc-for list="{{ w.stats }}" as="st"><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;letter-spacing:-.01em">{{ st.n }}</span><span style="font-size:12px;color:var(--mut,#9c9aa8);line-height:1.3">{{ st.l }}</span></div></sc-for></div></sc-if>
+            <sc-if value="{{ w.hasLh }}"><div style="display:flex;gap:6px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mut,#9c9aa8)"><span>lighthouse</span><sc-for list="{{ w.lh }}" as="l"><span style="min-width:26px;padding:2px 6px;border-radius:99px;border:1.5px solid #0cce6b;color:#0cce6b;text-align:center;font-weight:600">{{ l.v }}</span></sc-for></div></sc-if>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px">
+              <sc-for list="{{ w.tags }}" as="tg"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 8px;border-radius:99px;border:1px solid var(--line,#26242e)">{{ tg }}</span></sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:13px"><span style="color:var(--acc,#b48bff)">{{ t.caseStudy }} →</span><span style="color:var(--mut,#9c9aa8);font-size:12px">{{ w.vcount }}</span></div>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </section>
+
   <section id="skills" style="padding:88px 0 0;scroll-margin-top:60px">
-    <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 02</span> {{ t.sSkills }}</h2>
+    <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 03</span> {{ t.sSkills }}</h2>
     <div style="display:flex;flex-direction:column;gap:18px">
       <label style="display:flex;gap:10px;align-items:center;padding:14px 16px;border:1px solid var(--line,#26242e);border-radius:10px;background:var(--card,#16151c);font-family:'IBM Plex Mono',monospace;font-size:15px">
         <span style="color:var(--acc,#b48bff)">$ grep -i</span>
@@ -140,7 +193,7 @@ a:hover{color:var(--fg,#ecebf1)}
 
   <section id="education" style="padding:88px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:48px;scroll-margin-top:60px">
     <div>
-      <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 03</span> {{ t.sEdu }}</h2>
+      <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 04</span> {{ t.sEdu }}</h2>
       <sc-for list="{{ edu }}" as="e" hint-placeholder-count="4">
         <div style="padding:16px 0;border-top:1px solid var(--line,#26242e);display:flex;flex-direction:column;gap:4px">
           <span style="font-size:17px;font-weight:500">{{ e.t }}</span>
@@ -150,7 +203,7 @@ a:hover{color:var(--fg,#ecebf1)}
       </sc-for>
     </div>
     <div>
-      <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 04</span> {{ t.sLang }}</h2>
+      <h2 style="margin:0 0 28px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 05</span> {{ t.sLang }}</h2>
       <sc-for list="{{ langs }}" as="lg" hint-placeholder-count="4">
         <div style="padding:16px 0;border-top:1px solid var(--line,#26242e);display:flex;flex-direction:column;gap:10px">
           <div style="display:flex;justify-content:space-between;gap:12px"><span style="font-size:17px;font-weight:500">{{ lg.n }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--mut,#9c9aa8)">{{ lg.l }}</span></div>
@@ -161,7 +214,7 @@ a:hover{color:var(--fg,#ecebf1)}
   </section>
 
   <section id="contact" style="padding:120px 0 120px;scroll-margin-top:60px;display:flex;flex-direction:column;gap:26px">
-    <h2 style="margin:0;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 05</span> {{ t.sContact }}</h2>
+    <h2 style="margin:0;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:15px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff)">// 06</span> {{ t.sContact }}</h2>
     <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(34px,5.5vw,64px);letter-spacing:-.03em;line-height:1.02">{{ t.cTitle }}</p>
     <a href="mailto:ser.corum@gmail.com" style="font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,2.4vw,26px);color:var(--acc,#b48bff);text-decoration:underline;text-underline-offset:6px;width:fit-content">ser.corum@gmail.com</a>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -171,6 +224,93 @@ a:hover{color:var(--fg,#ecebf1)}
     </div>
   </section>
 </main>
+
+<sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeWork }}" style="position:fixed;inset:0;z-index:40;background:rgba(10,9,14,.55);backdrop-filter:blur(2px);display:flex;justify-content:flex-end">
+  <aside onClick="{{ stop }}" style="width:min(620px,100%);height:100%;overflow:auto;background:var(--bg,#0f0e13);border-left:1px solid var(--line,#26242e);box-sizing:border-box;display:flex;flex-direction:column">
+    <div style="position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 24px;background:var(--bg,#0f0e13);border-bottom:1px solid var(--line,#26242e);font-family:'IBM Plex Mono',monospace;font-size:13px">
+      <span style="color:var(--mut,#9c9aa8)">~/work/{{ wd.slug }}</span>
+      <div style="display:flex;gap:6px">
+        <button onClick="{{ prevWork }}" style="all:unset;cursor:pointer;padding:5px 10px;border:1px solid var(--line,#26242e);border-radius:6px" style-hover="border-color:#9b5cff">←</button>
+        <button onClick="{{ nextWork }}" style="all:unset;cursor:pointer;padding:5px 10px;border:1px solid var(--line,#26242e);border-radius:6px" style-hover="border-color:#9b5cff">→</button>
+        <button onClick="{{ closeWork }}" style="all:unset;cursor:pointer;padding:5px 10px;border:1px solid var(--line,#26242e);border-radius:6px" style-hover="border-color:#9b5cff">esc ✕</button>
+      </div>
+    </div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-if value="{{ wd.hasTabs }}">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px">
+            <span style="color:var(--mut,#9c9aa8)">{{ t.beforeAfter }}</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ wd.vers }}" as="v"><button onClick="{{ v.pick }}" style="all:unset;cursor:pointer;padding:6px 11px;border-radius:99px;border:1px solid var(--line,#26242e);background:{{ v.bg }};color:{{ v.fg }}" style-hover="border-color:#9b5cff">{{ v.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <div style="aspect-ratio:16/10;border-radius:10px;overflow:hidden;border:1px solid var(--line,#26242e);position:relative"><sc-if value="{{ wd.diagram }}"><div style="position:absolute;inset:0;z-index:1;container-type:inline-size;background:var(--card,#16151c);background-image:radial-gradient(color-mix(in srgb, var(--mut,#9c9aa8) 22%, transparent) 1px, transparent 1px);background-size:4cqw 4cqw;display:flex;flex-direction:column;justify-content:space-between;padding:6cqw 6cqw 5cqw;box-sizing:border-box;pointer-events:none">
+              <div style="display:flex;justify-content:flex-end;font-family:'IBM Plex Mono',monospace;font-size:max(11px, 2.4cqw);color:var(--mut,#9c9aa8)"><span>$ ng update @angular/core</span></div>
+              <div style="position:relative;display:flex;justify-content:space-between;align-items:flex-start">
+                <div style="position:absolute;left:1.3cqw;right:1.7cqw;top:1.7cqw;height:2px;background:linear-gradient(90deg, var(--mut,#9c9aa8), #9b5cff)"></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:2.6cqw;height:2.6cqw;background:var(--card,#16151c);border:2px solid var(--mut,#9c9aa8)"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(11px, 2.6cqw);font-weight:400;color:var(--fg,#ecebf1)">15</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">16</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">17</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">18</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">19</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">20</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:1.6cqw;height:1.6cqw;background:#9b5cff;opacity:.7"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.1cqw);font-weight:400;color:var(--mut,#9c9aa8)">21</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:1.6cqw;z-index:1"><div style="height:3.4cqw;display:grid;place-items:center"><span style="display:block;border-radius:50%;box-sizing:border-box;width:3.4cqw;height:3.4cqw;background:#9b5cff;box-shadow:0 0 0 1.2cqw color-mix(in srgb, #9b5cff 22%, transparent)"></span></div><span style="font-family:'IBM Plex Mono',monospace;font-size:max(11px, 2.6cqw);font-weight:600;color:var(--acc,#b48bff)">22</span></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:5cqw;align-items:end">
+                <div style="display:flex;flex-direction:column;gap:1.3cqw"><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#ff6b8a">−</span><span style="height:1.2cqw;width:62%;border-radius:1cqw;background:#ff6b8a;opacity:.55"></span></div><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#ff6b8a">−</span><span style="height:1.2cqw;width:40%;border-radius:1cqw;background:#ff6b8a;opacity:.55"></span></div><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#3fbf6f">+</span><span style="height:1.2cqw;width:74%;border-radius:1cqw;background:#3fbf6f;opacity:.55"></span></div><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#3fbf6f">+</span><span style="height:1.2cqw;width:52%;border-radius:1cqw;background:#3fbf6f;opacity:.55"></span></div><div style="display:flex;gap:1.4cqw;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:max(10px, 2.2cqw);width:1.6cqw;color:#3fbf6f">+</span><span style="height:1.2cqw;width:66%;border-radius:1cqw;background:#3fbf6f;opacity:.55"></span></div></div>
+                <div style="display:flex;flex-direction:column;gap:1.2cqw;align-items:flex-end;font-family:'IBM Plex Mono',monospace">
+                  <span style="font-size:max(11px, 2.3cqw);color:var(--mut,#9c9aa8)">bootstrap <span style="color:var(--fg,#ecebf1)">3 → 5</span></span>
+                  <span style="font-size:max(20px, 4.6cqw);font-weight:600;letter-spacing:-.02em;color:var(--fg,#ecebf1);line-height:1">150K <span style="font-size:max(11px, 2.3cqw);font-weight:400;color:var(--mut,#9c9aa8)">LOC</span></span>
+                </div>
+              </div>
+            </div></sc-if><image-slot id="{{ wd.slotBig }}" src="{{ wd.stillBig }}" placeholder="{{ wd.phBig }}" style="width:100%;height:100%"></image-slot></div>
+        <sc-if value="{{ wd.hasVers }}">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px"><span style="color:var(--mut,#9c9aa8)">{{ wd.verCap }}</span><sc-if value="{{ wd.isArchive }}"><a href="{{ wd.verUrl }}" target="_blank" rel="noopener" style="color:var(--acc,#b48bff)">{{ t.archive }} ↗</a></sc-if></div>
+        </sc-if>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mut,#9c9aa8)">{{ wd.client }} · {{ wd.year }}</span>
+        <h3 style="margin:0;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;line-height:1.15">{{ wd.title }}</h3>
+        <p style="margin:0;font-size:17px;line-height:1.55;opacity:.88;text-wrap:pretty">{{ wd.outcome }}</p>
+        <sc-if value="{{ wd.offline }}"><span style="display:flex;gap:8px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mut,#9c9aa8)"><span style="width:6px;height:6px;border-radius:50%;background:#9c9aa8"></span>{{ t.offlineNote }}</span></sc-if>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border-top:1px solid var(--line,#26242e);border-bottom:1px solid var(--line,#26242e)">
+        <sc-for list="{{ wd.meta }}" as="m"><div style="padding:14px 14px 14px 0;display:flex;flex-direction:column;gap:4px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut,#9c9aa8)">{{ m.k }}</span><span style="font-size:15px">{{ m.v }}</span></div></sc-for>
+      </div>
+      <sc-if value="{{ wd.hasStats }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+          <sc-for list="{{ wd.stats }}" as="st"><div style="display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line,#26242e);border-radius:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:600;letter-spacing:-.02em;color:var(--acc,#b48bff)">{{ st.n }}</span><span style="font-size:13px;color:var(--mut,#9c9aa8);line-height:1.35">{{ st.l }}</span></div></sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ wd.hasLh }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--acc,#b48bff)">## Lighthouse <span style="color:var(--mut,#9c9aa8)">· {{ t.desktop }}</span></span>
+          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+            <sc-for list="{{ wd.lh }}" as="g">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+                <div style="width:72px;height:72px;border-radius:50%;background:{{ g.ring }};display:grid;place-items:center"><div style="width:60px;height:60px;border-radius:50%;background:var(--bg,#0f0e13);display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:#0cce6b">{{ g.v }}</div></div>
+                <span style="font-size:13px;color:var(--mut,#9c9aa8);line-height:1.3">{{ g.k }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ wd.hasMobile }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+          <div style="width:180px;aspect-ratio:390/844;border-radius:22px;border:6px solid var(--line,#26242e);overflow:hidden;background:#000;flex:none">{{ wd.mobileEl }}</div>
+          <div style="flex:1 1 200px;display:flex;flex-direction:column;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mut,#9c9aa8)"><span style="color:var(--acc,#b48bff);font-size:13px">## {{ t.mobile }}</span><span>{{ wd.mobileCap }}</span></div>
+        </div>
+      </sc-if>
+      <sc-for list="{{ wd.sections }}" as="sec">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--acc,#b48bff)">## {{ sec.h }}</span>
+          <p style="margin:0;font-size:16px;line-height:1.6;opacity:.88;text-wrap:pretty">{{ sec.p }}</p>
+        </div>
+      </sc-for>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <sc-if value="{{ wd.showLive }}"><a href="{{ wd.liveUrl }}" target="_blank" rel="noopener" style="padding:12px 18px;border-radius:8px;background:#9b5cff;color:#0f0e13;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px" style-hover="background:#b48bff;color:#0f0e13">{{ wd.liveLabel }} ↗</a></sc-if>
+        <sc-if value="{{ wd.showCode }}"><a href="https://github.com/corum86" target="_blank" style="padding:12px 18px;border-radius:8px;border:1px solid var(--line,#26242e);color:var(--fg,#ecebf1);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:14px" style-hover="border-color:#9b5cff">{{ t.code }} ↗</a></sc-if>
+      </div>
+    </div>
+  </aside>
+</div>
+</sc-if>
 
 <section ref="{{ zoneRef }}" style="height:{{ zoneH }};border-top:1px solid var(--line,#26242e);position:relative">
   <div style="position:sticky;top:0;height:100vh;display:grid;place-items:center;padding:0 24px;box-sizing:border-box">
@@ -382,6 +522,39 @@ de:['Konzeption und Umsetzung dynamischer Websites und Anwendungen mit jQuery, B
 role:{en:'Technical Support Staff',de:'Technischer Support'},
 b:{en:['Provided technical support and troubleshooting for internet cafe systems.'],de:['Technischer Support und Fehlerbehebung für Internetcafé-Systeme.']}}
 ];
+const WORK=[
+{slug:'energy-platform',nda:true,diagram:'migration',year:'2021 – 2026',client:{en:'ECS GmbH · energy sector client',de:'ECS GmbH · Kunde aus dem Energiesektor'},tags:['Angular 15 → 22','TypeScript','Signals','Bootstrap 3 → 5'],
+title:{en:'Energy sector: questionnaire & versioning platform',de:'Energiesektor: Fragebogen- & Versionierungsplattform'},
+outcome:{en:'Built core features (dynamic questionnaire templates, merge and diff with versioning, multi-level compare) and led the migration from Angular 15 to 22 while development continued.',de:'Kernfunktionen entwickelt (dynamische Fragebogen-Templates, Merge und Diff mit Versionierung, mehrstufiger Vergleich) und die Migration von Angular 15 auf 22 im laufenden Betrieb geleitet.'},
+role:{en:'Frontend developer · migration lead',de:'Frontend-Entwickler · Migrations-Lead'},
+problem:{en:'I joined a year after the MVP. The platform needed complex new features, and its stack (Angular 15, Bootstrap 3) had fallen far behind while the project was still under heavy development.',de:'Ich kam ein Jahr nach dem MVP ins Projekt. Die Plattform brauchte komplexe neue Funktionen, und ihr Stack (Angular 15, Bootstrap 3) war weit zurückgefallen, während das Projekt intensiv weiterentwickelt wurde.'},
+approach:{en:'Implemented dynamic, complex templates for questionnaires, a merging and diff system with versioning, and a compare feature for complex multi-level structures. Planned and documented the upgrade from Angular 15 to 22 and Bootstrap 3 to 5 in detail, and guided and mentored team members who were new to modern Angular (new control flow, signals).',de:'Umsetzung dynamischer, komplexer Templates für Fragebögen, eines Merge- und Diff-Systems mit Versionierung und einer Vergleichsfunktion für komplexe mehrstufige Strukturen. Detaillierte Planung und Dokumentation des Upgrades von Angular 15 auf 22 und Bootstrap 3 auf 5 sowie Anleitung und Mentoring von Teammitgliedern, die neu mit modernem Angular waren (neuer Control Flow, Signals).'},
+result:{en:'Migrated the whole system (150K lines of code) across seven Angular major versions and from Bootstrap 3 to 5 with no feature freeze, and brought the team up to speed on modern Angular.',de:'Das gesamte System (150.000 Codezeilen) über sieben Angular-Major-Versionen und von Bootstrap 3 auf 5 migriert, ohne Feature-Freeze, und das Team auf modernes Angular gebracht.'},
+stats:[{n:'150K',l:{en:'lines of code migrated',de:'Codezeilen migriert'}},{n:'15 → 22',l:{en:'Angular versions',de:'Angular-Versionen'}},{n:'0',l:{en:'days of feature freeze',de:'Tage Feature-Freeze'}}]},
+{slug:'paidopsy',nda:false,year:'2019',problem:{en:'A completely new practice with no web presence. This was its first website.',de:'Eine komplett neue Praxis ohne Webauftritt. Dies war ihre erste Website.'},video:'work/paidopsy',img:'png',live:'https://paidopsy-trikala.gr/',lh:[['Performance',98],['Accessibility',96],['Best Practices',100],['SEO',100]],
+client:{en:'Freelance · paidopsy-trikala.gr',de:'Freelance · paidopsy-trikala.gr'},tags:['WordPress','Custom theme','PHP','Hosting','DNS & Email'],
+title:{en:'paidopsy-trikala.gr: custom WordPress site',de:'paidopsy-trikala.gr: individuelle WordPress-Website'},
+outcome:{en:'Designed and built a completely custom WordPress theme, and set up hosting, domain and email end to end.',de:'Komplett individuelles WordPress-Theme entworfen und umgesetzt, dazu Hosting, Domain und E-Mail von Grund auf eingerichtet.'},
+role:{en:'Designer · developer · hosting',de:'Design · Entwicklung · Hosting'},
+approach:{en:'Designed the site and built a completely custom WordPress theme. Set up the whole infrastructure: hosting, domain, DNS and email.',de:'Design der Website und Entwicklung eines komplett individuellen WordPress-Themes. Einrichtung der gesamten Infrastruktur: Hosting, Domain, DNS und E-Mail.'},
+result:{en:'Lighthouse (desktop): 98 Performance, 96 Accessibility, 100 Best Practices, 100 SEO.',de:'Lighthouse (Desktop): 98 Performance, 96 Barrierefreiheit, 100 Best Practices, 100 SEO.'},
+versions:[{y:'Live',l:{en:'Live site',de:'Live-Seite'},u:'https://paidopsy-trikala.gr/'}]},
+{slug:'nuve',nda:false,offline:true,year:'2026',video:'work/nuve',versions:[{y:'2026',l:{en:'Showcase',de:'Showcase'},u:''}],client:{en:'Freelance · Nuvé Apartment',de:'Freelance · Nuvé Apartment'},tags:['AI-assisted design','Vercel','Responsive','Multilingual'],
+title:{en:'Nuvé Apartment: holiday apartment showcase',de:'Nuvé Apartment: Showcase für eine Ferienwohnung'},
+outcome:{en:'Showcase site built from scratch with AI-assisted design. The visibility it created led to a nearly 100% occupancy rate.',de:'Showcase-Website von Grund auf mit KI-gestütztem Design gebaut. Die gewonnene Sichtbarkeit führte zu einer Auslastung von nahezu 100 %.'},
+role:{en:'Design · development',de:'Design · Entwicklung'},
+problem:{en:'A holiday apartment without its own web presence needed visibility to attract guests.',de:'Eine Ferienwohnung ohne eigenen Webauftritt brauchte Sichtbarkeit, um Gäste zu gewinnen.'},
+approach:{en:'Created the site from scratch, using AI-assisted design to move quickly from concept to a finished showcase.',de:'Website von Grund auf erstellt, mit KI-gestütztem Design für den schnellen Weg vom Konzept zum fertigen Showcase.'},
+result:{en:'Nearly 100% occupancy, driven by the visibility the site created.',de:'Nahezu 100 % Auslastung dank der Sichtbarkeit durch die Website.'}},
+{slug:'nonomo',nda:false,year:'2016 – 2019',video:'work/nonomo',client:{en:'Nonomella GmbH · nonomo.de',de:'Nonomella GmbH · nonomo.de'},tags:['JTL Shop','PHP','Smarty','MySQL','Responsive'],
+title:{en:'nonomo.de: from intern to shop relaunch',de:'nonomo.de: vom Praktikum zum Shop-Relaunch'},outcome:{en:'Three stages: started as an intern, led frontend and backend on the first upgrade, then the full overhaul with a custom configurator and a modern, responsive design.',de:'Drei Etappen: Einstieg als Praktikant, Frontend und Backend beim ersten Upgrade, dann die komplette Überarbeitung mit individuellem Konfigurator und modernem, responsivem Design.'},role:{en:'Intern → lead developer → Head of IT',de:'Praktikant → Lead-Entwickler → Leiter IT'},
+approach:{en:'2016: joined as an intern on the existing shop. Autumn 2016: first upgrade, as the main frontend and backend developer. 2019: as Head of IT, the complete overhaul with a custom product configurator and a modern, fully responsive design.',de:'2016: Einstieg als Praktikant am bestehenden Shop. Herbst 2016: erstes Upgrade als Haupt-Entwickler für Frontend und Backend. 2019: als Leiter IT die komplette Überarbeitung mit individuellem Produktkonfigurator und modernem, vollständig responsivem Design.'},
+versions:[{y:'2016',l:{en:'Start · intern',de:'Start · Praktikum'},u:'https://web.archive.org/web/20160808023237/https://www.nonomo.de/'},{y:'2016',l:{en:'First upgrade',de:'Erstes Upgrade'},u:'https://web.archive.org/web/20161006000606/https://www.nonomo.de/'},{y:'2019',l:{en:'Relaunch',de:'Relaunch'},u:'https://web.archive.org/web/20190103055319/https://www.nonomo.de/'}]},
+{slug:'fidella',nda:false,year:'2016 – 2019',video:'work/fidella',client:{en:'Nonomella GmbH · fidella.org',de:'Nonomella GmbH · fidella.org'},tags:['JTL Shop','PHP','JavaScript','Responsive'],
+title:{en:'fidella.org: purchase advisor & modernisation',de:'fidella.org: Kaufberater & Modernisierung'},outcome:{en:'Built an interactive purchase advisor and modernised the shop.',de:'Interaktiven Kaufberater entwickelt und den Shop modernisiert.'},role:{en:'Head of IT · lead developer',de:'Leiter IT · Lead-Entwickler'},
+approach:{en:'Implemented a purchase advisor that guides customers to the right product, and modernised the shop design.',de:'Umsetzung eines Kaufberaters, der Kunden zum passenden Produkt führt, und Modernisierung des Shop-Designs.'},
+versions:[{y:'2016',l:{en:'Before',de:'Vorher'},u:'https://web.archive.org/web/20160229103848/https://fidella.org/'},{y:'2019',l:{en:'Modernised',de:'Modernisiert'},u:'https://web.archive.org/web/20190818065410/https://fidella.org/'}]}
+];
 const EDU=[
 {t:{en:'B.Sc. in Computer Engineering (Software Engineering)',de:'B.Sc. Technische Informatik (Softwaretechnik)'},s:{en:'Technological Educational Institute of Epirus',de:'Technological Educational Institute of Epirus'},y:'2008 – 2015'},
 {t:{en:'Vocational Training (Telecommunications & Networks)',de:'Berufsausbildung (Telekommunikation & Netzwerke)'},s:{en:'Vocational Training Institute, Ioannina, Greece',de:'Vocational Training Institute, Ioannina, Griechenland'},y:'2006 – 2007'},
@@ -397,7 +570,9 @@ const LANGS=[
 const BLD_=()=>PWg()?PWg().BLD:[];
 const RC=['#b8b6c4','#5fb4ff','#b48bff','#ffb84d'];
 const T={
-en:{nav:['Experience','Skills','Education','Contact'],play:'Play',dark:'Dark',light:'Light',loc:'Wuppertal, Germany',role:'Web & Software Developer',spec:'Full-Stack · Frontend focus',
+en:{navWork:'Work',sWork:'selected work',caseStudy:'Case study',live:'Live site',code:'Code',versions:'versions',mobile:'Mobile',desktop:'desktop',offline:'Offline',offlineNote:'This site is no longer online.',archive:'View on Web Archive',beforeAfter:'Before / after',projects:'projects',wProblem:'Problem',wApproach:'Approach',wResult:'Result',wRole:'Role',wStack:'Stack',wYear:'Year',
+phCard:'screenshot or looping video (16:10)',phProblem:'[What was broken or missing, and for whom. 2–3 sentences.]',phApproach:'[What you built and the 2–3 key technical decisions. Mention trade-offs.]',phResult:'[Measurable outcome: speed, users, time saved, errors reduced. Add a before/after screenshot above if possible.]',
+nav:['Experience','Skills','Education','Contact'],play:'Play',dark:'Dark',light:'Light',loc:'Wuppertal, Germany',role:'Web & Software Developer',spec:'Full-Stack · Frontend focus',
 profile:'Experienced Full-Stack Software Engineer with a strong focus on frontend development and modern web applications. Proven track record of leading technical teams, building dynamic single-page applications (SPAs), and integrating AI-powered development tools. Passionate about clean code, performance optimization, and scalable architectures.',
 email:'Email me',stackLabel:'core stack',termHint:"type 'help'",fYears:'years building for the web',fEcs:'at ECS GmbH',fLang:'languages spoken',fEdu:'Computer Engineering',
 sExp:'experience',sSkills:'skills',sEdu:'education',sLang:'languages',sContact:'contact',present:'present',grep:'filter skills…',matches:'matches',all:'All',none:'No matches.',
@@ -416,7 +591,9 @@ itemHint:'← → select item · ↑ ↓ switch category',questHint:'↑ ↓ sel
 tavernIntro:'Four regulars share a table. Each one speaks a language Sergkei knows.',postIntro:'Send a raven. Messages reach Sergkei directly.',raven:'SEND RAVEN',
 st:{name:'Name',cls:'Class',spec:'Specialization',home:'Home',guild:'Guild',lv:'Level'},attrs:'ATTRIBUTES',
 aYears:'Years in the field',aQuests:'Quests completed',aItems:'Items in inventory',aLangs:'Languages',aScrolls:'Scrolls earned'}},
-de:{nav:['Erfahrung','Skills','Ausbildung','Kontakt'],play:'Spielen',dark:'Dunkel',light:'Hell',loc:'Wuppertal, Deutschland',role:'Web- & Softwareentwickler',spec:'Full-Stack · Schwerpunkt Frontend',
+de:{navWork:'Projekte',sWork:'ausgewählte projekte',caseStudy:'Case Study',live:'Live-Seite',code:'Code',versions:'Versionen',mobile:'Mobil',desktop:'Desktop',offline:'Offline',offlineNote:'Diese Website ist nicht mehr online.',archive:'Im Web Archive ansehen',beforeAfter:'Vorher / Nachher',projects:'Projekte',wProblem:'Problem',wApproach:'Vorgehen',wResult:'Ergebnis',wRole:'Rolle',wStack:'Stack',wYear:'Jahr',
+phCard:'Screenshot oder Loop-Video (16:10)',phProblem:'[Was fehlte oder nicht funktionierte, und für wen. 2–3 Sätze.]',phApproach:'[Was du gebaut hast und die 2–3 wichtigsten technischen Entscheidungen.]',phResult:'[Messbares Ergebnis: Geschwindigkeit, Nutzer, gesparte Zeit, weniger Fehler.]',
+nav:['Erfahrung','Skills','Ausbildung','Kontakt'],play:'Spielen',dark:'Dunkel',light:'Hell',loc:'Wuppertal, Deutschland',role:'Web- & Softwareentwickler',spec:'Full-Stack · Schwerpunkt Frontend',
 profile:'Erfahrener Full-Stack Software Engineer mit starkem Fokus auf Frontend-Entwicklung und moderne Webanwendungen. Nachweisliche Erfahrung in der Leitung technischer Teams, der Entwicklung dynamischer Single-Page-Applications (SPAs) und der Integration KI-gestützter Entwicklungswerkzeuge. Leidenschaft für Clean Code, Performance-Optimierung und skalierbare Architekturen.',
 email:'E-Mail schreiben',stackLabel:'Kern-Stack',termHint:"tippe 'help'",fYears:'Jahre Webentwicklung',fEcs:'bei ECS GmbH',fLang:'Sprachen',fEdu:'Technische Informatik',
 sExp:'erfahrung',sSkills:'skills',sEdu:'ausbildung',sLang:'sprachen',sContact:'kontakt',present:'heute',grep:'Skills filtern…',matches:'Treffer',all:'Alle',none:'Keine Treffer.',
@@ -440,12 +617,12 @@ const THEMES={dark:{bg:'#0f0e13',fg:'#ecebf1',mut:'#9c9aa8',line:'#26242e',card:
 const START=new Date(2014,10,1);
 
 class Component extends DCLogic {
-  state={theme:'dark',lang:'en',mode:'cv',openJob:0,cat:'all',q:'',term:null,tin:'',pct:0,px:15,py:10,dir:'down',panel:null,visited:{},dlg:'',dlgN:0,sound:true,qSel:0,iSel:0,gCat:0,toast:null,achDone:false,achTold:false};
+  state={vOk:{},vw:typeof window!=='undefined'?window.innerWidth:1440,wTag:'all',wOpen:-1,wVer:-1,theme:'dark',lang:'en',mode:'cv',openJob:0,cat:'all',q:'',term:null,tin:'',pct:0,px:15,py:10,dir:'down',panel:null,visited:{},dlg:'',dlgN:0,sound:true,qSel:0,iSel:0,gCat:0,toast:null,achDone:false,achTold:false};
   mapRef=React.createRef(); zoneRef=React.createRef(); termRef=React.createRef(); tinRef=React.createRef();
   free(x,y){const P=PWg();return !!P&&!P.blocked(x,y);}
   years(){return (Date.now()-START)/(365.25*864e5);}
-  componentDidMount(){this.applyTheme();window.addEventListener('scroll',this.onScroll,{passive:true});window.addEventListener('keydown',this.onKey);this.onScroll();}
-  componentWillUnmount(){clearInterval(this.mapT);window.removeEventListener('scroll',this.onScroll);window.removeEventListener('keydown',this.onKey);clearInterval(this.typeT);clearInterval(this.walkT);document.body.style.overflow='';}
+  componentDidMount(){this.applyTheme();window.addEventListener('scroll',this.onScroll,{passive:true});window.addEventListener('keydown',this.onKey);window.addEventListener('resize',this.onResize);this.probeVideos();this.onScroll();}
+  componentWillUnmount(){clearInterval(this.mapT);window.removeEventListener('scroll',this.onScroll);window.removeEventListener('keydown',this.onKey);window.removeEventListener('resize',this.onResize);if(this._io)this._io.disconnect();clearInterval(this.typeT);clearInterval(this.walkT);document.body.style.overflow='';}
   componentDidUpdate(pp,ps){if(this.state.mode==='game'&&this.mapRef.current&&this._cv!==this.mapRef.current)this.startMap();if(this.state.mode!=='game'&&this._cv){clearInterval(this.mapT);this._cv=null;}if(ps.theme!==this.state.theme)this.applyTheme();if(ps.term!==this.state.term&&this.termRef.current)this.termRef.current.scrollTop=1e6;}
   loadImgs(){if(this._imgP)return this._imgP;this._imgP=Promise.all(['house','terrain','outside','water'].map(k=>new Promise(res=>{const i=new Image();i.onload=()=>res([k,i]);i.onerror=()=>res([k,null]);i.src='./assets/'+k+'.png';}))).then(a=>Object.fromEntries(a));return this._imgP;}
   startMap(){const cv=this.mapRef.current;this._cv=cv;clearInterval(this.mapT);this.loadImgs().then(im=>{if(this._cv!==cv)return;const g=cv.getContext('2d');let f=0;const draw=()=>{const P=PWg();if(P&&im.house)P.draw(g,im,f++);};draw();this.mapT=setInterval(draw,380);});}
@@ -474,7 +651,7 @@ class Component extends DCLogic {
   closePanel=()=>{const s=this.state;if(!s.panel)return;const b=BLD_().find(b=>b.dx===s.px&&b.dy===s.py);this.setState({panel:null,...(b&&this.free(s.px,s.py+1)?{py:s.py+1,dir:'down'}:{})});this.beep(330,.05);
     if(s.achDone&&!s.achTold){this.setState({achTold:true});setTimeout(()=>this.say(this.t().g.allDone),200);}};
   itemsIn(ci){return SKILLS.filter(k=>k.c===CATS[ci]);}
-  onKey=e=>{const s=this.state;if(s.mode!=='game')return;const k=e.key,lk=k.length===1?k.toLowerCase():k;
+  onKey=e=>{const s=this.state;if(s.mode==='cv'&&s.wOpen>=0){if(e.key==='Escape')this.setState({wOpen:-1});if(e.key==='ArrowRight')this.setState({wOpen:(s.wOpen+1)%WORK.length});if(e.key==='ArrowLeft')this.setState({wOpen:(s.wOpen-1+WORK.length)%WORK.length});return;}if(s.mode!=='game')return;const k=e.key,lk=k.length===1?k.toLowerCase():k;
     if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(k))e.preventDefault();
     if(s.panel){if(k==='Escape'||k==='Backspace'){this.closePanel();return;}
       if(s.panel==='quests'){const d=(lk==='ArrowDown'||lk==='s')?1:(lk==='ArrowUp'||lk==='w')?-1:0;if(d){this.setState({qSel:(s.qSel+d+JOBS.length)%JOBS.length});this.beep(600,.03);}}
@@ -501,6 +678,20 @@ class Component extends DCLogic {
     else P('command not found: '+c,'err');
     this.setState({term:[...this.termLines(),{k:'in',s:raw},...out],tin:''});}
   termLines(){return this.state.term||[{k:'in',s:'whoami'},{k:'out',s:'Sergkei Kournosenkov — '+this.t().role},{k:'dim',s:"commands: help · stack · contact · play"}];}
+  _vr={};_io=null;
+  vref(slug,rm){return this._vr[slug]||(this._vr[slug]=el=>{
+    if(!el)return;el.muted=true;if(rm)return;
+    if(!this._io)this._io=new IntersectionObserver(es=>es.forEach(e=>{e.isIntersecting?e.target.play().catch(()=>{}):e.target.pause();}),{threshold:.35});
+    this._io.observe(el);
+  });}
+  async probeVideos(){
+    const webm=document.createElement('video').canPlayType('video/webm')!=='';this._webm=webm;
+    for(const w of WORK){if(!w.video)continue;
+      for(const ext of webm?['.webm','.mp4']:['.mp4']){
+        try{const r=await fetch(w.video+ext,{method:'HEAD'});if(r.ok&&!(r.headers.get('content-type')||'').includes('text/html')){this.setState({vOk:{...this.state.vOk,[w.slug]:w.video+ext}});break;}}catch(e){}
+      }}
+  }
+  onResize=()=>{const w=window.innerWidth;if((w>=1000)!==(this.state.vw>=1000))this.setState({vw:w});};
   toggleTheme=()=>this.setState({theme:this.state.theme==='dark'?'light':'dark'});
   renderVals(){
     const s=this.state,L=s.lang,t=T[L],g=t.g,yrs=this.years(),lvl=Math.floor(yrs);
@@ -511,6 +702,20 @@ class Component extends DCLogic {
     const tc={in:'var(--fg,#ecebf1)',out:'var(--mut,#9c9aa8)',dim:'var(--mut,#9c9aa8)',acc:'var(--acc,#b48bff)',err:'#ff6b8a'};
     const termLines=this.termLines().map(l=>({s:(l.k==='in'?'❯ ':'')+l.s,c:tc[l.k]}));
     const jobs=JOBS.map((j,i)=>({period:this.period(j,L),role:j.role[L],company:j.company+(j.place?' · '+j.place[L]:''),bullets:j.b[L],tags:j.tags,open:s.openJob===i,sign:s.openJob===i?'−':'+',toggle:()=>this.setState({openJob:s.openJob===i?-1:i})}));
+    const wtagList=['all','Angular','WordPress','JTL Shop','PHP','Responsive'];
+    const wtags=wtagList.map(tg=>({label:tg==='all'?t.all.toLowerCase():tg.toLowerCase(),bg:s.wTag===tg?on:off,fg:s.wTag===tg?onFg:offFg,pick:()=>this.setState({wTag:tg})}));
+    const wList=WORK.map((w,i)=>({w,i})).filter(({w})=>s.wTag==='all'||w.tags.includes(s.wTag));
+    const rm=typeof matchMedia!=='undefined'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const work=wList.map(({w,i})=>({diagram:w.diagram==='migration',hasStats:!!w.stats,stats:(w.stats||[]).map(x=>({n:x.n,l:x.l[L]})),offline:!!w.offline,still:w.video?w.video+'-poster.'+(w.img||'jpg'):undefined,hasLh:!!w.lh,lh:(w.lh||[]).map(([k,v])=>({v})),videoEl:s.vOk[w.slug]?React.createElement('video',{key:w.slug,ref:this.vref(w.slug,rm),src:s.vOk[w.slug],poster:w.video+'-poster.jpg',muted:true,loop:true,playsInline:true,preload:'metadata',
+        onError:()=>this.setState({vOk:{...this.state.vOk,[w.slug]:null}}),
+        style:{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'top',display:'block',background:'var(--bg,#0f0e13)'}}):null,slot:'work-'+w.slug,ph:t.phCard,nda:w.nda,client:w.client[L],year:w.year,title:w.title[L],outcome:w.outcome[L],tags:w.tags,vcount:w.versions?w.versions.length+' '+t.versions:'',open:()=>this.setState({wOpen:i,wVer:-1})}));
+    const wo=WORK[Math.max(0,s.wOpen)];
+    const vers=wo.versions||[],vi=vers.length?(s.wVer<0||s.wVer>=vers.length?vers.length-1:s.wVer):-1,cv=vi>=0?vers[vi]:null;
+    const wvers=vers.map((v,i)=>({label:v.y==='Live'?v.l[L]:v.y+' · '+v.l[L],bg:i===vi?on:off,fg:i===vi?onFg:offFg,pick:()=>this.setState({wVer:i})}));
+    const wd={diagram:wo.diagram==='migration',hasStats:!!wo.stats,stats:(wo.stats||[]).map(x=>({n:x.n,l:x.l[L]})),hasTabs:vers.length>1,offline:!!wo.offline,showLive:!wo.offline,hasLh:!!wo.lh,lh:(wo.lh||[]).map(([k,v])=>({k,v,ring:'conic-gradient(#0cce6b '+(v*3.6)+'deg, var(--line,#26242e) 0)'})),stillBig:cv&&wo.video?wo.video+'-'+(vi+1)+'.'+(wo.img||'jpg'):undefined,mobileEl:wo.video?React.createElement('video',{key:wo.slug+'-m',ref:this.vref(wo.slug+'-m',rm),src:wo.video+'-mobile.'+(this._webm?'webm':'mp4'),poster:wo.video+'-'+vers.length+'.'+(wo.img||'jpg'),muted:true,loop:true,playsInline:true,preload:'metadata',style:{width:'100%',height:'100%',objectFit:'cover',objectPosition:'top',display:'block',background:'#000'}}):null,hasMobile:!!wo.video&&!!s.vOk[wo.slug],mobileCap:cv?vers[vers.length-1].l[L]+' · '+vers[vers.length-1].y+' · mobile':'',liveLabel:wo.live?t.live:cv?vers[vers.length-1].l[L]+' '+vers[vers.length-1].y:t.live,showCode:!vers.length&&!wo.offline,liveUrl:wo.live||(cv?vers[vers.length-1].u:'#'),hasVers:!!vers.length,vers:wvers,verUrl:cv?cv.u:'',isArchive:!!cv&&cv.u.includes('web.archive.org'),verCap:cv?(cv.y==='Live'?cv.l[L]:cv.l[L]+' · '+cv.y):'',slug:wo.slug,slotBig:cv?'work-'+wo.slug+'-v'+(vi+1):'work-'+wo.slug+'-hero',phBig:cv?t.phCard.split('(')[0]+'· '+wo.slug+' '+cv.y:t.phCard,hasCode:!!wo.code,code:wo.code||'',phBig:t.phCard,client:wo.client[L],year:wo.year,title:wo.title[L],outcome:wo.outcome[L],
+      meta:[{k:t.wRole,v:wo.role[L]},{k:t.wStack,v:wo.tags.join(', ')},{k:t.wYear,v:wo.year}],
+      sections:[{h:t.wProblem,p:wo.problem?wo.problem[L]:t.phProblem},{h:t.wApproach,p:wo.approach?wo.approach[L]:t.phApproach},{h:t.wResult,p:wo.result?wo.result[L]:t.phResult}]};
+    const cycle=d=>this.setState({wOpen:(s.wOpen+d+WORK.length)%WORK.length,wVer:-1});
     const edu=EDU.map(e=>({t:e.t[L],s:e.s[L],y:e.y}));
     const langs=LANGS.map(l=>({n:l.n[L],l:l.l[L],w:l.p+'%',hi:l.hi,col:`oklch(0.72 0.15 ${l.hue})`}));
     const pct=s.pct,trig=(this.props.gameTrigger??'scroll')==='scroll';
@@ -544,6 +749,7 @@ class Component extends DCLogic {
       stack:['Angular','React','Tailwind','Spring Boot','PostgreSQL','Claude Code'],
       facts:[{n:lvl+'+',l:t.fYears},{n:'2019→',l:t.fEcs},{n:'4',l:t.fLang},{n:'B.Sc.',l:t.fEdu}],
       termRef:this.termRef,tinRef:this.tinRef,termLines,tin:s.tin,onTin:e=>this.setState({tin:e.target.value}),onTinKey:e=>{if(e.key==='Enter')this.runCmd(s.tin);},focusTerm:()=>this.tinRef.current&&this.tinRef.current.focus({preventScroll:true}),
+      showNav:s.vw>=1000,wtags,work,workCount:wList.length+' '+t.projects,drawerOpen:s.wOpen>=0,wd,closeWork:()=>this.setState({wOpen:-1}),prevWork:()=>cycle(-1),nextWork:()=>cycle(1),
       jobs,q:s.q,onQ:e=>this.setState({q:e.target.value}),skills,skillCount:skills.length,noSkills:!skills.length,cats,edu,langs,
       zoneRef:this.zoneRef,zoneH:trig?'180vh':'100vh',pctW:(trig?pct*100:0).toFixed(1)+'%',pctTxt:trig?Math.round(pct*100)+'%':'',zoneTitle:trig?(pct>.9?t.zReady:t.zTitle):t.zBtn,zoneBtn:trig?t.zSkip:t.zBtn,jitter:(trig&&pct>.6?((Math.random()-.5)*pct*10).toFixed(1):0)+'px',
       isGame:s.mode==='game',glitchEl,toastEl,scan:this.props.scanlines??true,

@@ -4,12 +4,14 @@ import { esc, setHTML, careerYears, period } from './util';
 import { Terminal } from './terminal';
 import { contactFormHTML, bindContactForm } from './contact';
 import { LINKS, GAME_TRIGGER } from './config';
+import { mountWork } from './work-section';
 
 const ui = { openJob: 0, cat: 'all', q: '' };
 const STACK = ['Angular', 'React', 'Tailwind', 'Spring Boot', 'PostgreSQL', 'Claude Code'];
 
 export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: () => void = () => {}) {
   const terminal = new Terminal(enterGame);
+  const work = mountWork(root); // persistent element, re-inserted on every render so its videos keep playing
   let armed = true; // becomes false once the scroll trigger fired, re-armed on return
   let z: { zone: HTMLElement; fill: HTMLElement | null; pct: Element | null; title: Element | null; box: HTMLElement | null } | null = null;
   let lastTitle = '';
@@ -22,7 +24,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
       <div class="wrap top__in">
         <a href="#top" class="logo"><span>~/</span>sergkei</a>
         <nav class="top__nav" aria-label="Sections">
-          <a href="#experience">${esc(tt.nav[0])}</a><a href="#skills">${esc(tt.nav[1])}</a><a href="#education">${esc(tt.nav[2])}</a><a href="#contact">${esc(tt.nav[3])}</a>
+          <a href="#experience">${esc(tt.nav[0])}</a><a href="#work">${esc(tt.navWork)}</a><a href="#skills">${esc(tt.nav[1])}</a><a href="#education">${esc(tt.nav[2])}</a><a href="#contact">${esc(tt.nav[3])}</a>
         </nav>
         <div class="seg" role="group" aria-label="Language">
           <button data-lang="en" aria-pressed="${store.state.lang === 'en'}">EN</button><button data-lang="de" aria-pressed="${store.state.lang === 'de'}">DE</button>
@@ -58,8 +60,10 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
         <div class="jobs" data-jobs>${jobsHTML()}</div>
       </section>
 
+      <div data-work></div>
+
       <section id="skills" class="sec">
-        <h2 class="sec__h"><span>// 02</span> ${esc(tt.sSkills)}</h2>
+        <h2 class="sec__h"><span>// 03</span> ${esc(tt.sSkills)}</h2>
         <label class="grep"><span>$ grep -i</span><input data-q value="${esc(ui.q)}" placeholder="${esc(tt.grep)}" spellcheck="false" autocomplete="off"><span class="grep__count" data-count></span></label>
         <div class="chips" data-cats></div>
         <div class="skills" data-skills></div>
@@ -67,17 +71,17 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
 
       <section id="education" class="sec two">
         <div>
-          <h2 class="sec__h"><span>// 03</span> ${esc(tt.sEdu)}</h2>
+          <h2 class="sec__h"><span>// 04</span> ${esc(tt.sEdu)}</h2>
           ${EDU.map((e) => `<div class="row"><span class="row__t">${esc(e.t[store.state.lang])}</span><span class="row__s">${esc(e.s[store.state.lang])}</span><span class="row__y">${esc(e.y)}</span></div>`).join('')}
         </div>
         <div>
-          <h2 class="sec__h"><span>// 04</span> ${esc(tt.sLang)}</h2>
+          <h2 class="sec__h"><span>// 05</span> ${esc(tt.sLang)}</h2>
           ${LANGS.map((l) => `<div class="row"><div class="row__split"><span class="row__t">${esc(l.n[store.state.lang])}</span><span class="row__lvl">${esc(l.l[store.state.lang])}</span></div><div class="meter"><div style="width:${l.p}%"></div></div></div>`).join('')}
         </div>
       </section>
 
       <section id="contact" class="sec contact">
-        <h2 class="sec__h"><span>// 05</span> ${esc(tt.sContact)}</h2>
+        <h2 class="sec__h"><span>// 06</span> ${esc(tt.sContact)}</h2>
         <p class="contact__title">${esc(tt.cTitle)}</p>
         <a class="contact__mail" href="mailto:${LINKS.email}">${LINKS.email}</a>
         <div class="ctas">
@@ -108,6 +112,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
     const zone = root.querySelector<HTMLElement>('[data-zone]');
     z = zone && { zone, fill: root.querySelector('[data-zone-fill]'), pct: root.querySelector('[data-zone-pct]'), title: root.querySelector('[data-zone-title]'), box: root.querySelector('[data-zone-box]') };
     lastTitle = '';
+    root.querySelector('[data-work]')!.replaceWith(work.el);
     renderSkills();
     terminal.bind(root);
     bindContactForm(root);
@@ -165,7 +170,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
   let frame = 0;
   const update = () => {
     frame = 0;
-    if (GAME_TRIGGER !== 'scroll' || !z || document.body.classList.contains('in-game')) return;
+    if (GAME_TRIGGER !== 'scroll' || !z || document.body.classList.contains('in-game') || document.documentElement.classList.contains('wk-lock')) return;
     const r = z.zone.getBoundingClientRect(), span = r.height - innerHeight; if (span <= 0) return;
     const p = Math.max(0, Math.min(1, -r.top / span));
     if (z.fill) z.fill.style.width = (p * 100).toFixed(1) + '%';
@@ -186,5 +191,6 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
   });
   render();
   onScroll(); // first measurement on the next frame, not synchronously after render (avoids a forced reflow)
+  work.openFromHash();
   return { onReturn() { armed = false; scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }); } };
 }

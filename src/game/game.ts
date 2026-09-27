@@ -346,6 +346,7 @@ export class Game {
   private onKey = (e: KeyboardEvent) => {
     const s = this.s, k = e.key, lk = k.length === 1 ? k.toLowerCase() : k;
     if ((e.target as HTMLElement).closest?.('input,textarea')) return;
+    if (document.documentElement.classList.contains('wk-lock')) return; // case-study drawer owns the keyboard
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(k)) e.preventDefault();
     const vert = lk === 'ArrowDown' || lk === 's' ? 1 : lk === 'ArrowUp' || lk === 'w' ? -1 : 0;
     const horiz = lk === 'ArrowRight' || lk === 'd' ? 1 : lk === 'ArrowLeft' || lk === 'a' ? -1 : 0;

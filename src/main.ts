@@ -7,6 +7,7 @@ import '@fontsource/ibm-plex-sans/latin-500.css';
 import '@fontsource/press-start-2p/400.css'; // glitch label; the rest of the game fonts load with the game chunk
 import './styles/fonts.css';
 import './styles/cv.css';
+import './styles/work.css';
 import { applyDocument } from './store';
 import { mountCV } from './cv';
 import { playGlitch } from './glitch';

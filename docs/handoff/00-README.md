@@ -19,6 +19,7 @@ The prototype uses inline styles in a custom template format. **Don't copy that 
 | `03-game-mode.md` | Game screen layout: HUD, map, hero, dialog, D-pad, panels, toasts |
 | `04-behaviour.md` | Interactions, state, transitions, keyboard/touch, i18n, analytics events |
 | `05-qa-checklist.md` | Acceptance checklist + likely causes of the current layout breakage |
+| `06-work-section.md` | Portfolio section: cards, videos, case-study drawer, record:work script |
 
 ## Fidelity
 

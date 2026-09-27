@@ -45,9 +45,17 @@ export const THEMES={dark:{bg:'#0f0e13',fg:'#ecebf1',mut:'#9c9aa8',line:'#26242e
 const EXTRA={
 en:{form:{title:'Send a message',name:'Name',email:'Email',message:'Message',send:'Send message',sending:'Sending…',ok:'Thanks! Your message is on its way.',err:'Something went wrong. Please email me directly.',privacy:'Your data is only used to reply to your message. See the',privacyLink:'privacy policy'},
  footer:{privacy:'Privacy'},skip:'Skip to content',
+ navWork:'Work',sWork:'selected work',caseStudy:'Case study',live:'Live site',code:'Code',projects:'projects',
+ wProblem:'Problem',wApproach:'Approach',wResult:'Result',wRole:'Role',wStack:'Stack',wYear:'Year',versions:'versions',
+ mobile:'Mobile',desktop:'desktop',offline:'Offline',offlineNote:'This site is no longer online.',archive:'View on Web Archive',beforeAfter:'Before / after',
+ wFilter:'Filter projects',wPrev:'Previous project',wNext:'Next project',wClose:'Close case study',
  g:{touch:'Swipe or hold the pad to walk · tap a building',letter:'WRITE A LETTER',back:'BACK'}},
 de:{form:{title:'Nachricht senden',name:'Name',email:'E-Mail',message:'Nachricht',send:'Nachricht senden',sending:'Wird gesendet…',ok:'Danke! Deine Nachricht ist unterwegs.',err:'Etwas ist schiefgelaufen. Bitte schreib mir direkt per E-Mail.',privacy:'Deine Daten werden nur zur Beantwortung deiner Nachricht verwendet. Siehe',privacyLink:'Datenschutzerklärung'},
  footer:{privacy:'Datenschutz'},skip:'Zum Inhalt springen',
+ navWork:'Projekte',sWork:'ausgewählte projekte',caseStudy:'Case Study',live:'Live-Seite',code:'Code',projects:'Projekte',
+ wProblem:'Problem',wApproach:'Vorgehen',wResult:'Ergebnis',wRole:'Rolle',wStack:'Stack',wYear:'Jahr',versions:'Versionen',
+ mobile:'Mobil',desktop:'Desktop',offline:'Offline',offlineNote:'Diese Website ist nicht mehr online.',archive:'Im Web Archive ansehen',beforeAfter:'Vorher / Nachher',
+ wFilter:'Projekte filtern',wPrev:'Vorheriges Projekt',wNext:'Nächstes Projekt',wClose:'Case Study schließen',
  g:{touch:'Wischen oder Steuerkreuz halten zum Laufen · Gebäude antippen',letter:'BRIEF SCHREIBEN',back:'ZURÜCK'}}
 };
 const merge=(a:any,b:any):any=>{const o:any={...a};for(const k in b)o[k]=(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k]))?merge(a[k]||{},b[k]):b[k];return o;};
