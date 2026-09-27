@@ -4,7 +4,7 @@ Personal CV website (Vite + vanilla TypeScript, no framework). See README.md for
 
 ## Conventions
 - No frameworks or UI libraries. Rendering is template strings + `esc()` from `src/util.ts`. Always escape user/content strings.
-- All content lives in `src/data.ts` (CV) and `src/i18n.ts` (UI). Every string needs both `en` and `de`.
+- All content lives in `src/data.ts` (CV) and `src/i18n.ts` (UI). Every string needs `en`, `de` and `el` (Greek; keep commands, tech terms and job titles in English). The compiler enforces it via `L10n` and the `satisfies` checks in `i18n.ts`.
 - Styles: plain CSS in `src/styles/`. Theme tokens are CSS variables on `[data-theme]`. Game colours are scoped on `.game`.
 - Game pixel art is 16px native. Keep `image-rendering: pixelated`; never smooth-scale sprites.
 - Accent colour `#9b5cff`. Fonts: IBM Plex Mono/Sans (CV), Press Start 2P + VT323 (game). Self-hosted via @fontsource. Never add Google Fonts links (GDPR).

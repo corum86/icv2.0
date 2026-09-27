@@ -14,7 +14,7 @@ a:hover { color: var(--fg); }
 .legal__seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
 .legal__seg button:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
 /* Show only the block matching <html lang> (set before paint in datenschutz.html, then by store). */
-html[lang="de"] .legal [lang="en"], html:not([lang="de"]) .legal [lang="de"] { display: none; }
+html:is([lang="de"], [lang="el"]) .legal [lang="en"], html:not([lang="de"]) .legal [lang="de"], html:not([lang="el"]) .legal [lang="el"] { display: none; }
 h1 { font: 600 clamp(32px, 5vw, 48px)/1.05 'IBM Plex Mono', 'IBM Plex Mono Fallback', monospace; letter-spacing: -.03em; margin: 0 0 12px; }
 h2 { font: 600 18px 'IBM Plex Mono', 'IBM Plex Mono Fallback', monospace; margin: 40px 0 8px; }
 h3 { font-size: 16px; margin: 24px 0 4px; }

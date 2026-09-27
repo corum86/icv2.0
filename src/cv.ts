@@ -1,4 +1,4 @@
-import { JOBS, SKILLS, CATS, EDU, LANGS } from './data';
+import { JOBS, SKILLS, CATS, EDU, LANGS, LANG_CODES } from './data';
 import { store, t } from './store';
 import { esc, setHTML, careerYears, period } from './util';
 import { Terminal } from './terminal';
@@ -27,7 +27,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
           <a href="#experience">${esc(tt.nav[0])}</a><a href="#work">${esc(tt.navWork)}</a><a href="#skills">${esc(tt.nav[1])}</a><a href="#education">${esc(tt.nav[2])}</a><a href="#contact">${esc(tt.nav[3])}</a>
         </nav>
         <div class="seg" role="group" aria-label="Language">
-          <button data-lang="en" aria-pressed="${store.state.lang === 'en'}">EN</button><button data-lang="de" aria-pressed="${store.state.lang === 'de'}">DE</button>
+          ${LANG_CODES.map((l) => `<button data-lang="${l}" aria-pressed="${store.state.lang === l}">${l.toUpperCase()}</button>`).join('')}
         </div>
         <button class="btn-ghost" data-action="theme">◐ ${esc(store.state.theme === 'dark' ? tt.light : tt.dark)}</button>
         <button class="btn-play" data-action="play">▶ ${esc(tt.play)}</button>

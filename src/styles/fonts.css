@@ -4,3 +4,12 @@
   size-adjust: 100%; ascent-override: 102.5%; descent-override: 27.5%; line-gap-override: 0%; }
 @font-face { font-family: 'IBM Plex Sans Fallback'; src: local('Arial'), local('Liberation Sans'), local('Arimo');
   size-adjust: 101.17%; ascent-override: 101.32%; descent-override: 27.18%; line-gap-override: 0%; }
+
+/* Greek (EL) for IBM Plex Sans. Own @font-face with unicode-range so the files only download when Greek text is shown
+   (fontsource's per-subset CSS has no unicode-range). IBM Plex Mono has no Greek: Greek mono text uses the fallback face above. */
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-display: swap; font-weight: 400;
+  src: url('@fontsource/ibm-plex-sans/files/ibm-plex-sans-greek-400-normal.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-display: swap; font-weight: 500;
+  src: url('@fontsource/ibm-plex-sans/files/ibm-plex-sans-greek-500-normal.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }

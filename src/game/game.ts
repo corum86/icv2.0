@@ -2,7 +2,7 @@ import '@fontsource/vt323/400.css';
 import '../styles/game.css';
 import { JOBS, SKILLS, CATS, EDU, LANGS } from '../data';
 import { RARITY_COLORS } from '../i18n';
-import { store, t } from '../store';
+import { store, t, nextLang } from '../store';
 import { esc, setHTML, careerYears, period, duration } from '../util';
 import { LINKS, SCANLINES } from '../config';
 import { contactFormHTML, bindContactForm } from '../contact';
@@ -72,7 +72,7 @@ export class Game {
           <button class="rbtn" data-g="items">[I] ${esc(g.items)}</button>
           <button class="rbtn" data-g="quests">[Q] ${esc(g.quests)}</button>
           <button class="rbtn" data-g="sound" data-sound>[M] ${esc(sfx.on ? g.on : g.off)}</button>
-          <button class="rbtn" data-g="lang">${store.state.lang === 'en' ? 'DE' : 'EN'}</button>
+          <button class="rbtn" data-g="lang">${nextLang().toUpperCase()}</button>
           <button class="rbtn rbtn--exit" data-g="exit">[X] ${esc(g.exit)}</button>
         </div>
       </div>
@@ -115,7 +115,7 @@ export class Game {
       const a = el.dataset.g;
       if (a === 'status' || a === 'items' || a === 'quests') this.openPanel(a);
       else if (a === 'sound') { sfx.on = !sfx.on; el.textContent = `[M] ${sfx.on ? t().g.on : t().g.off}`; }
-      else if (a === 'lang') store.set({ lang: store.state.lang === 'en' ? 'de' : 'en' });
+      else if (a === 'lang') store.set({ lang: nextLang() });
       else if (a === 'exit') this.close();
       else if (el.dataset.dlgbox !== undefined) this.skipDialog();
       else if (el.dataset.close !== undefined) this.closePanel();

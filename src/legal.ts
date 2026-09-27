@@ -10,6 +10,7 @@ import type { Lang } from './data';
 const TITLE: Record<Lang, string> = {
   en: 'Privacy Policy — Sergkei Kournosenkov',
   de: 'Datenschutzerklärung — Sergkei Kournosenkov',
+  el: 'Πολιτική απορρήτου — Sergkei Kournosenkov',
 };
 
 const buttons = document.querySelectorAll<HTMLButtonElement>('.legal__seg [data-lang]');

@@ -1,5 +1,5 @@
 import { T, type Dict } from './i18n';
-import type { Lang } from './data';
+import { LANG_CODES, isLang, type Lang } from './data';
 
 type Theme = 'dark' | 'light';
 interface State { lang: Lang; theme: Theme }
@@ -8,7 +8,8 @@ const read = (k: string) => { try { return localStorage.getItem(k); } catch { re
 const write = (k: string, v: string) => { try { localStorage.setItem(k, v); } catch { /* private mode */ } };
 
 const q = new URLSearchParams(location.search).get('lang');
-const initialLang: Lang = q === 'de' || q === 'en' ? q : ((read('lang') as Lang) || (navigator.language.toLowerCase().startsWith('de') ? 'de' : 'en'));
+const saved = read('lang'), nav = navigator.language.toLowerCase().slice(0, 2);
+const initialLang: Lang = isLang(q) ? q : isLang(saved) ? saved : isLang(nav) ? nav : 'en';
 const initialTheme: Theme = (read('theme') as Theme) || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
 
 const listeners = new Set<(changed: Partial<State>) => void>();
@@ -26,6 +27,8 @@ export const store = {
 };
 
 export const t = (): Dict => T[store.state.lang];
+/** The language after the current one, for single-button toggles (game HUD, terminal). */
+export const nextLang = (): Lang => LANG_CODES[(LANG_CODES.indexOf(store.state.lang) + 1) % LANG_CODES.length];
 
 export function applyDocument() {
   const el = document.documentElement;

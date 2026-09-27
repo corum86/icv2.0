@@ -1,4 +1,5 @@
-// UI strings (EN/DE). CV content lives in data.ts.
+// UI strings (EN/DE/EL). CV content lives in data.ts.
+import type { Lang } from './data';
 export const RARITY_COLORS=['#b8b6c4','#5fb4ff','#b48bff','#ffb84d'];
 const BASE={
 en:{nav:['Experience','Skills','Education','Contact'],play:'Play',dark:'Dark',light:'Light',loc:'Wuppertal, Germany',role:'Web & Software Developer',spec:'Full-Stack · Frontend focus',
@@ -38,7 +39,27 @@ rar:['GEWÖHNLICH','SELTEN','EPISCH','LEGENDÄR'],type:'Typ',found_in:'Eingesetz
 itemHint:'← → Item wählen · ↑ ↓ Kategorie wechseln',questHint:'↑ ↓ Quest wählen',
 tavernIntro:'Vier Stammgäste teilen sich einen Tisch. Jeder spricht eine Sprache, die Sergkei beherrscht.',postIntro:'Schick einen Raben. Nachrichten erreichen Sergkei direkt.',raven:'RABEN SENDEN',
 st:{name:'Name',cls:'Klasse',spec:'Spezialisierung',home:'Heimat',guild:'Gilde',lv:'Level'},attrs:'ATTRIBUTE',
-aYears:'Jahre im Beruf',aQuests:'Abgeschlossene Quests',aItems:'Items im Inventar',aLangs:'Sprachen',aScrolls:'Schriftrollen'}}
+aYears:'Jahre im Beruf',aQuests:'Abgeschlossene Quests',aItems:'Items im Inventar',aLangs:'Sprachen',aScrolls:'Schriftrollen'}},
+// Greek. Tech terms, job titles and commands stay English, as they're used in Greek tech. All-caps Greek has no accents.
+el:{nav:['Εμπειρία','Δεξιότητες','Εκπαίδευση','Επικοινωνία'],play:'Παίξε',dark:'Σκούρο',light:'Ανοιχτό',loc:'Βούπερταλ, Γερμανία',role:'Web & Software Developer',spec:'Full-Stack · Έμφαση στο Frontend',
+profile:'Έμπειρος Full-Stack Software Engineer με έντονη έμφαση στο frontend και στις σύγχρονες web εφαρμογές. Αποδεδειγμένη εμπειρία στην καθοδήγηση τεχνικών ομάδων, στην ανάπτυξη δυναμικών single-page applications (SPAs) και στην ενσωμάτωση εργαλείων ανάπτυξης με AI. Με πάθος για clean code, βελτιστοποίηση απόδοσης και κλιμακώσιμες αρχιτεκτονικές.',
+email:'Στείλε email',stackLabel:'βασικό stack',termHint:"γράψε 'help'",fYears:'χρόνια ανάπτυξης για το web',fEcs:'στην ECS GmbH',fLang:'γλώσσες',fEdu:'Μηχανικός Πληροφορικής',
+sExp:'εμπειρία',sSkills:'δεξιότητες',sEdu:'εκπαίδευση',sLang:'γλώσσες',sContact:'επικοινωνία',present:'σήμερα',grep:'φίλτρο δεξιοτήτων…',matches:'αποτελέσματα',all:'Όλα',none:'Κανένα αποτέλεσμα.',
+cTitle:'Ας φτιάξουμε κάτι μαζί.',zTitle:'Συνέχισε το scroll για να μπεις στο παιχνίδι',zReady:'Φόρτωση παιχνιδιού…',zSub:'Το υπόλοιπο βιογραφικό παίζεται.',zSkip:'Παράλειψη, μπες τώρα',zBtn:'Μπες στο παιχνίδι',
+cats:{frontend:'Frontend & UI',backend:'Backend & γλώσσες',databases:'Βάσεις δεδομένων',apis:'APIs & αρχιτεκτονική',quality:'Ποιότητα & testing',ai:'Εργαλεία AI',devops:'DevOps & VCS',platforms:'Πλατφόρμες & εργαλεία'},
+g:{status:'ΚΑΤΑΣΤΑΣΗ',items:'ΑΝΤΙΚΕΙΜΕΝΑ',quests:'ΑΠΟΣΤΟΛΕΣ',exit:'ΕΞΟΔΟΣ ΣΤΟ CV',on:'ΗΧΟΣ ON',off:'ΗΧΟΣ OFF',lv:'LV',cls:'Full-Stack Engineer',specV:'Frontend',
+controls:'ΒΕΛΑΚΙΑ / WASD κίνηση · κλικ για περπάτημα · C κατάσταση · I αντικείμενα · Q αποστολές · ESC κλείσιμο',
+intro:'Καλώς ήρθες, ταξιδιώτη. Αυτό το χωριό κρύβει την ιστορία του Sergkei Kournosenkov. Περπάτα με τα βελάκια ή WASD, ή κάνε κλικ σε ένα κτίριο. Κάθε πόρτα ανοίγει ένα κεφάλαιο.',
+allDone:'Εξερεύνησες και τις πέντε περιοχές. Είδες όλο το βιογραφικό. Το Ταχυδρομείο στέλνει κοράκια κατευθείαν στον Sergkei.',
+enter:'Μπαίνεις:',found:'ΝΕΑ ΠΕΡΙΟΧΗ',ach:'ΕΠΙΤΕΥΓΜΑ: ΕΞΕΡΕΥΝΗΤΗΣ',explored:'εξερευνήθηκαν',close:'ESC · ΚΛΕΙΣΙΜΟ',
+b:{guild:'ΣΥΝΤΕΧΝΙΑ',armory:'ΟΠΛΟΘΗΚΗ',post:'ΤΑΧΥΔΡΟΜΕΙΟ',academy:'ΑΚΑΔΗΜΙΑ',tavern:'ΤΑΒΕΡΝΑ'},
+p:{quests:'ΗΜΕΡΟΛΟΓΙΟ ΑΠΟΣΤΟΛΩΝ',items:'ΣΑΚΙΔΙΟ',contact:'ΤΑΧΥΔΡΟΜΕΙΟ',academy:'ΑΚΑΔΗΜΙΑ · ΠΑΠΥΡΟΙ',tavern:'ΤΑΒΕΡΝΑ',status:'ΧΑΡΑΚΤΗΡΑΣ'},
+giver:'Εντολέας',when:'Περίοδος',reward:'Ανταμοιβή',active:'ΣΕ ΕΞΕΛΙΞΗ',done:'ΟΛΟΚΛΗΡΩΘΗΚΕ',side:'ΔΕΥΤΕΡΕΥΟΥΣΑ ΑΠΟΣΤΟΛΗ · ΟΛΟΚΛΗΡΩΘΗΚΕ',obj:'ΣΤΟΧΟΙ',yrs:'χ',mos:'μ',xp:'εμπειρία',
+rar:['ΚΟΙΝΟ','ΣΠΑΝΙΟ','ΕΠΙΚΟ','ΘΡΥΛΙΚΟ'],type:'Τύπος',found_in:'Χρήση σε',fromCv:'Από τις τεχνικές δεξιότητες',
+itemHint:'← → επιλογή αντικειμένου · ↑ ↓ αλλαγή κατηγορίας',questHint:'↑ ↓ επιλογή αποστολής',
+tavernIntro:'Τέσσερις θαμώνες μοιράζονται ένα τραπέζι. Ο καθένας μιλά μια γλώσσα που ξέρει ο Sergkei.',postIntro:'Στείλε ένα κοράκι. Τα μηνύματα φτάνουν κατευθείαν στον Sergkei.',raven:'ΣΤΕΙΛΕ ΚΟΡΑΚΙ',
+st:{name:'Όνομα',cls:'Κλάση',spec:'Ειδίκευση',home:'Έδρα',guild:'Συντεχνία',lv:'Level'},attrs:'ΙΔΙΟΤΗΤΕΣ',
+aYears:'Χρόνια στον χώρο',aQuests:'Ολοκληρωμένες αποστολές',aItems:'Αντικείμενα στο σακίδιο',aLangs:'Γλώσσες',aScrolls:'Πάπυροι'}}
 };
 export const THEMES={dark:{bg:'#0f0e13',fg:'#ecebf1',mut:'#9c9aa8',line:'#26242e',card:'#16151c',acc:'#b48bff'},light:{bg:'#f7f6f9',fg:'#17161c',mut:'#5b5967',line:'#e3e1e9',card:'#ffffff',acc:'#6d35d6'}};
 
@@ -56,8 +77,18 @@ de:{form:{title:'Nachricht senden',name:'Name',email:'E-Mail',message:'Nachricht
  wProblem:'Problem',wApproach:'Vorgehen',wResult:'Ergebnis',wRole:'Rolle',wStack:'Stack',wYear:'Jahr',versions:'Versionen',
  mobile:'Mobil',desktop:'Desktop',offline:'Offline',offlineNote:'Diese Website ist nicht mehr online.',archive:'Im Web Archive ansehen',beforeAfter:'Vorher / Nachher',
  wFilter:'Projekte filtern',wPrev:'Vorheriges Projekt',wNext:'Nächstes Projekt',wClose:'Case Study schließen',
- g:{touch:'Wischen oder Steuerkreuz halten zum Laufen · Gebäude antippen',letter:'BRIEF SCHREIBEN',back:'ZURÜCK'}}
+ g:{touch:'Wischen oder Steuerkreuz halten zum Laufen · Gebäude antippen',letter:'BRIEF SCHREIBEN',back:'ZURÜCK'}},
+el:{form:{title:'Στείλε μήνυμα',name:'Όνομα',email:'Email',message:'Μήνυμα',send:'Αποστολή μηνύματος',sending:'Αποστολή…',ok:'Ευχαριστώ! Το μήνυμά σου στάλθηκε.',err:'Κάτι πήγε στραβά. Στείλε μου απευθείας email.',privacy:'Τα στοιχεία σου χρησιμοποιούνται μόνο για να απαντήσω στο μήνυμά σου. Δες την',privacyLink:'πολιτική απορρήτου'},
+ footer:{privacy:'Απόρρητο'},skip:'Μετάβαση στο περιεχόμενο',
+ navWork:'Έργα',sWork:'επιλεγμένα έργα',caseStudy:'Case study',live:'Δες τη σελίδα',code:'Code',projects:'έργα',
+ wProblem:'Πρόβλημα',wApproach:'Προσέγγιση',wResult:'Αποτέλεσμα',wRole:'Ρόλος',wStack:'Stack',wYear:'Έτος',versions:'εκδόσεις',
+ mobile:'Κινητό',desktop:'desktop',offline:'Offline',offlineNote:'Αυτή η σελίδα δεν είναι πλέον online.',archive:'Δες το στο Web Archive',beforeAfter:'Πριν / μετά',
+ wFilter:'Φίλτρο έργων',wPrev:'Προηγούμενο έργο',wNext:'Επόμενο έργο',wClose:'Κλείσιμο case study',
+ g:{touch:'Σύρε ή κράτα πατημένο το χειριστήριο για να περπατήσεις · πάτα ένα κτίριο',letter:'ΓΡΑΨΕ ΓΡΑΜΜΑ',back:'ΠΙΣΩ'}}
 };
+// Compile-time check: every language defines every key of the English dictionaries.
+BASE.de satisfies typeof BASE.en; BASE.el satisfies typeof BASE.en;
+EXTRA.de satisfies typeof EXTRA.en; EXTRA.el satisfies typeof EXTRA.en;
 const merge=(a:any,b:any):any=>{const o:any={...a};for(const k in b)o[k]=(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k]))?merge(a[k]||{},b[k]):b[k];return o;};
-export const T={en:merge(BASE.en,EXTRA.en),de:merge(BASE.de,EXTRA.de)} as {en:Dict;de:Dict};
+export const T={en:merge(BASE.en,EXTRA.en),de:merge(BASE.de,EXTRA.de),el:merge(BASE.el,EXTRA.el)} as Record<Lang,Dict>;
 export type Dict=typeof BASE.en & typeof EXTRA.en & {g:typeof BASE.en.g & typeof EXTRA.en.g};

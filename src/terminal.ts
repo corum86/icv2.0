@@ -1,4 +1,5 @@
-import { store, t } from './store';
+import { store, t, nextLang } from './store';
+import { LANG_CODES, isLang, type Lang } from './data';
 import { esc, setHTML } from './util';
 import { LINKS } from './config';
 
@@ -50,13 +51,17 @@ export class Terminal {
     const c = raw.trim().toLowerCase(), out: Line[] = [];
     const P = (s: string, k: Kind = 'out') => out.push({ k, s });
     if (!c) return;
-    if (c === 'help') P('whoami · stack · contact · experience · play · lang · theme · clear');
+    if (c === 'help') P('whoami · stack · contact · experience · play · lang [en|de|el] · theme · clear');
     else if (c === 'whoami') P(`Sergkei Kournosenkov — ${t().role} (${t().loc})`);
     else if (c === 'stack' || c === 'skills') P('Angular · React · Tailwind · Java Spring Boot · PostgreSQL · MySQL · Mendix · Claude Code');
     else if (c === 'contact') P(`${LINKS.email} · github.com/corum86`, 'acc');
     else if (c === 'experience') { P('→ #experience'); setTimeout(() => { const el = document.getElementById('experience'); if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - 60, behavior: 'smooth' }); }, 50); }
     else if (c === 'play' || c === 'start') { P('loading game mode…', 'acc'); setTimeout(this.enterGame, 400); }
-    else if (c.startsWith('lang')) { const l = store.state.lang === 'en' ? 'de' : 'en'; P('lang = ' + l); setTimeout(() => store.set({ lang: l }), 0); }
+    else if (c === 'lang' || c.startsWith('lang ')) {
+      const arg = c.slice(5).trim();
+      if (arg && !isLang(arg)) P(`lang: unknown '${arg}' (${LANG_CODES.join(' · ')})`, 'err');
+      else { const l = arg ? (arg as Lang) : nextLang(); P('lang = ' + l); setTimeout(() => store.set({ lang: l }), 0); }
+    }
     else if (c === 'theme') { store.set({ theme: store.state.theme === 'dark' ? 'light' : 'dark' }); P('theme = ' + store.state.theme); }
     else if (c === 'clear') { this.lines = []; return; }
     else if (c.startsWith('sudo')) P('nice try.', 'err');
