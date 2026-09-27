@@ -17,6 +17,7 @@
 .hud__btns { display: flex; gap: 6px; flex-wrap: wrap; }
 
 .rbtn { display: inline-flex; align-items: center; padding: 8px 10px; border: 2px solid var(--ink); font: 9px 'Press Start 2P', monospace; color: var(--ink); text-decoration: none; min-height: 36px; }
+.rbtn__key { margin-right: 1ch; }
 .rbtn:hover, .rbtn:focus-visible { background: #9b5cff; color: var(--bg0); outline: none; }
 .rbtn--exit { border-color: var(--gold); color: var(--gold); }
 .rbtn--exit:hover { background: var(--gold); color: var(--bg0); }
@@ -41,10 +42,10 @@
   background: url(/sprites/hero.png) no-repeat; background-size: 300% 300%; image-rendering: pixelated; }
 
 .bottom { display: flex; gap: 14px; padding: 0 16px 16px; align-items: stretch; }
-.dlg { flex: 1; min-width: 0; min-height: 132px; background: var(--panel); border: 4px solid var(--ink); box-shadow: 0 0 0 4px var(--bg0); padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; }
-.dlg__who { font-size: 9px; color: var(--gold); }
-.dlg__text { font-size: 23px; line-height: 1.15; text-wrap: pretty; }
-.dlg__hint { font-size: 17px; color: var(--dim); margin-top: auto; }
+.dlg { font-family: 'Nova Mono', monospace; flex: 1; min-width: 0; min-height: 132px; background: var(--panel); border: 4px solid var(--ink); box-shadow: 0 0 0 4px var(--bg0); padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; }
+.dlg__who { font-size: 9px; color: var(--gold); } /* .px keeps Press Start 2P */
+.dlg__text { font-size: 16px; line-height: 1.45; text-wrap: pretty; }
+.dlg__hint { font-size: 12px; color: var(--dim); margin-top: auto; }
 .dpad { display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 44px); gap: 3px; align-self: center; font: 10px 'Press Start 2P', monospace; touch-action: none; }
 .dpad button { display: grid; place-items: center; border: 2px solid var(--ink); background: var(--panel); color: var(--ink); }
 .dpad button.is-down, .dpad button:active { background: #9b5cff; color: var(--bg0); }
@@ -53,7 +54,11 @@
 @media (max-width: 720px), (hover: none) and (pointer: coarse) {
   .hud { padding: 8px 10px; gap: 8px; }
   .hud__xp, .hud__explored { display: none; }
-  .hud__btns { width: 100%; justify-content: space-between; }
+  /* Phones: the six HUD buttons as a 3×2 grid of equal cells. */
+  .hud__btns { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Key hint stacked above the label so every label fits on one line at the crisp 8px size, down to 360px screens. */
+  .hud__btns .rbtn { flex-direction: column; justify-content: center; gap: 4px; min-width: 0; padding: 6px 4px; white-space: nowrap; }
+  .hud__btns .rbtn__key { margin: 0; opacity: .65; }
   .rbtn { padding: 8px 7px; font-size: 8px; }
   .stage { padding: 8px; }
   /* Phones: the frame is full width, capped at the stage height (landscape); the camera pans the world inside it. */
@@ -62,8 +67,8 @@
   .bld__name { font-size: 6px; padding: 3px 4px; border-width: 1px; }
   .bottom { flex-direction: column; gap: 10px; padding: 0 10px 12px; }
   .dlg { min-height: 96px; padding: 10px 12px; }
-  .dlg__text { font-size: 20px; }
-  .dlg__hint { font-size: 15px; }
+  .dlg__text { font-size: 15px; }
+  .dlg__hint { font-size: 11px; }
   .dpad { display: none; } /* phones: tap or swipe the map to walk */
 }
 @media (max-width: 720px) and (orientation: landscape) {

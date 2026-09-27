@@ -7,7 +7,7 @@ Personal CV website (Vite + vanilla TypeScript, no framework). See README.md for
 - All content lives in `src/data.ts` (CV) and `src/i18n.ts` (UI). Every string needs `en`, `de` and `el` (Greek; keep commands, tech terms and job titles in English). The compiler enforces it via `L10n` and the `satisfies` checks in `i18n.ts`.
 - Styles: plain CSS in `src/styles/`. Theme tokens are CSS variables on `[data-theme]`. Game colours are scoped on `.game`.
 - Game pixel art is 16px native. Keep `image-rendering: pixelated`; never smooth-scale sprites.
-- Accent colour `#9b5cff`. Fonts: IBM Plex Mono/Sans (CV), Press Start 2P + VT323 (game). Self-hosted via @fontsource. Never add Google Fonts links (GDPR).
+- Accent colour `#9b5cff`. Fonts: IBM Plex Mono/Sans (CV), Press Start 2P + VT323 (game), Nova Mono (game dialog box). Self-hosted via @fontsource. Never add Google Fonts links (GDPR).
 - Analytics only via `track()` in `src/analytics.ts` (Plausible, cookieless). No cookies, no other trackers. If you add any third-party service, update `datenschutz.html`.
 - Hosting is Vercel. Server code lives only in `api/` (Vercel Functions, Web `Request`/`Response` handlers). Secrets are server-side env vars, never `VITE_`-prefixed.
 - Keep the top of the page "important info first": name, role, profile, CTAs (Email, GitHub, LinkedIn) in the first viewport.

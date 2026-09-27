@@ -47,7 +47,7 @@ email:'Στείλε email',stackLabel:'βασικό stack',termHint:"γράψε 
 sExp:'εμπειρία',sSkills:'δεξιότητες',sEdu:'εκπαίδευση',sLang:'γλώσσες',sContact:'επικοινωνία',present:'σήμερα',grep:'φίλτρο δεξιοτήτων…',matches:'αποτελέσματα',all:'Όλα',none:'Κανένα αποτέλεσμα.',
 cTitle:'Ας φτιάξουμε κάτι μαζί.',zTitle:'Συνέχισε το scroll για να μπεις στο παιχνίδι',zReady:'Φόρτωση παιχνιδιού…',zSub:'Το υπόλοιπο βιογραφικό παίζεται.',zSkip:'Παράλειψη, μπες τώρα',zBtn:'Μπες στο παιχνίδι',
 cats:{frontend:'Frontend & UI',backend:'Backend & γλώσσες',databases:'Βάσεις δεδομένων',apis:'APIs & αρχιτεκτονική',quality:'Ποιότητα & testing',ai:'Εργαλεία AI',devops:'DevOps & VCS',platforms:'Πλατφόρμες & εργαλεία'},
-g:{status:'ΚΑΤΑΣΤΑΣΗ',items:'ΑΝΤΙΚΕΙΜΕΝΑ',quests:'ΑΠΟΣΤΟΛΕΣ',exit:'ΕΞΟΔΟΣ ΣΤΟ CV',on:'ΗΧΟΣ ON',off:'ΗΧΟΣ OFF',lv:'LV',cls:'Full-Stack Engineer',specV:'Frontend',
+g:{status:'ΚΑΤΑΣΤΑΣΗ',items:'ΑΝΤΙΚΕΙΜΕΝΑ',quests:'ΑΠΟΣΤΟΛΕΣ',exit:'ΕΞΟΔΟΣ',on:'ΗΧΟΣ ON',off:'ΗΧΟΣ OFF',lv:'LV',cls:'Full-Stack Engineer',specV:'Frontend',
 controls:'ΒΕΛΑΚΙΑ / WASD κίνηση · κλικ για περπάτημα · C κατάσταση · I αντικείμενα · Q αποστολές · ESC κλείσιμο',
 intro:'Καλώς ήρθες, ταξιδιώτη. Αυτό το χωριό κρύβει την ιστορία του Sergkei Kournosenkov. Περπάτα με τα βελάκια ή WASD, ή κάνε κλικ σε ένα κτίριο. Κάθε πόρτα ανοίγει ένα κεφάλαιο.',
 allDone:'Εξερεύνησες και τις πέντε περιοχές. Είδες όλο το βιογραφικό. Το Ταχυδρομείο στέλνει κοράκια κατευθείαν στον Sergkei.',

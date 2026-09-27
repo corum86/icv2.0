@@ -1,4 +1,5 @@
 import '@fontsource/vt323/400.css';
+import '@fontsource/nova-mono/400.css'; // dialog box (has Greek, unlike VT323)
 import '../styles/game.css';
 import { JOBS, SKILLS, CATS, EDU, LANGS } from '../data';
 import { RARITY_COLORS } from '../i18n';
@@ -10,6 +11,7 @@ import { track } from '../analytics';
 import { sfx } from './audio';
 import { W, H, BLD, blocked, draw, loadSheets, findPath, type Building, type PanelId, type Sheets } from './world';
 
+type DlgKey = 'intro' | 'allDone';
 type Dir = 'down' | 'up' | 'left' | 'right';
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const HERO_ROW: Record<Dir, number> = { down: 0, up: 0, left: 1, right: 2 }; // hero.png has no back-facing row
@@ -20,9 +22,11 @@ const keyDir = (e: KeyboardEvent): Dir | undefined => KEY_DIR[e.key.length === 1
 // Camera zoom, relative to the map frame (1 = whole village in view). Buttons step by ZOOM_STEP; pinch and wheel are continuous.
 const ZOOM_MIN = 1, ZOOM_MAX = 3, ZOOM_STEP = 1.25;
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+// HUD button content: keyboard hint + label (separate spans so phones can stack them, see game.css).
+const hudLabel = (key: string, label: string) => `<span class="rbtn__key">[${key}]</span><span data-label>${esc(label)}</span>`;
 
 export class Game {
-  private s = { px: 15, py: 10, dir: 'down' as Dir, walking: false, anim: 0, zoom: ZOOM_MIN, panel: null as PanelId | null, visited: {} as Record<string, boolean>, achDone: false, achTold: false, qSel: 0, iSel: 0, gCat: 0, dlg: '', dlgN: 0 };
+  private s = { px: 15, py: 10, dir: 'down' as Dir, walking: false, anim: 0, zoom: ZOOM_MIN, panel: null as PanelId | null, visited: {} as Record<string, boolean>, achDone: false, achTold: false, qSel: 0, iSel: 0, gCat: 0, dlg: '', dlgN: 0, dlgKey: null as DlgKey | null };
   private timers: { type?: number; walk?: number; idle?: number; map?: number; hold?: number } = {};
   private held: Dir[] = []; // movement keys currently down, most recent last
   private sheets?: Promise<Sheets>;
@@ -42,7 +46,7 @@ export class Game {
     addEventListener('blur', this.stopHold);
     this.offLang = store.on((c) => { if (c.lang) { this.shell(); this.startMap(); this.renderPanel(); } });
     sfx.start();
-    setTimeout(() => this.say(t().g.intro), 350);
+    setTimeout(() => this.say('intro'), 350);
     track('Game Entered');
   }
 
@@ -63,6 +67,7 @@ export class Game {
 
   // ---------- DOM ----------
   private shell() {
+    this.retranslateDialog();
     const g = t().g, lvl = Math.floor(careerYears()), xp = ((careerYears() - lvl) * 100).toFixed(0);
     setHTML(this.root, `
     <div class="game" role="application" aria-label="Game mode">
@@ -73,12 +78,12 @@ export class Game {
           <span class="hud__explored" data-explored></span>
         </div>
         <div class="hud__btns">
-          <button class="rbtn" data-g="status">[C] ${esc(g.status)}</button>
-          <button class="rbtn" data-g="items">[I] ${esc(g.items)}</button>
-          <button class="rbtn" data-g="quests">[Q] ${esc(g.quests)}</button>
-          <button class="rbtn" data-g="sound" data-sound>[M] ${esc(sfx.on ? g.on : g.off)}</button>
+          <button class="rbtn" data-g="status">${hudLabel('C', g.status)}</button>
+          <button class="rbtn" data-g="items">${hudLabel('I', g.items)}</button>
+          <button class="rbtn" data-g="quests">${hudLabel('Q', g.quests)}</button>
+          <button class="rbtn" data-g="sound" data-sound>${hudLabel('M', sfx.on ? g.on : g.off)}</button>
           <button class="rbtn" data-g="lang">${nextLang().toUpperCase()}</button>
-          <button class="rbtn rbtn--exit" data-g="exit">[X] ${esc(g.exit)}</button>
+          <button class="rbtn rbtn--exit" data-g="exit">${hudLabel('X', g.exit)}</button>
         </div>
       </div>
       <div class="stage">
@@ -127,7 +132,7 @@ export class Game {
       if (!el) return;
       const a = el.dataset.g;
       if (a === 'status' || a === 'items' || a === 'quests') this.openPanel(a);
-      else if (a === 'sound') { sfx.on = !sfx.on; el.textContent = `[M] ${sfx.on ? t().g.on : t().g.off}`; }
+      else if (a === 'sound') this.toggleSound();
       else if (a === 'lang') store.set({ lang: nextLang() });
       else if (a === 'exit') this.close();
       else if (el.dataset.dlgbox !== undefined) this.skipDialog();
@@ -181,6 +186,12 @@ export class Game {
       const b = (e.target as HTMLElement).closest<HTMLElement>('[data-zoom]');
       if (b) { this.setZoom(this.s.zoom * (+b.dataset.zoom! > 0 ? ZOOM_STEP : 1 / ZOOM_STEP)); sfx.tab(); }
     });
+  }
+
+  private toggleSound() {
+    sfx.on = !sfx.on;
+    const l = this.root.querySelector('[data-sound] [data-label]');
+    if (l) l.textContent = sfx.on ? t().g.on : t().g.off;
   }
 
   private setZoom(z: number) {
@@ -316,7 +327,7 @@ export class Game {
     const s = this.s, onDoor = BLD.some((b) => b.dx === s.px && b.dy === s.py);
     s.panel = null; this.renderPanel(); sfx.close();
     if (onDoor && !blocked(s.px, s.py + 1)) { s.py++; s.dir = 'down'; this.updateHero(); }
-    if (s.achDone && !s.achTold) { s.achTold = true; setTimeout(() => this.say(t().g.allDone), 200); }
+    if (s.achDone && !s.achTold) { s.achTold = true; setTimeout(() => this.say('allDone'), 200); }
   }
 
   private renderPanel() {
@@ -379,15 +390,26 @@ export class Game {
   }
 
   // ---------- dialog & toast ----------
-  private say(text: string) {
+  // The dialog remembers which message it shows (not the string), so a language switch can re-translate it.
+  private say(key: DlgKey) {
     clearInterval(this.timers.type);
-    this.s.dlg = text; this.s.dlgN = 0;
+    this.s.dlgKey = key; this.s.dlg = t().g[key]; this.s.dlgN = 0;
     this.timers.type = window.setInterval(() => {
       this.s.dlgN = Math.min(this.s.dlg.length, this.s.dlgN + 2);
       if (this.s.dlgN % 6 === 0) sfx.type();
       if (this.s.dlgN >= this.s.dlg.length) clearInterval(this.timers.type);
       this.el.dlg.textContent = this.s.dlg.slice(0, this.s.dlgN) + (this.s.dlgN >= this.s.dlg.length ? '  ▼' : '');
     }, 22);
+  }
+
+  // After a language switch: swap in the translated message, keeping how far it has typed (a finished one stays finished).
+  private retranslateDialog() {
+    const s = this.s;
+    if (!s.dlgKey) return;
+    const text = t().g[s.dlgKey];
+    if (text === s.dlg) return;
+    s.dlgN = s.dlgN >= s.dlg.length ? text.length : Math.round((s.dlgN / s.dlg.length) * text.length);
+    s.dlg = text;
   }
 
   private skipDialog() {
@@ -425,7 +447,7 @@ export class Game {
     const dir = keyDir(e);
     if (dir) { if (!e.repeat) this.pressDir(dir); return; }
     if (lk === 'c') this.openPanel('status'); if (lk === 'i') this.openPanel('items'); if (lk === 'q') this.openPanel('quests');
-    if (lk === 'm') { sfx.on = !sfx.on; const b = this.root.querySelector('[data-sound]'); if (b) b.textContent = `[M] ${sfx.on ? t().g.on : t().g.off}`; }
+    if (lk === 'm') this.toggleSound();
     if (lk === 'x' || k === 'Escape') this.close();
   };
 }
