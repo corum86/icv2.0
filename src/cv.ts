@@ -5,6 +5,7 @@ import { Terminal } from './terminal';
 import { contactFormHTML, bindContactForm } from './contact';
 import { LINKS, GAME_TRIGGER } from './config';
 import { mountWork } from './work-section';
+import { SELECTED } from './work';
 import { track } from './analytics';
 
 const ui = { openJob: 0, cat: 'all', q: '' };
@@ -12,7 +13,7 @@ const STACK = ['Angular', 'React', 'Tailwind', 'Spring Boot', 'PostgreSQL', 'Cla
 
 export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: () => void = () => {}) {
   const terminal = new Terminal(enterGame);
-  const work = mountWork(root); // persistent element, re-inserted on every render so its videos keep playing
+  const work = mountWork(root, SELECTED); // persistent element, re-inserted on every render so its videos keep playing
   let armed = true; // becomes false once the scroll trigger fired, re-armed on return
   let z: { zone: HTMLElement; fill: HTMLElement | null; pct: Element | null; title: Element | null; box: HTMLElement | null } | null = null;
   let lastTitle = '';

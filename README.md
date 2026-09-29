@@ -21,6 +21,7 @@ npm run preview
 index.html              SEO meta, OG/Twitter tags, JSON-LD Person
 datenschutz.html        Privacy policy (GDPR), DE/EN/EL
 cv.html                 Printable CV (A4, HR-oriented), rendered by src/print.ts
+portfolio.html          All projects + case studies, rendered by src/portfolio.ts
 vercel.json             Build settings, apex→www redirect, security + cache headers
 api/
   contact.ts            Vercel Function: POST /api/contact → sends mail via Resend
@@ -41,6 +42,9 @@ src/
   glitch.ts             Hard-cut glitch overlay
   analytics.ts          Vercel Web Analytics loader + track()
   print.ts              Printable CV page: same data as the site, toolbar (print, language), A4 print rules
+  work.ts               Projects (WORK). `portfolioOnly` ones are left out of the CV's selected work (SELECTED)
+  work-section.ts       Project cards + case-study drawer, used by the CV (SELECTED) and portfolio.ts (all)
+  portfolio.ts          Portfolio page: header, all projects, footer
   game/
     world.ts            Map layout, collisions, canvas drawing, BFS pathfinding
     game.ts             Game controller: HUD, hero movement/animation, panels, dialog, keyboard/touch
@@ -78,7 +82,7 @@ To use a different mail service, only `api/contact.ts` changes. Update `datensch
 
 ## Analytics (Vercel Web Analytics)
 
-Cookieless and first-party (script served from `/_vercel/insights/` on our own domain), so no consent banner and no extra CSP entries. To turn it on: enable **Web Analytics** for the project in the Vercel dashboard, then set `VITE_VERCEL_ANALYTICS=true` (Vercel → Environment Variables; read at build time, so redeploy after changing). Unset or empty = no analytics script at all. Never loads on localhost. Page views work on the free Hobby plan. The custom events sent via `track()` (`Game Entered`, `Area Visited`, `All Areas Explored`, `Contact Submitted`, `Work Opened`, `Printable CV Opened`, `CV Printed`, …) are only recorded on Vercel's Pro plan; on Hobby they are dropped.
+Cookieless and first-party (script served from `/_vercel/insights/` on our own domain), so no consent banner and no extra CSP entries. To turn it on: enable **Web Analytics** for the project in the Vercel dashboard, then set `VITE_VERCEL_ANALYTICS=true` (Vercel → Environment Variables; read at build time, so redeploy after changing). Unset or empty = no analytics script at all. Never loads on localhost. Page views work on the free Hobby plan. The custom events sent via `track()` (`Game Entered`, `Area Visited`, `All Areas Explored`, `Contact Submitted`, `Work Opened`, `Portfolio Opened`, `Printable CV Opened`, `CV Printed`, …) are only recorded on Vercel's Pro plan; on Hobby they are dropped.
 
 ## Deploy (Vercel)
 

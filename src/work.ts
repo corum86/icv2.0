@@ -10,7 +10,9 @@ export interface WorkMedia {
   mobile: boolean;       // has <base>-mobile.webm/.mp4 for the drawer
 }
 export interface Work {
-  slug: string; year: string; client: L10n; role: L10n; title: L10n; outcome: L10n; tags: string[];
+  slug: string;
+  portfolioOnly?: boolean;                  // only on portfolio.html, not in the CV's "selected work"
+  year: string; client: L10n; role: L10n; title: L10n; outcome: L10n; tags: string[];
   problem?: L10n; approach?: L10n; result?: L10n;
   nda?: boolean; offline?: boolean;
   media?: WorkMedia;
@@ -22,7 +24,7 @@ export interface Work {
 }
 
 /** Filter chips, in this order. 'all' = no filter. A project matches when one of its tags starts with the chip (so 'Angular' matches 'Angular 15 → 22'). */
-export const WORK_TAGS = ['all', 'Angular', 'WordPress', 'JTL Shop', 'PHP', 'Responsive'] as const;
+export const WORK_TAGS = ['all', 'Angular', 'Bootstrap', 'WordPress', 'JTL Shop', 'PHP', 'Responsive'] as const;
 
 export const WORK: Work[] = [
   {
@@ -101,6 +103,7 @@ export const WORK: Work[] = [
   {
     slug: "paidopsy",
     year: "2019",
+    portfolioOnly: true,
     client: {
       en: "Freelance · paidopsy-trikala.gr",
       de: "Freelance · paidopsy-trikala.gr",
@@ -186,6 +189,7 @@ export const WORK: Work[] = [
   {
     slug: "nuve",
     year: "2026",
+    portfolioOnly: true,
     client: {
       en: "Freelance · Nuvé Apartment",
       de: "Freelance · Nuvé Apartment",
@@ -378,3 +382,6 @@ export const WORK: Work[] = [
     ]
   }
 ];
+
+/** The CV's "selected work" section. portfolio.html shows all of WORK. */
+export const SELECTED = WORK.filter((w) => !w.portfolioOnly);

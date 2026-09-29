@@ -39,6 +39,7 @@ export default defineConfig({
         main: page('./index.html'),
         datenschutz: page('./datenschutz.html'),
         cv: page('./cv.html'),
+        portfolio: page('./portfolio.html'),
       },
     },
   },

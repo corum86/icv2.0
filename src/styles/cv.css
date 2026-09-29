@@ -31,6 +31,7 @@ body.is-shaking { animation: shake .08s infinite; }
 .top__nav { display: flex; gap: 18px; flex-wrap: wrap; margin-right: auto; }
 .top__nav a { color: var(--mut); text-decoration: none; }
 .top__nav a:hover { color: var(--fg); }
+.top__back span { display: inline-block; transform: translateY(-.18em); } /* Plex Mono's ← sits on the x-height middle; centre it on the capitals */
 .seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
 .seg button { padding: 5px 9px; color: var(--mut); }
 .seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }

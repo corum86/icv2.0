@@ -1,6 +1,7 @@
 // "Selected work" section (filterable cards) and the case-study drawer. Spec: docs/handoff/06-work-section.md.
 // The section element is created once and survives CV re-renders (cv.ts moves it into each new tree), so
 // looping videos keep playing across language switches; only text is re-rendered.
+// Two uses: the CV's selected work (SELECTED + a button to the portfolio) and portfolio.html (all of WORK).
 import { WORK, WORK_TAGS, type Work, type WorkVersion } from './work';
 import { migrationDiagramHTML } from './work-diagram';
 import type { Lang } from './data';
@@ -18,17 +19,19 @@ const exists = (url: string) => {
   return p;
 };
 
-const slugIndex = (hash: string) => { const m = /^#work\/([\w-]+)$/.exec(hash); return m ? WORK.findIndex((w) => w.slug === m[1]) : -1; };
+const hashSlug = (hash: string) => /^#work\/([\w-]+)$/.exec(hash)?.[1];
+const find = (list: Work[], slug?: string) => (slug ? list.findIndex((w) => w.slug === slug) : -1);
 const matches = (w: Work, tag: string) => tag === 'all' || w.tags.some((x) => x.toLowerCase().startsWith(tag.toLowerCase()));
 const isArchive = (u?: string) => !!u && u.startsWith('https://web.archive.org/');
 const tabLabel = (v: WorkVersion, L: Lang) => (v.year === 'Live' ? v.label[L] : `${v.year} · ${v.label[L]}`);
 const capLabel = (v: WorkVersion, L: Lang) => (v.year === 'Live' ? v.label[L] : `${v.label[L]} · ${v.year}`);
 const arrow = (s: string) => `${s} ↗`;
 
-export function mountWork(page: HTMLElement) {
+/** `all`: portfolio.html (h1, every project). Otherwise the CV section, which links to the portfolio. */
+export function mountWork(page: HTMLElement, items: Work[], all = false) {
   const el = document.createElement('section');
   el.id = 'work';
-  el.className = 'wk';
+  el.className = all ? 'wk wk--all' : 'wk';
   el.setAttribute('aria-labelledby', 'wk-h');
   const overlay = document.createElement('div');
   overlay.className = 'wk-overlay';
@@ -77,9 +80,11 @@ export function mountWork(page: HTMLElement) {
   };
 
   // ---------- section
-  const bySlug = (s?: string) => WORK.findIndex((w) => w.slug === s);
-  const headHTML = () => `<h2 id="wk-h" class="sec__h"><span>// 02</span> ${esc(t().sWork)}</h2><span class="wk-count"></span>`;
-  const filterHTML = () => `<span class="wk-filter__cmd">$ ls ./work --tag=</span>` + WORK_TAGS.map((x) =>
+  const bySlug = (s?: string) => find(items, s);
+  const headHTML = () => (all ? `<h1 id="wk-h" class="sec__h"><span>~/</span>${esc(t().sPortfolio)}</h1>` : `<h2 id="wk-h" class="sec__h"><span>// 02</span> ${esc(t().sWork)}</h2>`)
+    + '<span class="wk-count"></span>';
+  const tags = WORK_TAGS.filter((x) => items.some((w) => matches(w, x))); // no chips that would empty the grid
+  const filterHTML = () => `<span class="wk-filter__cmd">$ ls ./work --tag=</span>` + tags.map((x) =>
     `<button class="wk-chip" data-tag="${esc(x)}" aria-pressed="${x === tag}">${esc((x === 'all' ? t().all : x).toLowerCase())}</button>`).join('');
   const offlineBadge = () => `<span class="wk-badge wk-badge--offline">${esc(t().offline)}</span>`;
   const cardMedia = (w: Work) => (w.diagram === 'migration' ? migrationDiagramHTML()
@@ -98,15 +103,20 @@ export function mountWork(page: HTMLElement) {
 
   setHTML(el, `<div class="wk-head">${headHTML()}</div>
     <div class="wk-filter" role="group" aria-label="${esc(t().wFilter)}">${filterHTML()}</div>
-    <div class="wk-grid">${WORK.map((w) => `<button class="wk-card" data-slug="${esc(w.slug)}" aria-haspopup="dialog">
-      <div class="wk-media">${cardMedia(w)}</div><div class="wk-body">${cardBody(w)}</div></button>`).join('')}</div>`);
+    <div class="wk-grid">${items.map((w) => `<button class="wk-card" data-slug="${esc(w.slug)}" aria-haspopup="dialog">
+      <div class="wk-media">${cardMedia(w)}</div><div class="wk-body">${cardBody(w)}</div></button>`).join('')}</div>
+    ${all ? '' : '<div class="wk-more"></div>'}`);
   const head = el.querySelector<HTMLElement>('.wk-head')!, filter = el.querySelector<HTMLElement>('.wk-filter')!;
   const cards = [...el.querySelectorAll<HTMLElement>('.wk-card')];
+  const more = el.querySelector<HTMLElement>('.wk-more');
+  const renderMore = () => more && setHTML(more,
+    `<a class="btn-outline" href="/portfolio.html?lang=${store.state.lang}" data-portfolio>$ ls ./portfolio · ${esc(t().wAll)} (${WORK.length}) →</a>`);
+  renderMore();
 
   const applyFilter = () => {
     filter.querySelectorAll('[data-tag]').forEach((c) => c.setAttribute('aria-pressed', String((c as HTMLElement).dataset.tag === tag)));
     let n = 0;
-    cards.forEach((c, i) => { const on = matches(WORK[i], tag); c.hidden = !on; n += +on; });
+    cards.forEach((c, i) => { const on = matches(items[i], tag); c.hidden = !on; n += +on; });
     el.querySelector('.wk-count')!.textContent = `${n} ${t().projects}`;
   };
   applyFilter();
@@ -117,14 +127,15 @@ export function mountWork(page: HTMLElement) {
     const near = new IntersectionObserver((es) => es.forEach((e) => {
       if (!e.isIntersecting) return;
       near.unobserve(e.target);
-      const i = cards.indexOf(e.target as HTMLElement), m = WORK[i].media!;
+      const i = cards.indexOf(e.target as HTMLElement), m = items[i].media!;
       const src = `${m.base}.${EXT}`;
       exists(src).then((ok) => { if (ok) cards[i].querySelector('.wk-media')!.append(video(src, `${m.base}-poster.${m.ext}`)); });
     }), { rootMargin: '400px 0px' });
-    WORK.forEach((w, i) => { if (w.media?.video) near.observe(cards[i]); });
+    items.forEach((w, i) => { if (w.media?.video) near.observe(cards[i]); });
   }
 
   el.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('[data-portfolio]')) track('Portfolio Opened', { lang: store.state.lang });
     const x = (e.target as HTMLElement).closest<HTMLElement>('[data-tag],[data-slug]');
     if (!x) return;
     if (x.dataset.tag) {
@@ -177,7 +188,7 @@ export function mountWork(page: HTMLElement) {
 
   // Version switch: only the stage image, tab state and caption change.
   const renderStage = () => {
-    const w = WORK[cur], L = store.state.lang, v = w.versions?.[ver], m = w.media;
+    const w = items[cur], L = store.state.lang, v = w.versions?.[ver], m = w.media;
     overlay.querySelectorAll<HTMLElement>('[data-v]').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.v! === ver)));
     setHTML(overlay.querySelector('[data-stage]')!, w.diagram === 'migration' ? migrationDiagramHTML()
       : m ? `<img src="${esc(m.base)}-${v ? ver + 1 : 'poster'}.${m.ext}" alt="${esc(w.title[L] + (v ? ' – ' + tabLabel(v, L) : ''))}" width="1280" height="800">` : '');
@@ -187,7 +198,7 @@ export function mountWork(page: HTMLElement) {
   };
 
   const renderDrawer = () => {
-    const w = WORK[cur];
+    const w = items[cur];
     setHTML(drawer, drawerHTML(w));
     renderStage();
     const box = overlay.querySelector<HTMLElement>('.wk-mobile');
@@ -198,7 +209,7 @@ export function mountWork(page: HTMLElement) {
     const src = `${w.media!.base}-mobile.${EXT}`, slug = w.slug;
     exists(src).then((ok) => {
       const b = overlay.querySelector<HTMLElement>('.wk-mobile');
-      if (!ok || !b || phone || WORK[cur]?.slug !== slug) return;
+      if (!ok || !b || phone || items[cur]?.slug !== slug) return;
       phone = { slug, v: video(src) };
       b.querySelector('.wk-phone')!.append(phone.v);
       b.hidden = false;
@@ -214,8 +225,8 @@ export function mountWork(page: HTMLElement) {
     if (i < 0) return;
     const first = cur < 0, act = (document.activeElement as HTMLElement | null)?.dataset?.act;
     cur = i;
-    ver = (WORK[i].versions?.length ?? 0) - 1; // latest version by default
-    const url = '#work/' + WORK[i].slug;
+    ver = (items[i].versions?.length ?? 0) - 1; // latest version by default
+    const url = '#work/' + items[i].slug;
     if (history_ === 'push') { history.pushState(null, '', url); pushed = true; }
     else if (history_ === 'replace') history.replaceState(null, '', url);
     if (first) {
@@ -230,12 +241,12 @@ export function mountWork(page: HTMLElement) {
     drawer.scrollTop = 0;
     // Keep focus on ←/→ when cycling with the buttons; otherwise focus the dialog.
     ((act && drawer.querySelector<HTMLElement>(`[data-act="${act}"]`)) || drawer).focus();
-    track('Work Opened', { slug: WORK[i].slug });
+    track('Work Opened', { slug: items[i].slug });
   }
 
   function close() {
     if (cur < 0) return;
-    const slug = WORK[cur].slug;
+    const slug = items[cur].slug;
     cur = -1; pushed = false;
     removeEventListener('keydown', onKey);
     if (phone) drop(phone.v);
@@ -253,7 +264,7 @@ export function mountWork(page: HTMLElement) {
     if (pushed) history.back();
     else { history.replaceState(null, '', location.pathname + location.search + '#work'); close(); }
   };
-  const cycle = (d: number) => open((cur + d + WORK.length) % WORK.length, 'replace');
+  const cycle = (d: number) => open((cur + d + items.length) % items.length, 'replace');
 
   const trap = (e: KeyboardEvent) => {
     const f = [...overlay.querySelectorAll<HTMLElement>('a[href],button:not([disabled])')].filter((x) => !x.closest('[hidden]'));
@@ -277,11 +288,11 @@ export function mountWork(page: HTMLElement) {
     if (b.dataset.act === 'close') requestClose();
     else if (b.dataset.act) cycle(b.dataset.act === 'next' ? 1 : -1);
     else if (b.dataset.v) { ver = +b.dataset.v; renderStage(); }
-    else track('Work Archive Link', { slug: WORK[cur].slug, version: b.dataset.archive! });
+    else track('Work Archive Link', { slug: items[cur].slug, version: b.dataset.archive! });
   });
 
   addEventListener('popstate', () => {
-    const i = slugIndex(location.hash);
+    const i = bySlug(hashSlug(location.hash));
     if (i < 0) close();
     else if (i !== cur && !document.body.classList.contains('in-game')) open(i, 'none');
   });
@@ -291,8 +302,9 @@ export function mountWork(page: HTMLElement) {
     setHTML(head, headHTML());
     filter.setAttribute('aria-label', t().wFilter);
     setHTML(filter, filterHTML());
+    renderMore();
     cards.forEach((c, i) => {
-      setHTML(c.querySelector('.wk-body')!, cardBody(WORK[i]));
+      setHTML(c.querySelector('.wk-body')!, cardBody(items[i]));
       const badge = c.querySelector('.wk-badge--offline');
       if (badge) badge.textContent = t().offline;
     });
@@ -304,7 +316,9 @@ export function mountWork(page: HTMLElement) {
     el,
     /** Deep link: call once the section is in the DOM. */
     openFromHash() {
-      const i = slugIndex(location.hash);
+      const slug = hashSlug(location.hash), i = bySlug(slug), j = find(WORK, slug);
+      // A portfolio-only project linked from the CV page: open it on the portfolio page.
+      if (i < 0 && j >= 0 && !all) return location.replace(`/portfolio.html${location.search}#work/${WORK[j].slug}`);
       if (i < 0) return;
       el.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
       open(i, 'none');

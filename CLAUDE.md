@@ -22,7 +22,7 @@ The original interactive prototype (design reference, not production code) is `d
 **Start with `docs/handoff/00-README.md`.** It contains the exact layout, tokens, behaviour and QA checklist the implementation must match. Scope all game CSS under `.game` and all CV CSS under the CV root. Never use bare global class names shared by both views.
 
 ## Selected work
-Spec: `docs/handoff/06-work-section.md`. `src/work-section.ts` (`mountWork`) builds the section once; `cv.ts` re-inserts that element on every render so card videos keep playing across language switches. Data in `src/work.ts`, strings in `src/i18n.ts`, styles in `src/styles/work.css` (`.wk-*` only), media in `public/work/` (re-record with `npm run record:work -- <slug>`). While the case-study drawer is open `html.wk-lock` is set; game keys and the CV scroll trigger check it.
+Spec: `docs/handoff/06-work-section.md`. `src/work-section.ts` (`mountWork(page, items, all)`) builds the section once; `cv.ts` re-inserts that element on every render so card videos keep playing across language switches. Data in `src/work.ts`: the CV shows `SELECTED` plus a button to `portfolio.html` (`src/portfolio.ts`, all of `WORK`); `portfolioOnly: true` keeps a project off the CV, and the CV forwards `#work/<slug>` links for those to the portfolio. Strings in `src/i18n.ts`, styles in `src/styles/work.css` (`.wk-*` only), media in `public/work/` (re-record with `npm run record:work -- <slug>`). While the case-study drawer is open `html.wk-lock` is set; game keys and the CV scroll trigger check it.
 
 ## Collaboration
 - **Claude Code owns:** `src/`, `api/`, build config.

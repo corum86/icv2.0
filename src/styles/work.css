@@ -42,6 +42,11 @@ html.wk-lock { overflow: hidden; }
 .wk-foot { display: flex; justify-content: space-between; gap: 10px; font: 13px var(--mono); color: var(--acc); }
 .wk-foot span:last-child { color: var(--mut); font-size: 12px; }
 
+/* "all projects" link under the CV section, and the portfolio page (portfolio.html) */
+.wk-more { display: flex; justify-content: center; }
+.wk--all { padding-top: clamp(32px, 6vw, 64px); padding-bottom: 88px; }
+.wk--all .sec__h { font-size: clamp(28px, 4vw, 40px); font-weight: 600; letter-spacing: -.02em; line-height: 1.1; color: var(--fg); }
+
 /* drawer */
 .wk-overlay { position: fixed; inset: 0; z-index: 40; background: rgba(10, 9, 14, .55); backdrop-filter: blur(2px); display: flex; justify-content: flex-end; }
 .wk-overlay[hidden] { display: none; }
