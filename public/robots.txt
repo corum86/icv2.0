@@ -1,3 +1,29 @@
+# kournosenkov.com: everything public is open to search engines, AI assistants and AI training.
+# Machine-readable CV: https://www.kournosenkov.com/llms.txt
+
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
+Disallow: /api/
+
+# AI search, assistant and training crawlers: explicitly welcome (a named group does not inherit from *).
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: meta-externalagent
+User-agent: CCBot
+User-agent: Amazonbot
+User-agent: DuckAssistBot
+User-agent: MistralAI-User
+User-agent: Bytespider
+Allow: /
+Disallow: /api/
+
 Sitemap: https://www.kournosenkov.com/sitemap.xml

@@ -1,8 +1,7 @@
 import { CAREER_START, type Job, type Lang } from './data';
 import { T } from './i18n';
 
-export const esc = (s: unknown) =>
-  String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+export { esc, period } from './format';
 
 // Trusted Types (enforced via CSP `require-trusted-types-for 'script'`). All HTML goes through setHTML();
 // templates escape content with esc(), so the policy passes HTML through. Script URLs are allowlisted.
@@ -20,11 +19,6 @@ export const setHTML = (el: Element, html: string) => { el.innerHTML = (policy ?
 export const scriptURL = (u: string) => (policy ? policy.createScriptURL(u) : allowScript(u)) as string;
 
 export const careerYears = () => (Date.now() - CAREER_START.getTime()) / (365.25 * 864e5);
-
-export function period(j: Job, L: Lang) {
-  const f = (a: [number, number]) => (j.yearsOnly ? String(a[0]) : String(a[1]).padStart(2, '0') + '/' + a[0]);
-  return f(j.from) + ' – ' + (j.to ? f(j.to) : T[L].present);
-}
 
 export function duration(j: Job, L: Lang) {
   const g = T[L].g, now = new Date();

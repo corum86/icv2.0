@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { seoFiles } from './scripts/seo';
 
 const page = (f: string) => fileURLToPath(new URL(f, import.meta.url));
 
@@ -29,7 +30,7 @@ const inlineCss = (): Plugin => ({
 });
 
 export default defineConfig({
-  plugins: [inlineCss()],
+  plugins: [seoFiles(), inlineCss()],
   preview: { headers: globalHeaders },
   build: {
     // Never base64-inline fonts into CSS: it bloats the render-blocking stylesheet and CSP font-src is 'self' only.

@@ -29,7 +29,10 @@ public/
   sprites/              Game sprite sheets (16px tiles) + hero.png (3×3 frames, 28×34 each)
   og-image.png          1200×630 social share image
   favicon.svg / favicon-32.png / apple-touch-icon.png / site.webmanifest
-  robots.txt / sitemap.xml
+  robots.txt            Hand-written: everything open to search engines and AI crawlers, except /api/
+scripts/
+  seo.ts                Vite plugin: llms.txt, llms-full.txt, sitemap.xml (build output) + the CV as plain HTML in <noscript>
+  record-work.mjs       Re-records the project media in public/work/
 src/
   main.ts               Bootstrap: fonts, CV, game, glitch transition
   config.ts             Links (email, GitHub, LinkedIn), GAME_TRIGGER, SCANLINES
@@ -39,6 +42,7 @@ src/
   cv.ts                 CV page render + interactions + scroll-to-game zone
   terminal.ts           Fake shell in the hero (help, whoami, stack, contact, play, lang, theme, clear)
   contact.ts            Contact form UI (CV + game Post Office), posts JSON to /api/contact
+  format.ts             DOM-free helpers (esc, period), shared with scripts/seo.ts; re-exported by util.ts
   glitch.ts             Hard-cut glitch overlay
   analytics.ts          Vercel Web Analytics loader + track()
   print.ts              Printable CV page: same data as the site, toolbar (print, language), A4 print rules
@@ -58,6 +62,15 @@ src/
 - **UI copy**: `src/i18n.ts` (`BASE` for original strings, `EXTRA` for form/footer/touch strings).
 - **Links**: `src/config.ts`.
 - **Game trigger**: `GAME_TRIGGER = 'button'` in `src/config.ts` disables the scroll trigger (only Play buttons start the game).
+
+## SEO and AI crawlers
+
+- `public/robots.txt` allows all crawlers, including AI search and training bots.
+- `scripts/seo.ts` generates the rest from `src/data.ts`, `src/work.ts` and `src/i18n.ts` (English), so it follows every content edit:
+  - `/llms.txt` (short profile + links, [llmstxt.org](https://llmstxt.org) format) and `/llms-full.txt` (the whole CV as Markdown).
+  - `/sitemap.xml` with the indexable pages (`/`, `/portfolio.html`), `/llms.txt` and the build date as `lastmod`. `cv.html` and `datenschutz.html` are `noindex` and stay out.
+  - The CV and the portfolio as plain HTML inside `<noscript>` (markers `<!--seo:cv-->`, `<!--seo:portfolio-->`), for crawlers and agents that don't run JavaScript.
+- After a deploy with content changes: resubmit the sitemap in Google Search Console (and Bing Webmaster Tools).
 
 ## Game
 

@@ -10,6 +10,7 @@ Personal CV website (Vite + vanilla TypeScript, no framework). See README.md for
 - Accent colour `#9b5cff`. Fonts: IBM Plex Mono/Sans (CV), Press Start 2P + VT323 (game), Nova Mono (game dialog box). Self-hosted via @fontsource. Never add Google Fonts links (GDPR).
 - Analytics only via `track()` in `src/analytics.ts` (Vercel Web Analytics: cookieless, first-party, on only when `VITE_VERCEL_ANALYTICS=true`). No cookies, no other trackers. If you add any third-party service, update `datenschutz.html`.
 - Hosting is Vercel. Server code lives only in `api/` (Vercel Functions, Web `Request`/`Response` handlers). Secrets are server-side env vars, never `VITE_`-prefixed.
+- SEO: `scripts/seo.ts` (Vite plugin) generates `llms.txt`, `llms-full.txt`, `sitemap.xml` and the `<noscript>` CV from `data.ts`/`work.ts`/`i18n.ts`. Never hand-write those. Only `public/robots.txt` is static. Code it imports must stay DOM-free (`src/format.ts`, not `src/util.ts`).
 - Keep the top of the page "important info first": name, role, profile, CTAs (Email, GitHub, LinkedIn) in the first viewport.
 
 ## Commands
