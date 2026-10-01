@@ -10,7 +10,7 @@ import './styles/work.css';
 import { LANG_CODES, type Lang } from './data';
 import { WORK } from './work';
 import { mountWork } from './work-section';
-import { store, t, applyDocument } from './store';
+import { store, t, applyDocument, langUrl } from './store';
 import { esc, setHTML } from './util';
 import { initAnalytics } from './analytics';
 
@@ -24,8 +24,8 @@ function render() {
   <a class="skip" href="#main">${esc(tt.skip)}</a>
   <header class="top">
     <div class="wrap top__in">
-      <a href="/?lang=${L}" class="logo"><span>~/</span>sergkei</a>
-      <nav class="top__nav" aria-label="Sections"><a class="top__back" href="/?lang=${L}#work"><span aria-hidden="true">←</span> ${esc(tt.cvp.back)}</a></nav>
+      <a href="${langUrl('/')}" class="logo"><span>~/</span>sergkei</a>
+      <nav class="top__nav" aria-label="Sections"><a class="top__back" href="${langUrl('/')}#work"><span aria-hidden="true">←</span> ${esc(tt.cvp.back)}</a></nav>
       <div class="seg" role="group" aria-label="Language">
         ${LANG_CODES.map((l) => `<button data-lang="${l}" aria-pressed="${L === l}">${l.toUpperCase()}</button>`).join('')}
       </div>

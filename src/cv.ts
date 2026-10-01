@@ -116,6 +116,7 @@ export function mountCV(root: HTMLElement, enterGame: () => void, onGameIntent: 
     const zone = root.querySelector<HTMLElement>('[data-zone]');
     z = zone && { zone, fill: root.querySelector('[data-zone-fill]'), pct: root.querySelector('[data-zone-pct]'), title: root.querySelector('[data-zone-title]'), box: root.querySelector('[data-zone-box]') };
     lastTitle = '';
+    document.title = tt.seo.title;
     root.querySelector('[data-work]')!.replaceWith(work.el);
     renderSkills();
     terminal.bind(root);

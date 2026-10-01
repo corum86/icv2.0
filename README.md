@@ -18,10 +18,10 @@ npm run preview
 ## Project structure
 
 ```
-index.html              SEO meta, OG/Twitter tags, JSON-LD Person
+index.html              CV page template (JSON-LD Person). Built once per language: /en/, /de/, /el/
 datenschutz.html        Privacy policy (GDPR), DE/EN/EL
 cv.html                 Printable CV (A4, HR-oriented), rendered by src/print.ts
-portfolio.html          All projects + case studies, rendered by src/portfolio.ts
+portfolio.html          All projects + case studies, rendered by src/portfolio.ts. Also built as /<lang>/portfolio.html
 vercel.json             Build settings, apex→www redirect, security + cache headers
 api/
   contact.ts            Vercel Function: POST /api/contact → sends mail via Resend
@@ -31,14 +31,14 @@ public/
   favicon.svg / favicon-32.png / apple-touch-icon.png / site.webmanifest
   robots.txt            Hand-written: everything open to search engines and AI crawlers, except /api/
 scripts/
-  seo.ts                Vite plugin: llms.txt, llms-full.txt, sitemap.xml (build output) + the CV as plain HTML in <noscript>
+  seo.ts                Vite plugin: language pages (head tags + <noscript> CV per language), llms.txt, llms-full.txt, sitemap.xml
   record-work.mjs       Re-records the project media in public/work/
 src/
   main.ts               Bootstrap: fonts, CV, game, glitch transition
-  config.ts             Links (email, GitHub, LinkedIn), GAME_TRIGGER, SCANLINES
+  config.ts             Links (email, GitHub, LinkedIn), LOCALIZED (pages with language URLs), GAME_TRIGGER, SCANLINES
   data.ts               ← CV content (jobs, skills, education, languages). Edit here.
   i18n.ts               UI strings EN/DE/EL
-  store.ts              lang/theme state (URL ?lang=, localStorage, system prefs)
+  store.ts              lang/theme state (language URL /de/…, else ?lang=, localStorage, system prefs); keeps the URL on the language
   cv.ts                 CV page render + interactions + scroll-to-game zone
   terminal.ts           Fake shell in the hero (help, whoami, stack, contact, play, lang, theme, clear)
   contact.ts            Contact form UI (CV + game Post Office), posts JSON to /api/contact
@@ -59,17 +59,19 @@ src/
 ## Editing content
 
 - **CV text**: `src/data.ts`. Every job/education/language entry has `en` and `de`. Both the CV page and the game read from here.
-- **UI copy**: `src/i18n.ts` (`BASE` for original strings, `EXTRA` for form/footer/touch strings).
+- **UI copy**: `src/i18n.ts` (`BASE` for original strings, `EXTRA` for form/footer/touch strings and `seo`: page titles and descriptions).
 - **Links**: `src/config.ts`.
 - **Game trigger**: `GAME_TRIGGER = 'button'` in `src/config.ts` disables the scroll trigger (only Play buttons start the game).
 
 ## SEO and AI crawlers
 
 - `public/robots.txt` allows all crawlers, including AI search and training bots.
-- `scripts/seo.ts` generates the rest from `src/data.ts`, `src/work.ts` and `src/i18n.ts` (English), so it follows every content edit:
-  - `/llms.txt` (short profile + links, [llmstxt.org](https://llmstxt.org) format) and `/llms-full.txt` (the whole CV as Markdown).
-  - `/sitemap.xml` with the indexable pages (`/`, `/portfolio.html`), `/llms.txt` and the build date as `lastmod`. `cv.html` and `datenschutz.html` are `noindex` and stay out.
-  - The CV and the portfolio as plain HTML inside `<noscript>` (markers `<!--seo:cv-->`, `<!--seo:portfolio-->`), for crawlers and agents that don't run JavaScript.
+- `scripts/seo.ts` generates the rest from `src/data.ts`, `src/work.ts` and `src/i18n.ts`, so it follows every content edit:
+  - **Language pages.** `index.html` and `portfolio.html` (the pages in `LOCALIZED`, `src/config.ts`) are emitted once per language: `/en/`, `/de/`, `/el/` and `/<lang>/portfolio.html`. Each copy gets its own `<html lang>`, title, description, canonical, hreflang and OG/Twitter tags (marker `<!--seo:head-->`, texts in `src/i18n.ts` → `seo`) and the CV or portfolio as plain HTML inside `<noscript>` (marker `<!--seo:body-->`), for crawlers and agents that don't run JavaScript.
+  - **Entry pages.** `/` and `/portfolio.html` stay as entry points: `src/store.ts` picks the language there (`?lang=`, saved choice, browser language, else English) and moves the address bar to the language URL without a reload. Their static HTML is the English copy and is canonical to `/en/…`, which is also `x-default`.
+  - `/llms.txt` (short profile + links, [llmstxt.org](https://llmstxt.org) format) and `/llms-full.txt` (the whole CV as Markdown), both English.
+  - `/sitemap.xml` with every language page, `/llms.txt` and the build date as `lastmod`. `cv.html` and `datenschutz.html` are `noindex` and stay out; they keep `?lang=`.
+- Link to a localized page with `langUrl('/portfolio.html')` from `src/store.ts`, never with a hard-coded path.
 - After a deploy with content changes: resubmit the sitemap in Google Search Console (and Bing Webmaster Tools).
 
 ## Game

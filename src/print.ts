@@ -6,7 +6,7 @@ import './styles/fonts.css';
 import './styles/print.css';
 import { JOBS, SKILLS, CATS, EDU, LANGS, LANG_CODES, type Lang } from './data';
 import { WORK } from './work';
-import { store, t, applyDocument } from './store';
+import { store, t, applyDocument, langUrl } from './store';
 import { esc, setHTML, period } from './util';
 import { LINKS } from './config';
 import { initAnalytics, track } from './analytics';
@@ -23,7 +23,7 @@ function render(root: HTMLElement) {
 
   setHTML(root, `
   <div class="pv-bar" role="toolbar" aria-label="${esc(c.title)}">
-    <a class="pv-back" href="/?lang=${L}">← ${esc(c.back)}</a>
+    <a class="pv-back" href="${langUrl('/')}">← ${esc(c.back)}</a>
     <div class="pv-seg" role="group" aria-label="Language">${LANG_CODES.map((l) => `<button type="button" data-lang="${l}" aria-pressed="${l === L}">${l.toUpperCase()}</button>`).join('')}</div>
     <button type="button" class="pv-print" data-print>${esc(c.print)}</button>
   </div>

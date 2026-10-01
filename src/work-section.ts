@@ -5,7 +5,7 @@
 import { WORK, WORK_TAGS, type Work, type WorkVersion } from './work';
 import { migrationDiagramHTML } from './work-diagram';
 import type { Lang } from './data';
-import { store, t } from './store';
+import { store, t, langUrl } from './store';
 import { esc, setHTML, reducedMotion } from './util';
 import { track } from './analytics';
 
@@ -110,7 +110,7 @@ export function mountWork(page: HTMLElement, items: Work[], all = false) {
   const cards = [...el.querySelectorAll<HTMLElement>('.wk-card')];
   const more = el.querySelector<HTMLElement>('.wk-more');
   const renderMore = () => more && setHTML(more,
-    `<a class="btn-outline" href="/portfolio.html?lang=${store.state.lang}" data-portfolio>$ ls ./portfolio · ${esc(t().wAll)} (${WORK.length}) →</a>`);
+    `<a class="btn-outline" href="${langUrl('/portfolio.html')}" data-portfolio>$ ls ./portfolio · ${esc(t().wAll)} (${WORK.length}) →</a>`);
   renderMore();
 
   const applyFilter = () => {
@@ -318,7 +318,7 @@ export function mountWork(page: HTMLElement, items: Work[], all = false) {
     openFromHash() {
       const slug = hashSlug(location.hash), i = bySlug(slug), j = find(WORK, slug);
       // A portfolio-only project linked from the CV page: open it on the portfolio page.
-      if (i < 0 && j >= 0 && !all) return location.replace(`/portfolio.html${location.search}#work/${WORK[j].slug}`);
+      if (i < 0 && j >= 0 && !all) return location.replace(`${langUrl('/portfolio.html')}${location.search}#work/${WORK[j].slug}`);
       if (i < 0) return;
       el.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
       open(i, 'none');
