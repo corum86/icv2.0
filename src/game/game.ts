@@ -14,7 +14,7 @@ import { W, H, BLD, blocked, draw, loadSheets, findPath, type Building, type Pan
 type DlgKey = 'intro' | 'allDone';
 type Dir = 'down' | 'up' | 'left' | 'right';
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
-const HERO_ROW: Record<Dir, number> = { down: 0, up: 0, left: 1, right: 2 }; // hero.png has no back-facing row
+const HERO_ROW: Record<Dir, number> = { down: 0, left: 1, right: 2, up: 3 }; // hero.png: 3 frames × 4 rows of 28×34
 const isTouch = () => matchMedia('(hover: none), (pointer: coarse)').matches;
 const STEP_MS = 140; // hold-to-walk cadence (keys + D-pad); .game .player transition in game.css matches it
 const KEY_DIR: Record<string, Dir> = { ArrowUp: 'up', w: 'up', ArrowDown: 'down', s: 'down', ArrowLeft: 'left', a: 'left', ArrowRight: 'right', d: 'right' };
@@ -223,7 +223,7 @@ export class Game {
     const st = this.el.hero.style;
     st.left = ((s.px * 16 - 6) / (W * 16)) * 100 + '%';
     st.top = (((s.py + 1) * 16 - 32) / (H * 16)) * 100 + '%';
-    st.backgroundPosition = `${frame * 50}% ${HERO_ROW[s.dir] * 50}%`;
+    st.backgroundPosition = `${frame * 50}% ${(HERO_ROW[s.dir] * 100) / 3}%`;
     this.follow();
   }
 
