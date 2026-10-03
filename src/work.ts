@@ -24,7 +24,7 @@ export interface Work {
 }
 
 /** Filter chips, in this order. 'all' = no filter. A project matches when one of its tags starts with the chip (so 'Angular' matches 'Angular 15 → 22'). */
-export const WORK_TAGS = ['all', 'Angular', 'Bootstrap', 'WordPress', 'JTL Shop', 'PHP', 'Responsive'] as const;
+export const WORK_TAGS = ['all', 'Angular', 'Astro', 'Bootstrap', 'WordPress', 'JTL Shop', 'PHP', 'Responsive'] as const;
 
 export const WORK: Work[] = [
   {
@@ -101,90 +101,66 @@ export const WORK: Work[] = [
     ]
   },
   {
-    slug: "paidopsy",
-    year: "2019",
+    slug: "fidella",
+    year: "2016 – 2019",
     portfolioOnly: true,
     client: {
-      en: "Freelance · paidopsy-trikala.gr",
-      de: "Freelance · paidopsy-trikala.gr",
-      el: "Freelance · paidopsy-trikala.gr"
+      en: "Nonomella GmbH · fidella.org",
+      de: "Nonomella GmbH · fidella.org",
+      el: "Nonomella GmbH · fidella.org"
     },
     role: {
-      en: "Designer · developer · hosting",
-      de: "Design · Entwicklung · Hosting",
-      el: "Design · ανάπτυξη · hosting"
+      en: "Head of IT · lead developer",
+      de: "Leiter IT · Lead-Entwickler",
+      el: "Υπεύθυνος IT · lead developer"
     },
     title: {
-      en: "paidopsy-trikala.gr: custom WordPress site",
-      de: "paidopsy-trikala.gr: individuelle WordPress-Website",
-      el: "paidopsy-trikala.gr: custom ιστοσελίδα WordPress"
+      en: "fidella.org: purchase advisor & modernisation",
+      de: "fidella.org: Kaufberater & Modernisierung",
+      el: "fidella.org: σύμβουλος αγοράς & εκσυγχρονισμός"
     },
     outcome: {
-      en: "Designed and built a completely custom WordPress theme, and set up hosting, domain and email end to end.",
-      de: "Komplett individuelles WordPress-Theme entworfen und umgesetzt, dazu Hosting, Domain und E-Mail von Grund auf eingerichtet.",
-      el: "Σχεδίασα και υλοποίησα ένα εντελώς custom θέμα WordPress και έστησα από την αρχή hosting, domain και email."
+      en: "Built an interactive purchase advisor and modernised the shop.",
+      de: "Interaktiven Kaufberater entwickelt und den Shop modernisiert.",
+      el: "Ανέπτυξα έναν διαδραστικό σύμβουλο αγοράς και εκσυγχρόνισα το shop."
     },
     tags: [
-      "WordPress",
-      "Custom theme",
+      "JTL Shop",
       "PHP",
-      "Hosting",
-      "DNS & Email"
+      "JavaScript",
+      "Responsive"
     ],
-    problem: {
-      en: "A completely new practice with no web presence. This was its first website.",
-      de: "Eine komplett neue Praxis ohne Webauftritt. Dies war ihre erste Website.",
-      el: "Ένα εντελώς νέο ιατρείο χωρίς παρουσία στο διαδίκτυο. Αυτή ήταν η πρώτη του ιστοσελίδα."
-    },
     approach: {
-      en: "Designed the site and built a completely custom WordPress theme. Set up the whole infrastructure: hosting, domain, DNS and email.",
-      de: "Design der Website und Entwicklung eines komplett individuellen WordPress-Themes. Einrichtung der gesamten Infrastruktur: Hosting, Domain, DNS und E-Mail.",
-      el: "Σχεδίασα την ιστοσελίδα και ανέπτυξα ένα εντελώς custom θέμα WordPress. Έστησα όλη την υποδομή: hosting, domain, DNS και email."
-    },
-    result: {
-      en: "Lighthouse (desktop): 98 Performance, 96 Accessibility, 100 Best Practices, 100 SEO.",
-      de: "Lighthouse (Desktop): 98 Performance, 96 Barrierefreiheit, 100 Best Practices, 100 SEO.",
-      el: "Lighthouse (desktop): 98 Performance, 96 Accessibility, 100 Best Practices, 100 SEO."
+      en: "Implemented a purchase advisor that guides customers to the right product, and modernised the shop design.",
+      de: "Umsetzung eines Kaufberaters, der Kunden zum passenden Produkt führt, und Modernisierung des Shop-Designs.",
+      el: "Υλοποίησα έναν σύμβουλο αγοράς που οδηγεί τους πελάτες στο κατάλληλο προϊόν και εκσυγχρόνισα το design του shop."
     },
     media: {
-      base: "/work/paidopsy",
-      ext: "png",
-      video: false,
-      mobile: false
+      base: "/work/fidella",
+      ext: "jpg",
+      video: true,
+      mobile: true
     },
     versions: [
       {
-        year: "Live",
+        year: "2016",
         label: {
-          en: "Live site",
-          de: "Live-Seite",
-          el: "Ζωντανή σελίδα"
+          en: "Before",
+          de: "Vorher",
+          el: "Πριν"
         },
-        url: "https://paidopsy-trikala.gr/"
+        url: "https://web.archive.org/web/20160229103848/https://fidella.org/"
+      },
+      {
+        year: "2019",
+        label: {
+          en: "Modernised",
+          de: "Modernisiert",
+          el: "Εκσυγχρονισμένο"
+        },
+        url: "https://web.archive.org/web/20190818065410/https://fidella.org/"
       }
-    ],
-    live: "https://paidopsy-trikala.gr/",
-    lighthouse: {
-      mode: "desktop",
-      scores: [
-        {
-          label: "Performance",
-          score: 98
-        },
-        {
-          label: "Accessibility",
-          score: 96
-        },
-        {
-          label: "Best Practices",
-          score: 100
-        },
-        {
-          label: "SEO",
-          score: 100
-        }
-      ]
-    }
+    ]
   },
   {
     slug: "nuve",
@@ -211,6 +187,8 @@ export const WORK: Work[] = [
       el: "Ιστοσελίδα-βιτρίνα φτιαγμένη από το μηδέν με design υποβοηθούμενο από AI. Η προβολή που δημιούργησε οδήγησε σε πληρότητα σχεδόν 100%."
     },
     tags: [
+      "Astro",
+      "Tailwind",
       "AI-assisted design",
       "Vercel",
       "Responsive",
@@ -321,65 +299,89 @@ export const WORK: Work[] = [
     ]
   },
   {
-    slug: "fidella",
-    year: "2016 – 2019",
+    slug: "paidopsy",
+    year: "2019",
     client: {
-      en: "Nonomella GmbH · fidella.org",
-      de: "Nonomella GmbH · fidella.org",
-      el: "Nonomella GmbH · fidella.org"
+      en: "Freelance · paidopsy-trikala.gr",
+      de: "Freelance · paidopsy-trikala.gr",
+      el: "Freelance · paidopsy-trikala.gr"
     },
     role: {
-      en: "Head of IT · lead developer",
-      de: "Leiter IT · Lead-Entwickler",
-      el: "Υπεύθυνος IT · lead developer"
+      en: "Designer · developer · hosting",
+      de: "Design · Entwicklung · Hosting",
+      el: "Design · ανάπτυξη · hosting"
     },
     title: {
-      en: "fidella.org: purchase advisor & modernisation",
-      de: "fidella.org: Kaufberater & Modernisierung",
-      el: "fidella.org: σύμβουλος αγοράς & εκσυγχρονισμός"
+      en: "paidopsy-trikala.gr: custom WordPress site",
+      de: "paidopsy-trikala.gr: individuelle WordPress-Website",
+      el: "paidopsy-trikala.gr: custom ιστοσελίδα WordPress"
     },
     outcome: {
-      en: "Built an interactive purchase advisor and modernised the shop.",
-      de: "Interaktiven Kaufberater entwickelt und den Shop modernisiert.",
-      el: "Ανέπτυξα έναν διαδραστικό σύμβουλο αγοράς και εκσυγχρόνισα το shop."
+      en: "Designed and built a completely custom WordPress theme, and set up hosting, domain and email end to end.",
+      de: "Komplett individuelles WordPress-Theme entworfen und umgesetzt, dazu Hosting, Domain und E-Mail von Grund auf eingerichtet.",
+      el: "Σχεδίασα και υλοποίησα ένα εντελώς custom θέμα WordPress και έστησα από την αρχή hosting, domain και email."
     },
     tags: [
-      "JTL Shop",
+      "WordPress",
+      "Custom theme",
       "PHP",
-      "JavaScript",
-      "Responsive"
+      "Hosting",
+      "DNS & Email"
     ],
+    problem: {
+      en: "A completely new practice with no web presence. This was its first website.",
+      de: "Eine komplett neue Praxis ohne Webauftritt. Dies war ihre erste Website.",
+      el: "Ένα εντελώς νέο ιατρείο χωρίς παρουσία στο διαδίκτυο. Αυτή ήταν η πρώτη του ιστοσελίδα."
+    },
     approach: {
-      en: "Implemented a purchase advisor that guides customers to the right product, and modernised the shop design.",
-      de: "Umsetzung eines Kaufberaters, der Kunden zum passenden Produkt führt, und Modernisierung des Shop-Designs.",
-      el: "Υλοποίησα έναν σύμβουλο αγοράς που οδηγεί τους πελάτες στο κατάλληλο προϊόν και εκσυγχρόνισα το design του shop."
+      en: "Designed the site and built a completely custom WordPress theme. Set up the whole infrastructure: hosting, domain, DNS and email.",
+      de: "Design der Website und Entwicklung eines komplett individuellen WordPress-Themes. Einrichtung der gesamten Infrastruktur: Hosting, Domain, DNS und E-Mail.",
+      el: "Σχεδίασα την ιστοσελίδα και ανέπτυξα ένα εντελώς custom θέμα WordPress. Έστησα όλη την υποδομή: hosting, domain, DNS και email."
+    },
+    result: {
+      en: "Lighthouse (desktop): 98 Performance, 96 Accessibility, 100 Best Practices, 100 SEO.",
+      de: "Lighthouse (Desktop): 98 Performance, 96 Barrierefreiheit, 100 Best Practices, 100 SEO.",
+      el: "Lighthouse (desktop): 98 Performance, 96 Accessibility, 100 Best Practices, 100 SEO."
     },
     media: {
-      base: "/work/fidella",
-      ext: "jpg",
-      video: true,
-      mobile: true
+      base: "/work/paidopsy",
+      ext: "png",
+      video: false,
+      mobile: false
     },
     versions: [
       {
-        year: "2016",
+        year: "Live",
         label: {
-          en: "Before",
-          de: "Vorher",
-          el: "Πριν"
+          en: "Live site",
+          de: "Live-Seite",
+          el: "Ζωντανή σελίδα"
         },
-        url: "https://web.archive.org/web/20160229103848/https://fidella.org/"
-      },
-      {
-        year: "2019",
-        label: {
-          en: "Modernised",
-          de: "Modernisiert",
-          el: "Εκσυγχρονισμένο"
-        },
-        url: "https://web.archive.org/web/20190818065410/https://fidella.org/"
+        url: "https://paidopsy-trikala.gr/"
       }
-    ]
+    ],
+    live: "https://paidopsy-trikala.gr/",
+    lighthouse: {
+      mode: "desktop",
+      scores: [
+        {
+          label: "Performance",
+          score: 98
+        },
+        {
+          label: "Accessibility",
+          score: 96
+        },
+        {
+          label: "Best Practices",
+          score: 100
+        },
+        {
+          label: "SEO",
+          score: 100
+        }
+      ]
+    }
   }
 ];
 
