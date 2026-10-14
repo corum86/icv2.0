@@ -61,7 +61,6 @@ tavernIntro:'Τέσσερις θαμώνες μοιράζονται ένα τρ�
 st:{name:'Όνομα',cls:'Κλάση',spec:'Ειδίκευση',home:'Έδρα',guild:'Συντεχνία',lv:'Level'},attrs:'ΙΔΙΟΤΗΤΕΣ',
 aYears:'Χρόνια στον χώρο',aQuests:'Ολοκληρωμένες αποστολές',aItems:'Αντικείμενα στο σακίδιο',aLangs:'Γλώσσες',aScrolls:'Πάπυροι'}}
 };
-export const THEMES={dark:{bg:'#0f0e13',fg:'#ecebf1',mut:'#9c9aa8',line:'#26242e',card:'#16151c',acc:'#b48bff'},light:{bg:'#f7f6f9',fg:'#17161c',mut:'#5b5967',line:'#e3e1e9',card:'#ffffff',acc:'#6d35d6'}};
 
 const EXTRA={
 en:{form:{title:'Send a message',name:'Name',email:'Email',message:'Message',send:'Send message',sending:'Sending…',ok:'Thanks! Your message is on its way.',err:'Something went wrong. Please email me directly.',privacy:'Your data is only used to reply to your message. See the',privacyLink:'privacy policy'},
